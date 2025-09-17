@@ -1,0 +1,9 @@
+{
+  "is-main": true,
+  "import": [
+    {
+      "path": "AMepy/Laurus/lib",
+      "alias": "lib"
+    }
+  ]
+}
