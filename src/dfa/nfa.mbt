@@ -1,6 +1,6 @@
 ///|
 struct NState {
-  mut token : Token?
+  mut token : Token? // 除了 token_union 外, 唯有 halting_state.token = Some(1)
   mut left : Array[CodePoint]
   mut right : Array[CodePoint]
   mut next : Array[Set[Index]] // Index relative to itself
@@ -392,4 +392,25 @@ fn NFA::string(str : String) -> NFA raise {
     nfas.push(NFA::single(c))
   }
   NFA::seq(nfas)
+}
+
+///|
+/// 最后调用，合并具有不同 token 的 nfa
+/// 因而 halting_state 有多个，且 token 均不同
+fn NFA::token_union(token_nfas : Array[(Token, NFA)]) -> NFA {
+  let initial_state = NState::new()
+  let states = [initial_state]
+  let mut cur : Index = 1
+  for token_nfa in token_nfas {
+    let (token, nfa) = token_nfa
+    initial_state.empty.add(cur)
+    let len = nfa.states.length()
+    cur += len
+    let nfa_halt_state = nfa.states[len - 1]
+    nfa_halt_state.token = Some(token)
+    for s in nfa.states {
+      states.push(s)
+    }
+  }
+  NFA::{ states, }
 }
