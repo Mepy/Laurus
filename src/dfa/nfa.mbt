@@ -3,8 +3,9 @@ struct NState {
   mut token : Token? // 除了 token_union 外, 唯有 halting_state.token = Some(1)
   mut left : Array[CodePoint]
   mut right : Array[CodePoint]
-  mut next : Array[Set[Index]] // Index relative to itself
-  empty : Set[Index] // Index relative to itself
+  // 这里的 Index 是相对值，方便构造 NFA，例子见 NFA::string
+  mut next : Array[Set[Index]]
+  empty : Set[Index]
 }
 
 ///|
@@ -43,9 +44,8 @@ fn NState::merge_range(self : NState) -> Unit {
 
 ///|
 /// 假定 next 非空且相同, 将区间取反
-fn NState::not(self : NState) -> Unit raise {
+fn NState::not(self : NState) -> Unit {
   let len = self.next.length()
-  assert_true(len != 0, msg="NState::not(self) where self.next = []")
   let new_left = []
   let new_right = []
   let first_left = self.left[0]
@@ -153,11 +153,7 @@ fn NState::insert(
   left : CodePoint,
   right : CodePoint,
   next : Set[Index],
-) -> Unit raise {
-  assert_true(
-    left <= right,
-    msg="NFA State insert (left, right) |-> value where left = \{left} > \{right} = right",
-  )
+) -> Unit {
   let right_i = infimum(self.left, right)
   if right_i == -1 { // not_found -> right < self.left, 位于最左侧, 简单插入即可 
     return self.insert_at(0, left, right, next)
@@ -225,7 +221,7 @@ struct NFA {
 }
 
 ///|
-fn NFA::new(ranges : Array[(CodePoint, CodePoint)]) -> NFA raise {
+fn NFA::new(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
   let initial_state = NState::new()
   let halting_state = NState::new(token=1)
   let states = [initial_state, halting_state]
@@ -240,25 +236,25 @@ fn NFA::new(ranges : Array[(CodePoint, CodePoint)]) -> NFA raise {
 
 ///|
 /// 接受单字符
-fn NFA::single(c : CodePoint) -> NFA raise {
+fn NFA::single(c : CodePoint) -> NFA {
   NFA::new([(c, c)])
 }
 
 ///|
 /// 接受单个区间
-fn NFA::range(left : CodePoint, right : CodePoint) -> NFA raise {
+fn NFA::range(left : CodePoint, right : CodePoint) -> NFA {
   NFA::new([(left, right)])
 }
 
 ///|
 /// 接受多个区间 [A-Z0-9]
-fn NFA::bor(ranges : Array[(CodePoint, CodePoint)]) -> NFA raise {
+fn NFA::bor(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
   NFA::new(ranges)
 }
 
 ///|
 /// 接受多个区间的取反 [^A-Z0-9]
-fn NFA::bnot(ranges : Array[(CodePoint, CodePoint)]) -> NFA raise {
+fn NFA::bnot(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
   let nfa = NFA::new(ranges)
   nfa.states[0].not()
   nfa
@@ -266,13 +262,21 @@ fn NFA::bnot(ranges : Array[(CodePoint, CodePoint)]) -> NFA raise {
 
 ///|
 /// 接受任意字符
-fn NFA::any() -> NFA raise {
+fn NFA::any() -> NFA {
   NFA::new([(MinCodePoint, MaxCodePoint)])
 }
 
 ///|
+/// 接受空串
+fn NFA::emp() -> NFA {
+  let nfa = NFA::new([])
+  nfa.states[0].empty.add(1)
+  nfa
+}
+
+///|
 /// nfa1 | nfa2 | ... | nfan
-fn NFA::union(nfas : Array[NFA]) -> NFA raise {
+fn NFA::union(nfas : Array[NFA]) -> NFA {
   if nfas.length() == 0 {
     return NFA::new([])
   }
@@ -307,16 +311,8 @@ fn NFA::union(nfas : Array[NFA]) -> NFA raise {
 }
 
 ///|
-/// 接受空串
-fn NFA::emp() -> NFA raise {
-  let nfa = NFA::new([])
-  nfa.states[0].empty.add(1)
-  nfa
-}
-
-///|
 /// 接受 nfa1·nfa2·...·nfan
-fn NFA::seq(nfas : Array[NFA]) -> NFA raise {
+fn NFA::seq(nfas : Array[NFA]) -> NFA {
   if nfas.length() == 0 {
     return NFA::emp()
   }
@@ -338,8 +334,17 @@ fn NFA::seq(nfas : Array[NFA]) -> NFA raise {
 }
 
 ///|
+/// 接受 nfan·nfa(n-1)·...·nfa1
+fn NFA::seq_rev(nfas : Array[NFA]) -> NFA {
+  if nfas.length() == 0 {
+    return NFA::emp()
+  }
+  NFA::seq(nfas.rev())
+}
+
+///|
 /// nfa*
-fn NFA::star(nfa : NFA) -> NFA raise {
+fn NFA::star(nfa : NFA) -> NFA {
   let wrapper = NFA::new([])
   let initial_state = wrapper.states[0]
   let halting_state = wrapper.states[1]
@@ -363,7 +368,7 @@ fn NFA::star(nfa : NFA) -> NFA raise {
 
 ///|
 /// nfa+
-fn NFA::plus(nfa : NFA) -> NFA raise {
+fn NFA::plus(nfa : NFA) -> NFA {
   let wrapper = NFA::new([])
   let initial_state = wrapper.states[0]
   let halting_state = wrapper.states[1]
@@ -386,28 +391,37 @@ fn NFA::plus(nfa : NFA) -> NFA raise {
 
 ///|
 /// 接受字符串
-fn NFA::string(str : String) -> NFA raise {
-  let nfas = Array::new(capacity=str.length())
+fn NFA::string(str : String) -> NFA {
+  let states = Array::new(capacity=str.length() + 1)
   for c in str {
-    nfas.push(NFA::single(c))
+    let state = NState::new()
+    state.left.push(c)
+    state.right.push(c)
+    state.next.push(Set::from_array([1]))
+    states.push(state)
   }
-  NFA::seq(nfas)
+  let halting_state = NState::new(token=1)
+  states.push(halting_state)
+  NFA::{ states, }
+}
+
+///|
+/// 接受反向字符串
+fn NFA::string_rev(str : String) -> NFA {
+  NFA::string(str.rev())
 }
 
 ///|
 /// 最后调用，合并具有不同 token 的 nfa
 /// 因而 halting_state 有多个，且 token 均不同
-fn NFA::token_union(token_nfas : Array[(Token, NFA)]) -> NFA {
+fn NFA::token_union(nfas : Iter[NFA]) -> NFA {
   let initial_state = NState::new()
   let states = [initial_state]
   let mut cur : Index = 1
-  for token_nfa in token_nfas {
-    let (token, nfa) = token_nfa
+  for nfa in nfas {
     initial_state.empty.add(cur)
     let len = nfa.states.length()
     cur += len
-    let nfa_halt_state = nfa.states[len - 1]
-    nfa_halt_state.token = Some(token)
     for s in nfa.states {
       states.push(s)
     }

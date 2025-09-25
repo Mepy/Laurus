@@ -21,4 +21,38 @@ fn CodePoint::prev(self : CodePoint) -> CodePoint {
 typealias UInt as Token
 
 ///|
+struct TokenSet(Set[Token]) derive(Eq)
+///|
+suberror TokenConflicts(Set[TokenSet])
+
+///|
+impl Hash for TokenSet with hash_combine(self : TokenSet, hasher : Hasher) {
+  hasher.combine(self.hash())
+}
+
+///|
+impl Hash for TokenSet with hash(self : TokenSet) -> Int {
+  let s = self.0.to_array()
+  s.sort()
+  s.hash()
+}
+
+
+
+///|
 typealias Int as Index
+
+///|
+struct Subset(Set[Index]) derive(Eq)
+
+///|
+impl Hash for Subset with hash_combine(self : Subset, hasher : Hasher) {
+  hasher.combine(self.hash())
+}
+
+///|
+impl Hash for Subset with hash(self : Subset) -> Int {
+  let s = self.0.to_array()
+  s.sort()
+  s.hash()
+}
