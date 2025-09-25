@@ -6,7 +6,7 @@ struct NState {
   // 这里的 Index 是相对值，方便构造 NFA，例子见 NFA::string
   mut next : Array[Set[Index]]
   empty : Set[Index]
-}
+} derive(Show)
 
 ///|
 fn NState::new(token? : Token) -> NState {
@@ -30,7 +30,7 @@ fn NState::merge_range(self : NState) -> Unit {
     let new_i = new_next.length() - 1
     if new_right[new_i].to_int() + 1 == self.left[i].to_int() &&
       new_next[new_i] == self.next[i] {
-      new_right[new_i] = new_right[i]
+      new_right[new_i] = self.right[i]
     } else {
       new_left.push(self.left[i])
       new_right.push(self.right[i])
@@ -218,7 +218,7 @@ fn NState::insert(
 ///|
 struct NFA {
   states : Array[NState]
-}
+} derive(Show)
 
 ///|
 fn NFA::new(ranges : Array[(CodePoint, CodePoint)]) -> NFA {

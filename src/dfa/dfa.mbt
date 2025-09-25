@@ -4,12 +4,12 @@ struct DState {
   left : Array[CodePoint]
   right : Array[CodePoint]
   next : Array[Index] // 这里的 Index 是绝对值
-}
+} derive(Show)
 
 ///|
 struct DFA {
   states : Array[DState]
-}
+} derive(Show)
 
 ///|
 /// 将 DFA 转换为反向的 NFA
@@ -85,8 +85,9 @@ fn DFAMaker::empty(self : Self, s : Subset) -> Subset {
         Some(new_empty) => empty = empty.union(new_empty.0)
         None =>
           for j in self.states[i].empty {
-            if empty.contains(j) == false {
-              stack.push(j)
+            let ji = j + i // j 是相对于 i 的偏移
+            if empty.contains(ji) == false {
+              stack.push(ji)
             }
           }
       }

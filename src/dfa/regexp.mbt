@@ -26,15 +26,16 @@ fn RegExp::assert(self : RegExp) -> Unit raise {
         l <= r && l >= MinCodePoint && r <= MaxCodePoint,
         msg="Range: invalid range [\{l}, \{r}]",
       )
-    RegExp::Bor(arr) =>
+    RegExp::Bor(arr) => {
+      assert_true(arr.length() > 0, msg="Bor: empty ranges")
       for lr in arr {
-        assert_true(arr.length() > 0, msg="Bor: empty ranges")
         let (l, r) = lr
         assert_true(
           l <= r && l >= MinCodePoint && r <= MaxCodePoint,
           msg="Bor: invalid range [\{l}, \{r}]",
         )
       }
+    }
     RegExp::Bnot(arr) => {
       assert_true(arr.length() > 0, msg="Bnot: empty ranges")
       for lr in arr {
