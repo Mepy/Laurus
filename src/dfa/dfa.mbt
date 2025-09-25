@@ -56,8 +56,6 @@ struct DFAMaker {
   conflicts : Set[TokenSet]
 }
 
-
-
 ///|
 fn DFAMaker::from_nfa(nfa : NFA) -> DFAMaker {
   DFAMaker::{
@@ -159,6 +157,7 @@ fn DFAMaker::subset_construction(self : Self) -> Unit {
   }
 }
 
+///|
 fn DFAMaker::to_dfa(self : Self) -> DFA {
   self.subset_construction()
   let dstates = Array::new(capacity=self.dfa_nstates.length())
@@ -166,7 +165,7 @@ fn DFAMaker::to_dfa(self : Self) -> DFA {
     let left = nstate.left
     let right = nstate.right
     let next = nstate.next.map(subset => self.dfa_indices[subset])
-    dstates.push(DState::{ token: nstate.token, left: left, right: right, next: next })
+    dstates.push(DState::{ token: nstate.token, left, right, next })
   }
   DFA::{ states: dstates }
 }

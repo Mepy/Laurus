@@ -1,3 +1,5 @@
 #!/bin/sh
 
 moon check
+moon fmt
+git add src/

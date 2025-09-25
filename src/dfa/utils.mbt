@@ -22,8 +22,9 @@ typealias UInt as Token
 
 ///|
 struct TokenSet(Set[Token]) derive(Eq)
+
 ///|
-suberror TokenConflicts(Set[TokenSet])
+suberror TokenConflicts Set[TokenSet]
 
 ///|
 impl Hash for TokenSet with hash_combine(self : TokenSet, hasher : Hasher) {
@@ -36,8 +37,6 @@ impl Hash for TokenSet with hash(self : TokenSet) -> Int {
   s.sort()
   s.hash()
 }
-
-
 
 ///|
 typealias Int as Index

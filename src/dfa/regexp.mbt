@@ -119,7 +119,6 @@ fn RegExp::to_nfa_rev(self : RegExp) -> NFA {
   }
 }
 
-
 ///|
 /// Brzozowski 算法，从一组正则表达式和对应的 token 构造最小 DFA
 fn brzozowski(regexp_tokens : Array[(RegExp, Token)]) -> DFA raise {
@@ -127,15 +126,16 @@ fn brzozowski(regexp_tokens : Array[(RegExp, Token)]) -> DFA raise {
     let (regexp, _) = regexp_token
     regexp.assert()
   }
-  let nfas = regexp_tokens.iter().map(regexp_token=> {
-    let (regexp, token) = regexp_token
-    let nfa_rev = regexp.to_nfa_rev()
-    let maker = DFAMaker::from_nfa(nfa_rev)
-    let dfa_rev = maker.to_dfa()
-    let nfa = dfa_rev.to_nfa_rev(token~)
-    nfa
-  })
-
+  let nfas = regexp_tokens
+    .iter()
+    .map(regexp_token => {
+      let (regexp, token) = regexp_token
+      let nfa_rev = regexp.to_nfa_rev()
+      let maker = DFAMaker::from_nfa(nfa_rev)
+      let dfa_rev = maker.to_dfa()
+      let nfa = dfa_rev.to_nfa_rev(token~)
+      nfa
+    })
   let nfa = NFA::token_union(nfas)
   let maker = DFAMaker::from_nfa(nfa)
   let dfa = maker.to_dfa()
