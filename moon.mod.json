@@ -1,6 +1,9 @@
 {
   "name": "AMepy/Laurus",
   "version": "0.1.0",
+  "deps": {
+    "moonbitlang/x": "0.4.34"
+  },
   "readme": "README.mbt.md",
   "repository": "",
   "license": "MIT",

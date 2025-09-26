@@ -1,19 +1,48 @@
 ///|
-fn DFA::codegen(self : Self) -> String {
+struct Generator {
+  builder : StringBuilder
+  mut dfa_count : Int
+} derive(Show)
+
+///|
+fn Generator::new() -> Self {
   let builder = StringBuilder::new()
   let lexer =
     #|///|
-    #|struct Lexer {
-    #|  src : String
+    #|struct Lexeme {
     #|  mut token : Token
-    #|  mut cur : Int 
-    #|  mut beg : Int 
+    #|  beg : Int
     #|  mut end : Int
     #|} derive(Show)
     #|
     #|///|
-    #|fn Lexer::new(src : String) -> Self {
-    #|  Lexer::{ src, token: 0, cur: -1, beg: 0, end: 0 }
+    #|fn Lexeme::new(beg? : Int = 0) -> Self {
+    #|  { token: 0, beg, end: 0 }
+    #|}
+    #|
+    #|///|
+    #|struct Lexer {
+    #|  mut src : String
+    #|  mut cur : Int
+    #|  mut lexeme : Lexeme
+    #|} derive(Show)
+    #|
+    #|///|
+    #|fn Lexer::new(src? : String = "") -> Self {
+    #|  { src, cur: -1, lexeme: Lexeme::new() }
+    #|}
+    #|
+    #|///|
+    #|fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
+    #|  self.src = src
+    #|  self.cur = cur
+    #|}
+    #|
+    #|///|
+    #|fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
+    #|  let beg = lexeme.beg
+    #|  let end = lexeme.end
+    #|  self.src.unsafe_substring(start=beg, end=end + 1)
     #|}
     #|
     #|///|
@@ -22,55 +51,75 @@ fn DFA::codegen(self : Self) -> String {
     #|  if self.cur < self.src.length() {
     #|    self.src[self.cur]
     #|  } else {
-    #|  -1
+    #|    -1
     #|  }
     #|}
     #|
     #|
+  builder.write_string(lexer)
+  { builder, dfa_count: 0 }
+}
+
+///|
+fn Generator::codegen(self : Self, dfa : DFA) -> Unit {
   let scan_header =
     #|///|
-    #|fn Lexer::scan(self : Self) -> (Token, Int, Int)? {
+    $|fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme {
     #|  loop 0 {
+    #|
   let scan_footer =
     #|    _ => break
     #|  }
-    #|  if self.token == 0 {
-    #|    None
-    #|  } else {
-    #|    let lexeme = Some((self.token, self.beg, self.end))
-    #|    self.beg = self.end + 1
-    #|    lexeme
-    #|  }
+    #|  let lexeme = self.lexeme
+    #|  self.lexeme = Lexeme::new(beg=lexeme.end+1)
+    #|  lexeme
     #|}
-  builder.write_string(lexer)
-  builder.write_string(scan_header)
-  let accept_template =
-    #|      self.end = self.cur
-  let len = self.states.length()
+  self.builder.write_string(scan_header)
+  let len = dfa.states.length()
   for i in 0..<len {
-    let state = self.states[i]
-    builder.write_string("    \{i} => {\n")
+    let state = dfa.states[i]
+    self.builder.write_string("    \{i} => {\n")
     match state.token {
       Some(token) => {
-        builder.write_string(accept_template)
-        builder.write_string("      self.token = \{token}\n")
+        self.builder.write_string("      self.lexeme.end = self.cur\n")
+        self.builder.write_string("      self.lexeme.token = \{token}\n")
       }
       None => ()
     }
-    builder.write_string("      continue match self.next() {\n")
     let maplen = state.next.length()
-    for k in 0..<maplen {
-      let l = state.left[k]
-      let r = state.right[k]
-      let next = state.next[k]
-      builder.write_string("          '\{l}'..='\{r}' => \{next}\n")
+    if maplen == 0 {
+      self.builder.write_string("      break\n")
+    } else {
+      self.builder.write_string("      continue match self.next() {\n")
+      for k in 0..<maplen {
+        let l = state.left[k]
+        let r = state.right[k]
+        let next = state.next[k]
+        fn convert(l) {
+          match l {
+            '\u{0}' => "'\\u{0}'"
+            '\u{10FFFF}' => "'\\u{10FFFF}'"
+            '\'' => "'\\''"
+            '\\' => "'\\\\'"
+            _ as c => "'\{c}'"
+          }
+        }
+
+        if l == r {
+          self.builder.write_string("          \{convert(l)} => \{next}\n")
+        } else {
+          self.builder.write_string(
+            "          \{convert(l)}..=\{convert(r)} => \{next}\n",
+          )
+        }
+      }
+      self.builder.write_string("          _ => break\n")
+      self.builder.write_string("        }\n")
     }
-    builder.write_string("          _ => break\n")
-    builder.write_string("        }\n")
-    builder.write_string("    }\n")
+    self.builder.write_string("    }\n")
   }
-  builder.write_string(scan_footer)
-  builder.to_string()
+  self.builder.write_string(scan_footer)
+  self.dfa_count += 1
 }
 
 ///|
@@ -80,5 +129,7 @@ test "codegen:play|pray" {
     (RegExp::String("pray"), 2),
   ]
   let dfa = brzozowski(regexp_tokens)
-  dfa.codegen() |> println
+  let generator = Generator::new()
+  generator.codegen(dfa)
+  generator.builder.to_string() |> println
 }

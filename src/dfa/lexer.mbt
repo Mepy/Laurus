@@ -1,15 +1,38 @@
 ///|
-struct Lexer {
-  src : String
+struct Lexeme {
   mut token : Token
-  mut cur : Int
-  mut beg : Int
+  beg : Int
   mut end : Int
 } derive(Show)
 
 ///|
-fn Lexer::new(src : String) -> Self {
-  Lexer::{ src, token: 0, cur: -1, beg: 0, end: 0 }
+fn Lexeme::new(beg? : Int = 0) -> Self {
+  { token: 0, beg, end: 0 }
+}
+
+///|
+struct Lexer {
+  mut src : String
+  mut cur : Int
+  mut lexeme : Lexeme
+} derive(Show)
+
+///|
+fn Lexer::new(src? : String = "") -> Self {
+  { src, cur: -1, lexeme: Lexeme::new() }
+}
+
+///|
+fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
+  self.src = src
+  self.cur = cur
+}
+
+///|
+fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
+  let beg = lexeme.beg
+  let end = lexeme.end
+  self.src.unsafe_substring(start=beg, end=end + 1)
 }
 
 ///|
@@ -23,109 +46,179 @@ fn Lexer::next(self : Self) -> Int {
 }
 
 ///|
-fn Lexer::scan(self : Self) -> (Token, Int, Int)? {
+fn Lexer::scan0(self : Self) -> Lexeme {
   loop 0 {
     0 =>
       continue match self.next() {
-          'p'..='p' => 1
+          '\u{0}'..='\'' => 1
+          '(' => 2
+          '.' => 3
+          '/'..='Z' => 1
+          '[' => 4
+          '\\' => 5
+          '_'..='{' => 1
+          '}'..='\u{10FFFF}' => 1
           _ => break
         }
-    1 =>
-      continue match self.next() {
-          'l'..='l' => 2
-          'r'..='r' => 3
-          _ => break
-        }
-    2 =>
-      continue match self.next() {
-          'a'..='a' => 6
-          _ => break
-        }
-    3 =>
-      continue match self.next() {
-          'a'..='a' => 4
-          _ => break
-        }
-    4 =>
-      continue match self.next() {
-          'y'..='y' => 5
-          _ => break
-        }
-    5 => {
-      self.end = self.cur
-      self.token = 2
-      continue match self.next() {
-          _ => break
-        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 2
+      break
     }
-    6 =>
-      continue match self.next() {
-          'y'..='y' => 7
-          _ => break
-        }
-    7 => {
-      self.end = self.cur
-      self.token = 1
-      continue match self.next() {
-          _ => break
-        }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 12
+      break
+    }
+    3 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 6
+      break
+    }
+    4 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 14
+      break
+    }
+    5 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 1
+      break
     }
     _ => break
   }
-  if self.token == 0 {
-    None
-  } else {
-    let lexeme = Some((self.token, self.beg, self.end))
-    self.beg = self.end + 1
-    lexeme
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
+} ///|
+
+///|
+fn Lexer::scan1(self : Self) -> Lexeme {
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          '('..='+' => 1
+          '-'..='.' => 1
+          '['..='^' => 1
+          'n' => 2
+          's'..='t' => 2
+          'u' => 3
+          '|' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 3
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 4
+      break
+    }
+    3 =>
+      continue match self.next() {
+          '0' => 4
+          '1' => 5
+          '2'..='9' => 4
+          'A'..='F' => 4
+          'a'..='f' => 4
+          _ => break
+        }
+    4 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 5
+      continue match self.next() {
+          '0'..='9' => 6
+          'A'..='F' => 6
+          'a'..='f' => 6
+          _ => break
+        }
+    }
+    5 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 5
+      continue match self.next() {
+          '0' => 4
+          '1'..='9' => 6
+          'A'..='F' => 6
+          'a'..='f' => 6
+          _ => break
+        }
+    }
+    6 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 5
+      break
+    }
+    _ => break
   }
-}
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
+} ///|
 
 ///|
-test "Lexer::scan" {
-  // Test successful recognition of "play" (token 1)
-  let lexer1 = Lexer::new("play")
-  inspect(lexer1.scan(), content="Some((1, 0, 3))")
-
-  // Test successful recognition of "pray" (token 2)
-  let lexer2 = Lexer::new("pray")
-  inspect(lexer2.scan(), content="Some((2, 0, 3))")
-
-  // Test partial match that fails
-  let lexer3 = Lexer::new("pr")
-  inspect(lexer3.scan(), content="None")
-}
-
-///|
-test "Lexer::scan/boundary_cases" {
-  // Test empty string
-  let lexer1 = Lexer::new("")
-  inspect(lexer1.scan(), content="None")
-
-  // Test single character that doesn't match
-  let lexer2 = Lexer::new("x")
-  inspect(lexer2.scan(), content="None")
-
-  // Test string that starts correctly but diverges
-  let lexer3 = Lexer::new("plx")
-  inspect(lexer3.scan(), content="None")
-
-  // Test string longer than expected tokens
-  let lexer4 = Lexer::new("playful")
-  inspect(lexer4.scan(), content="Some((1, 0, 3))")
-}
-
-///|
-test "Lexer::scan/prefix_disambiguation" {
-  // Test that "pra" doesn't match either token
-  let lexer1 = Lexer::new("pra")
-  inspect(lexer1.scan(), content="None")
-
-  // Test that "pl" doesn't match
-  let lexer2 = Lexer::new("pl")
-  inspect(lexer2.scan(), content="None")
-
-  // Test that "p" alone doesn't match
-  let lexer3 = Lexer::new("p")
-  inspect(lexer3.scan(), content="None")
+fn Lexer::scan2(self : Self) -> Lexeme {
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          '\u{0}'..='\'' => 1
+          '(' => 2
+          '*' => 3
+          '+' => 4
+          '.' => 5
+          '/'..='Z' => 1
+          '[' => 6
+          '\\' => 7
+          '_'..='{' => 1
+          '|' => 8
+          '}'..='\u{10FFFF}' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 2
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 12
+      break
+    }
+    3 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 7
+      break
+    }
+    4 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 8
+      break
+    }
+    5 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 6
+      break
+    }
+    6 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 14
+      break
+    }
+    7 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 1
+      break
+    }
+    8 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = 11
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
 }
