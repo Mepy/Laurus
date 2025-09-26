@@ -14,7 +14,7 @@ enum RegExp {
 } derive(Show)
 
 ///|
-fn RegExp::assert(self : RegExp) -> Unit raise {
+fn RegExp::check(self : RegExp) -> Unit raise {
   match self {
     RegExp::Single(c) =>
       assert_true(
@@ -50,14 +50,14 @@ fn RegExp::assert(self : RegExp) -> Unit raise {
     RegExp::Emp => ()
     RegExp::Union(arr) =>
       for re in arr {
-        re.assert()
+        re.check()
       }
     RegExp::Seq(arr) =>
       for re in arr {
-        re.assert()
+        re.check()
       }
-    RegExp::Star(re) => re.assert()
-    RegExp::Plus(re) => re.assert()
+    RegExp::Star(re) => re.check()
+    RegExp::Plus(re) => re.check()
     RegExp::String(_) => ()
   }
 }
@@ -109,7 +109,7 @@ fn RegExp::to_nfa_rev(self : RegExp) -> NFA {
     }
     RegExp::Seq(arr) => {
       let nfas = Array::new(capacity=arr.length())
-      for re in arr.rev() {
+      for re in arr {
         nfas.push(re.to_nfa_rev())
       }
       NFA::seq_rev(nfas)
@@ -121,11 +121,20 @@ fn RegExp::to_nfa_rev(self : RegExp) -> NFA {
 }
 
 ///|
+fn RegExp::to_token_nfa(self : RegExp, token : Token) -> NFA {
+  let nfa_rev = self.to_nfa_rev()
+  let maker = DFAMaker::from_nfa(nfa_rev)
+  let dfa_rev = maker.to_dfa()
+  let nfa = dfa_rev.to_nfa_rev(token~)
+  nfa
+}
+
+///|
 /// Brzozowski 算法，从一组正则表达式和对应的 token 构造最小 DFA
 fn brzozowski(regexp_tokens : Array[(RegExp, Token)]) -> DFA raise {
   for regexp_token in regexp_tokens {
     let (regexp, _) = regexp_token
-    regexp.assert()
+    regexp.check()
   }
   let nfas = regexp_tokens
     .iter()

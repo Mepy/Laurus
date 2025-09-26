@@ -95,7 +95,11 @@ fn[T : Compare] supremum(array : Array[T], e : T) -> Index {
       return middle
     }
   }
-  right
+  if array[left] >= e {
+    return left
+  } else {
+    return right
+  }
 }
 
 ///|
@@ -119,7 +123,11 @@ fn[T : Compare] infimum(array : Array[T], e : T) -> Index {
       return middle
     }
   }
-  left
+  if array[right] <= e {
+    return right
+  } else {
+    return left
+  }
 }
 
 ///|
