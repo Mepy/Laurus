@@ -245,6 +245,7 @@ fn LR1Maker::add_state(self : Self, new_state : State) -> StateIndex {
       }
       reduce_map[lookahead].push((item.sort, item.rule_i))
     }
+    // assert reduce_map[lookahead].length() > 0 when lookahead \in reduce_map
     self.reduce_table.push(reduce_map)
   }
   actual_index
@@ -300,6 +301,7 @@ fn LR1Maker::construct_states(self : Self) -> Unit {
       let state_j = self.add_state(new_state)
       if self.is_token(next) { // next is a Token
         self.shift_table[state_i][next] = (state_j, next_sort_rules[next])
+        // assert shift_table[state_i][next].length() > 0 when next \in shift_table[state_i]
       } else {
         self.goto_table[state_i][next] = state_j
       }
