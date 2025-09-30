@@ -2,6 +2,12 @@
 typealias Int as Index
 
 ///|
+typealias Index as StateIndex
+
+///|
+typealias Index as RuleIndex
+
+///|
 typealias Int as Token
 
 ///|

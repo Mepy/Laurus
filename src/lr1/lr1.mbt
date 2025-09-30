@@ -8,7 +8,7 @@ struct Grammar {
 /// cur points to the first symbol
 struct Item {
   sort : Sort
-  rule_i : Index
+  rule_i : RuleIndex
   sentence : Sentence
   cur : Index
   lookahead : Token
@@ -40,15 +40,15 @@ struct LR1Maker {
   sort_len : Symbol // sort < sort_len <= token
   empty : FixedArray[Bool]
   first : FixedArray[Set[Token]]
-  worklist : Array[(State, Index)] // state and its index
-  state_indices : Map[State, Index]
+  worklist : Array[(State, StateIndex)] // state and its index
+  state_indices : Map[State, StateIndex]
 
   // goto_table[state_i][sort] = state_j
-  goto_table : Array[Map[Sort, Index]]
+  goto_table : Array[Map[Sort, StateIndex]]
   // shift_table[state_i][token] = (state_j, [(sort1, rule_i1), (sort2, rule_i2), ...])
-  shift_table : Array[Map[Token, (Index, Array[(Sort, Index)])]]
+  shift_table : Array[Map[Token, (StateIndex, Array[(Sort, RuleIndex)])]]
   // reduce_table[state_i][token] = [(sort1, rule_i1), (sort2, rule_i2), ...]
-  reduce_table : Array[Map[Token, Array[(Sort, Index)]]]
+  reduce_table : Array[Map[Token, Array[(Sort, RuleIndex)]]]
 } derive(Show)
 
 ///|
@@ -220,7 +220,7 @@ fn LR1Maker::enclosure(self : Self, state : State) -> State {
 }
 
 ///|
-fn LR1Maker::add_state(self : Self, new_state : State) -> Index {
+fn LR1Maker::add_state(self : Self, new_state : State) -> StateIndex {
   let new_state = self.enclosure(new_state)
   let new_index = self.goto_table.length()
   let mut actual_index = new_index
@@ -270,7 +270,7 @@ fn LR1Maker::construct_states(self : Self) -> Unit {
     let (state, state_i) = self.worklist.unsafe_pop()
     let items = state.items.0
     // next_sort_rules[next] = [(sort, rule_i), ...] when next is a Token
-    let next_sort_rules : Map[Symbol, Array[(Sort, Index)]] = Map::new()
+    let next_sort_rules : Map[Symbol, Array[(Sort, RuleIndex)]] = Map::new()
     for item in items {
       let sentence : Sentence = item.sentence
       let cur = item.cur
@@ -292,7 +292,7 @@ fn LR1Maker::construct_states(self : Self) -> Unit {
       let sentence : Sentence = item.sentence
       let cur = item.cur
       guard cur < sentence.length()
-      let next = sentence[cur]
+      let next : Symbol = sentence[cur]
       new_states[next].items.0.add(Item::{ ..item, cur: cur + 1 })
     }
     for nn in new_states {
