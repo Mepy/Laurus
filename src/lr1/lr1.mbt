@@ -39,6 +39,7 @@ struct LR1Maker {
   grammar : Grammar
   sort_len : Symbol // sort < sort_len <= token
   empty : FixedArray[Bool]
+  supergraph : SuperGraph
   first : FixedArray[Set[Token]]
   worklist : Array[(State, StateIndex)] // state and its index
   state_indices : Map[State, StateIndex]
@@ -55,11 +56,12 @@ struct LR1Maker {
 fn LR1Maker::new(grammar : Grammar) -> LR1Maker {
   let sort_len = grammar.rules.length()
   let empty = LR1Maker::initialize_empty(grammar, sort_len)
-  let first = LR1Maker::initialize_first(grammar, sort_len, empty)
+  let (supergraph, first) = LR1Maker::initialize_first(grammar, sort_len, empty)
   let maker = LR1Maker::{
     grammar,
     sort_len,
     empty,
+    supergraph,
     first,
     worklist: Array::new(),
     state_indices: Map::new(),
@@ -130,7 +132,7 @@ fn LR1Maker::initialize_first(
   grammar : Grammar,
   sort_len : Symbol,
   empty : FixedArray[Bool],
-) -> FixedArray[Set[Token]] {
+) -> (SuperGraph, FixedArray[Set[Token]]) {
   let first : FixedArray[Set[Token]] = FixedArray::makei(sort_len, _ => Set::new())
   let adj_lists : Array[Array[Sort]] = Array::makei(sort_len, _ => Array::new()) // adj_lists[from] = [to0, to1, ...]
   for sort in 0..<sort_len {
@@ -155,7 +157,7 @@ fn LR1Maker::initialize_first(
   // Then propagate FIRST sets from current SCC to dependent SCCs.
   let supergraph = SuperGraph::new(Graph::{ adj_lists, })
   let first_of_sccs = FixedArray::makei(supergraph.sccs.length(), _ => Set::new())
-  for scc_i in supergraph.topology_sort() {
+  for scc_i in supergraph.topology {
     for symbol in supergraph.sccs[scc_i].component { // union all first in the scc
       for f in first[symbol] {
         first_of_sccs[scc_i].add(f)
@@ -168,7 +170,7 @@ fn LR1Maker::initialize_first(
       }
     }
   }
-  first
+  (supergraph, first)
 }
 
 ///|

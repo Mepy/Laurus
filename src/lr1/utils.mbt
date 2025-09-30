@@ -97,6 +97,7 @@ struct SuperGraph {
   sccs : Array[SCC]
   scc_adj_lists : Array[Array[Index]] // adjacency lists for SCC indices
   scc_map : Array[Index] // maps node index to SCC index
+  topology : Array[Index] // indices of sccs in order to traverse topologically
 } derive(Show)
 
 ///|
@@ -129,17 +130,19 @@ fn SuperGraph::new(graph : Graph) -> SuperGraph {
     }
   }
   let scc_adj_lists : Array[Array[Index]] = edge_sets.map(edge_set => edge_set.to_array())
-  SuperGraph::{ sccs, scc_adj_lists, scc_map }
+  let topology = Graph::{ adj_lists: scc_adj_lists }.topology_sort()
+  SuperGraph::{ sccs, scc_adj_lists, scc_map, topology }
 }
 
 ///|
-fn SuperGraph::topology_sort(self : Self) -> Array[Index] {
-  let node_count = self.scc_adj_lists.length()
+/// only when the graph is acyclic
+fn Graph::topology_sort(self : Self) -> Array[Index] {
+  let node_count = self.adj_lists.length()
   let in_degree : Array[Index] = Array::make(node_count, 0)
 
   // Calculate in-degrees
   for from in 0..<node_count {
-    for to in self.scc_adj_lists[from] {
+    for to in self.adj_lists[from] {
       in_degree[to] += 1
     }
   }
@@ -159,7 +162,7 @@ fn SuperGraph::topology_sort(self : Self) -> Array[Index] {
     result.push(current)
 
     // Reduce in-degree of neighbors
-    for neighbor in self.scc_adj_lists[current] {
+    for neighbor in self.adj_lists[current] {
       in_degree[neighbor] -= 1
       if in_degree[neighbor] == 0 {
         queue.push(neighbor)
