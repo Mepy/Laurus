@@ -1,4 +1,7 @@
 ///|
+const LAURUS_RESERVED_TOKEN_NAME : String = "LAURUS"
+
+///|
 typealias Char as CodePoint
 
 ///|
@@ -18,7 +21,7 @@ fn CodePoint::prev(self : CodePoint) -> CodePoint {
 }
 
 ///|
-typealias UInt as Token
+typealias Int as Token
 
 ///|
 struct TokenSet(Set[Token]) derive(Show, Eq)

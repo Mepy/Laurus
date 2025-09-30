@@ -16,3 +16,14 @@ test "pa|pb" {
   let dfa = brzozowski(regexp_tokens)
   println(dfa)
 }
+
+///|
+test "codegen:play|pray" {
+  let named_regexp : Array[(String, RegExp)] = [
+    ("play", RegExp::String("play")),
+    ("pray", RegExp::String("pray")),
+  ]
+  let generator = Generator::new(named_regexp)
+  generator.codegen([1, 2])
+  generator.save_file("./src/dfa/lexer.mbt")
+}

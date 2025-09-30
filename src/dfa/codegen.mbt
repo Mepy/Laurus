@@ -1,19 +1,84 @@
 ///|
-fn DFA::codegen(self : Self) -> String {
+struct Generator {
+  builder : StringBuilder
+  names : Array[String]
+  nfas : Array[NFA]
+  mut dfa_count : Int
+} derive(Show)
+
+///|
+fn Generator::new(named_regexps : Array[(String, RegExp)]) -> Self {
   let builder = StringBuilder::new()
+  let len = named_regexps.length()
+  let names = Array::new(capacity=len + 1)
+  let nfas = Array::new(capacity=len + 1)
+  names.push(LAURUS_RESERVED_TOKEN_NAME)
+  nfas.push(NFA::new([])) // ignore
+  for i in 0..<len {
+    let (name, regexp) = named_regexps[i]
+    let name = name.to_upper()
+    let nfa = regexp.to_token_nfa(i + 1)
+    names.push(name)
+    nfas.push(nfa)
+  }
+  let generator = { builder, names, nfas, dfa_count: 0 }
+  generator.init()
+  generator
+}
+
+///|
+fn Generator::init(self : Self) -> Unit {
+  let token_type_header =
+    #|///|
+    #|enum TOKEN {
+    #|
+  let token_type_footer =
+    #|} derive(Show)
+    #|
+  self.builder.write_string(token_type_header)
+  for name in self.names {
+    let token_type_constructor =
+      $|  \{name}
+      #|
+    self.builder.write_string(token_type_constructor)
+  }
+  self.builder.write_string(token_type_footer)
   let lexer =
     #|///|
-    #|struct Lexer {
-    #|  src : String
-    #|  mut token : Token
-    #|  mut cur : Int 
-    #|  mut beg : Int 
+    #|struct Lexeme {
+    #|  mut token : TOKEN
+    #|  beg : Int
     #|  mut end : Int
     #|} derive(Show)
     #|
     #|///|
-    #|fn Lexer::new(src : String) -> Self {
-    #|  Lexer::{ src, token: 0, cur: -1, beg: 0, end: 0 }
+    #|fn Lexeme::new(beg? : Int = 0) -> Self {
+    $|  { token: \{LAURUS_RESERVED_TOKEN_NAME}, beg, end: 0 }
+    #|}
+    #|
+    #|///|
+    #|struct Lexer {
+    #|  mut src : String
+    #|  mut cur : Int
+    #|  mut lexeme : Lexeme
+    #|} derive(Show)
+    #|
+    #|///|
+    #|fn Lexer::new(src? : String = "") -> Self {
+    #|  { src, cur: -1, lexeme: Lexeme::new() }
+    #|}
+    #|
+    #|///|
+    #|fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
+    #|  self.src = src
+    #|  self.cur = cur
+    #|}
+    #|
+    #|///|
+    #|fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
+    #|  let beg = lexeme.beg
+    #|  let end = lexeme.end
+    #|  self.src.unsafe_substring(start=beg, end=end + 1)
     #|}
     #|
     #|///|
@@ -22,63 +87,83 @@ fn DFA::codegen(self : Self) -> String {
     #|  if self.cur < self.src.length() {
     #|    self.src[self.cur]
     #|  } else {
-    #|  -1
+    #|    -1
     #|  }
     #|}
     #|
     #|
-  let scan_header =
-    #|///|
-    #|fn Lexer::scan(self : Self) -> (Token, Int, Int)? {
-    #|  loop 0 {
-  let scan_footer =
-    #|    _ => break
-    #|  }
-    #|  if self.token == 0 {
-    #|    None
-    #|  } else {
-    #|    let lexeme = Some((self.token, self.beg, self.end))
-    #|    self.beg = self.end + 1
-    #|    lexeme
-    #|  }
-    #|}
-  builder.write_string(lexer)
-  builder.write_string(scan_header)
-  let accept_template =
-    #|      self.end = self.cur
-  let len = self.states.length()
-  for i in 0..<len {
-    let state = self.states[i]
-    builder.write_string("    \{i} => {\n")
-    match state.token {
-      Some(token) => {
-        builder.write_string(accept_template)
-        builder.write_string("      self.token = \{token}\n")
-      }
-      None => ()
-    }
-    builder.write_string("      continue match self.next() {\n")
-    let maplen = state.next.length()
-    for k in 0..<maplen {
-      let l = state.left[k]
-      let r = state.right[k]
-      let next = state.next[k]
-      builder.write_string("          '\{l}'..='\{r}' => \{next}\n")
-    }
-    builder.write_string("          _ => break\n")
-    builder.write_string("        }\n")
-    builder.write_string("    }\n")
-  }
-  builder.write_string(scan_footer)
-  builder.to_string()
+  self.builder.write_string(lexer)
 }
 
 ///|
-test "codegen:play|pray" {
-  let regexp_tokens : Array[(RegExp, Token)] = [
-    (RegExp::String("play"), 1),
-    (RegExp::String("pray"), 2),
-  ]
-  let dfa = brzozowski(regexp_tokens)
-  dfa.codegen() |> println
+fn Generator::codegen(self : Self, regexp_tokens : Array[Index]) -> Unit {
+  let nfa = regexp_tokens.iter().map(token => self.nfas[token])
+    |> NFA::token_union
+  let maker = DFAMaker::from_nfa(nfa)
+  let dfa = maker.to_dfa()
+  let scan_header =
+    #|///|
+    $|fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme {
+    #|  loop 0 {
+    #|
+  let scan_footer =
+    #|    _ => break
+    #|  }
+    #|  let lexeme = self.lexeme
+    #|  self.lexeme = Lexeme::new(beg=lexeme.end+1)
+    #|  lexeme
+    #|}
+  self.builder.write_string(scan_header)
+  let len = dfa.states.length()
+  for i in 0..<len {
+    let state = dfa.states[i]
+    self.builder.write_string("    \{i} => {\n")
+    match state.token {
+      Some(token) => {
+        self.builder.write_string("      self.lexeme.end = self.cur\n")
+        self.builder.write_string(
+          "      self.lexeme.token = \{self.names[token]}\n",
+        )
+      }
+      None => ()
+    }
+    let maplen = state.next.length()
+    if maplen == 0 {
+      self.builder.write_string("      break\n")
+    } else {
+      self.builder.write_string("      continue match self.next() {\n")
+      for k in 0..<maplen {
+        let l = state.left[k]
+        let r = state.right[k]
+        let next = state.next[k]
+        fn convert(l) {
+          match l {
+            '\u{0}' => "'\\u{0}'"
+            '\u{10FFFF}' => "'\\u{10FFFF}'"
+            '\'' => "'\\''"
+            '\\' => "'\\\\'"
+            _ as c => "'\{c}'"
+          }
+        }
+
+        if l == r {
+          self.builder.write_string("          \{convert(l)} => \{next}\n")
+        } else {
+          self.builder.write_string(
+            "          \{convert(l)}..=\{convert(r)} => \{next}\n",
+          )
+        }
+      }
+      self.builder.write_string("          _ => break\n")
+      self.builder.write_string("        }\n")
+    }
+    self.builder.write_string("    }\n")
+  }
+  self.builder.write_string(scan_footer)
+  self.dfa_count += 1
+}
+
+///|
+fn Generator::save_file(self : Self, path : String) -> Unit raise {
+  @fs.write_string_to_file(path, self.builder.to_string())
 }
