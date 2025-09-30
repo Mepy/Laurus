@@ -5,6 +5,9 @@ typealias Int as Index
 typealias Int as Token
 
 ///|
+const TokenEOF : Token = 0xFFFFFFFF
+
+///|
 typealias Int as Sort
 
 ///|
@@ -55,7 +58,7 @@ fn Tarjan::strongly_connect(self : Self, v : Index) -> Unit {
     let scc : Array[Index] = Array::new()
     let mut w : Index = -1
     while w != v {
-      w = self.stack.pop().unwrap()
+      w = self.stack.unsafe_pop()
       self.on_stack[w] = false
       scc.push(w)
     }
@@ -146,7 +149,7 @@ fn SuperGraph::topology_sort(self : Self) -> Array[Index] {
 
   // Process nodes in topological order
   while queue.length() > 0 {
-    let current = queue.pop().unwrap()
+    let current = queue.unsafe_pop()
     result.push(current)
 
     // Reduce in-degree of neighbors
