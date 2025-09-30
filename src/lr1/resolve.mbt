@@ -12,6 +12,19 @@ struct Resolution {
 } derive(Show)
 
 ///|
+/// See LR1Maker::resolution_generate, which generate Resolution with supergraph
+struct RawResolution {
+  // prior_than_former[sort][0] is redundant
+  // 
+  // prior_than_former[sort][rule_i + 1] = true 
+  // IF AND ONLY IF
+  // priority[sort][rule_i] < priority[sort][rule_i + 1]
+  //
+  prior_than_former : Array[Array[Bool]]
+  shift_first : Array[Array[Bool]]
+} derive(Show)
+
+///|
 /// 0 when Eq; (-) when lhs < rhs ; (+) when lhs > rhs
 fn Resolution::compare(
   self : Self,
@@ -24,6 +37,32 @@ fn Resolution::compare(
 }
 
 ///|
+/// generate Resolution with self.supergraph
+fn LR1Maker::resolution_generate(
+  self : Self,
+  raw_res : RawResolution,
+) -> Resolution {
+  let priority = Array::makei(raw_res.prior_than_former.length(), i => Array::new(
+    capacity=raw_res.prior_than_former[i].length(),
+  ))
+  let shift_first = raw_res.shift_first
+  let mut cur_prior : Int = -1
+  for scc_i in self.supergraph.topology {
+    cur_prior += 1
+    for sort in self.supergraph.sccs[scc_i].component {
+      for ptf in raw_res.prior_than_former[sort] {
+        if ptf { // prior than former
+          cur_prior += 1
+        }
+        priority[sort].push(cur_prior)
+      }
+    }
+  }
+  Resolution::{ priority, shift_first }
+}
+
+///|
+/// resolve reduce-reduce and shift-reduce conflicts
 fn LR1Maker::resolve(self : Self, res : Resolution) -> Unit {
   fn max_sort_rule_i(sort_rules : Array[(Sort, RuleIndex)]) {
     sort_rules
