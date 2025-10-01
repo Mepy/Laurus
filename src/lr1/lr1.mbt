@@ -37,7 +37,7 @@ struct State {
 ///|
 struct LR1Maker {
   grammar : Grammar
-  sort_len : Symbol // sort < sort_len <= token
+  sort_len : Symbol // sort < sort_len <= token, we reserve sort_len as the first token, the EOF
   empty : FixedArray[Bool]
   supergraph : SuperGraph
   first : FixedArray[Set[Token]]
@@ -73,6 +73,7 @@ fn LR1Maker::new(grammar : Grammar) -> LR1Maker {
 }
 
 ///|
+#inline
 fn LR1Maker::is_token(self : Self, sy : Symbol) -> Bool {
   self.sort_len <= sy
 }
@@ -201,17 +202,21 @@ fn LR1Maker::enclosure(self : Self, state : State) -> State {
     // item = A -> done ● sort tail | lookahead
     let cur = item.cur
     let sentence = item.sentence
-    guard cur < sentence.length()
+    guard cur < sentence.length() else { continue }
     let sort = sentence[cur]
-    guard false == self.is_token(sort)
+    guard false == self.is_token(sort) else { continue }
     let tail = item.sentence.iter().drop(cur + 1)
-    let new_lookaheads = tail.add(Iter::singleton(item.lookahead))
+    // new_lookahead \in First(tail::lookahead)
+
+    let new_lookaheads = self.first_of(
+      tail.add(Iter::singleton(item.lookahead)),
+    )
     let rules_of_sort = self.grammar.rules[sort]
     let len = rules_of_sort.length()
     for rule_i in 0..<len {
       for lookahead in new_lookaheads {
         let sentence : Sentence = rules_of_sort[rule_i]
-        let new_item = Item::{ sort, rule_i, sentence, cur: cur + 1, lookahead }
+        let new_item = Item::{ sort, rule_i, sentence, cur: 0, lookahead }
         if true == state.items.0.add_and_check(new_item) { // newly added
           worklist.push(new_item)
         }
@@ -240,7 +245,7 @@ fn LR1Maker::add_state(self : Self, new_state : State) -> StateIndex {
     self.shift_table.push(Map::new())
     let reduce_map = Map::new()
     for item in new_state.items.0 {
-      guard item.cur == item.sentence.length()
+      guard item.cur == item.sentence.length() else { continue }
       let lookahead = item.lookahead
       if false == reduce_map.contains(lookahead) {
         reduce_map[lookahead] = Array::new()
@@ -263,7 +268,7 @@ fn LR1Maker::construct_states(self : Self) -> Unit {
           rule_i: 0,
           sentence: [1],
           cur: 0,
-          lookahead: TokenEOF,
+          lookahead: self.sort_len,
         }),
       ),
     ),
@@ -277,7 +282,7 @@ fn LR1Maker::construct_states(self : Self) -> Unit {
     for item in items {
       let sentence : Sentence = item.sentence
       let cur = item.cur
-      guard cur < sentence.length()
+      guard cur < sentence.length() else { continue }
       let next = sentence[cur]
       if false == next_sort_rules.contains(next) {
         next_sort_rules[next] = []
@@ -294,7 +299,7 @@ fn LR1Maker::construct_states(self : Self) -> Unit {
     for item in items {
       let sentence : Sentence = item.sentence
       let cur = item.cur
-      guard cur < sentence.length()
+      guard cur < sentence.length() else { continue }
       let next : Symbol = sentence[cur]
       new_states[next].items.0.add(Item::{ ..item, cur: cur + 1 })
     }

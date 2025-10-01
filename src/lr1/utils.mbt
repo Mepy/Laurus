@@ -11,9 +11,6 @@ typealias Index as RuleIndex
 typealias Int as Token
 
 ///|
-const TokenEOF : Token = 0xFFFFFFFF
-
-///|
 typealias Int as Sort
 
 ///|
