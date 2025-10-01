@@ -24,6 +24,6 @@ test "codegen:play|pray" {
     ("pray", RegExp::String("pray")),
   ]
   let generator = Generator::new(named_regexp)
-  generator.codegen([1, 2])
-  generator.save_file("./src/dfa/lexer.mbt")
+  generator.add_dfa([1, 2] |> Set::from_array) |> ignore
+  generator.save("./src/dfa/")
 }

@@ -2,7 +2,7 @@
   "is-main": true,
   "import": [
     {
-      "path": "AMepy/Laurus/lib",
+      "path": "Mepy/Laurus/lib",
       "alias": "lib"
     }
   ]

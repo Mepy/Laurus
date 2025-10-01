@@ -1,8 +1,8 @@
 ///|
 pub enum TOKEN {
   LAURUS
-  PLAY
-  PRAY
+  A
+  B
 } derive(Show)
 
 ///|
@@ -57,45 +57,45 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
   loop 0 {
     0 =>
       continue match self.next() {
-          'p' => 1
+          'a' => 1
           _ => break
         }
-    1 =>
-      continue match self.next() {
-          'l' => 2
-          'r' => 3
-          _ => break
-        }
-    2 =>
-      continue match self.next() {
-          'a' => 6
-          _ => break
-        }
-    3 =>
-      continue match self.next() {
-          'a' => 4
-          _ => break
-        }
-    4 =>
-      continue match self.next() {
-          'y' => 5
-          _ => break
-        }
-    5 => {
+    1 => {
       self.lexeme.end = self.cur
-      self.lexeme.token = PRAY
+      self.lexeme.token = A
       break
     }
-    6 =>
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan1(self : Self) -> Lexeme {
+  loop 0 {
+    0 =>
       continue match self.next() {
-          'y' => 7
+          'b' => 1
           _ => break
         }
-    7 => {
+    1 => {
       self.lexeme.end = self.cur
-      self.lexeme.token = PLAY
+      self.lexeme.token = B
       break
     }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan2(self : Self) -> Lexeme {
+  loop 0 {
+    0 => break
     _ => break
   }
   let lexeme = self.lexeme

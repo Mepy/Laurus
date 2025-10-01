@@ -1,5 +1,5 @@
 ///|
-enum RegExp {
+pub(all) enum RegExp {
   Single(CodePoint)
   Range(CodePoint, CodePoint)
   Bor(Array[(CodePoint, CodePoint)])

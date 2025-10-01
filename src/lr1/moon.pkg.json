@@ -1,1 +1,10 @@
-{}
+{
+  "import": [
+    {
+      "path": "Mepy/Laurus/dfa",
+      "alias": "dfa"
+    },
+    "moonbitlang/x/fs",
+    "Kaida-Amethyst/path"
+  ]
+}

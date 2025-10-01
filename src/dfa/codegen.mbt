@@ -4,10 +4,11 @@ struct Generator {
   names : Array[String]
   nfas : Array[NFA]
   mut dfa_count : Int
+  dfas : Map[TokenSet, Index] // using token_set to index dfa
 } derive(Show)
 
 ///|
-fn Generator::new(named_regexps : Array[(String, RegExp)]) -> Self {
+pub fn Generator::new(named_regexps : Array[(String, RegExp)]) -> Self {
   let builder = StringBuilder::new()
   let len = named_regexps.length()
   let names = Array::new(capacity=len + 1)
@@ -21,7 +22,7 @@ fn Generator::new(named_regexps : Array[(String, RegExp)]) -> Self {
     names.push(name)
     nfas.push(nfa)
   }
-  let generator = { builder, names, nfas, dfa_count: 0 }
+  let generator = { builder, names, nfas, dfa_count: 0, dfas: Map::new() }
   generator.init()
   generator
 }
@@ -30,7 +31,7 @@ fn Generator::new(named_regexps : Array[(String, RegExp)]) -> Self {
 fn Generator::init(self : Self) -> Unit {
   let token_type_header =
     #|///|
-    #|enum TOKEN {
+    #|pub enum TOKEN {
     #|
   let token_type_footer =
     #|} derive(Show)
@@ -45,7 +46,7 @@ fn Generator::init(self : Self) -> Unit {
   self.builder.write_string(token_type_footer)
   let lexer =
     #|///|
-    #|struct Lexeme {
+    #|pub struct Lexeme {
     #|  mut token : TOKEN
     #|  beg : Int
     #|  mut end : Int
@@ -64,18 +65,18 @@ fn Generator::init(self : Self) -> Unit {
     #|} derive(Show)
     #|
     #|///|
-    #|fn Lexer::new(src? : String = "") -> Self {
+    #|pub fn Lexer::new(src? : String = "") -> Self {
     #|  { src, cur: -1, lexeme: Lexeme::new() }
     #|}
     #|
     #|///|
-    #|fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
+    #|pub fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
     #|  self.src = src
     #|  self.cur = cur
     #|}
     #|
     #|///|
-    #|fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
+    #|pub fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
     #|  let beg = lexeme.beg
     #|  let end = lexeme.end
     #|  self.src.unsafe_substring(start=beg, end=end + 1)
@@ -96,14 +97,29 @@ fn Generator::init(self : Self) -> Unit {
 }
 
 ///|
-fn Generator::codegen(self : Self, regexp_tokens : Array[Index]) -> Unit {
-  let nfa = regexp_tokens.iter().map(token => self.nfas[token])
-    |> NFA::token_union
+pub fn Generator::add_dfa(self : Self, tokens : Set[Token]) -> Index {
+  let tokens = TokenSet(tokens)
+  match self.dfas.get(tokens) {
+    Some(index) => index
+    None => {
+      let index = self.dfa_count
+      self.unsafe_add_dfa(tokens.0.iter())
+      self.dfas[tokens] = index
+      index
+    }
+  }
+}
+
+///|
+/// it does not check the redundancy, please do not use this directly.
+/// use Generator::add_dfa instead
+fn Generator::unsafe_add_dfa(self : Self, regexp_tokens : Iter[Index]) -> Unit {
+  let nfa = regexp_tokens.map(token => self.nfas[token]) |> NFA::token_union
   let maker = DFAMaker::from_nfa(nfa)
   let dfa = maker.to_dfa()
   let scan_header =
     #|///|
-    $|fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme {
+    $|pub fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme {
     #|  loop 0 {
     #|
   let scan_footer =
@@ -164,6 +180,8 @@ fn Generator::codegen(self : Self, regexp_tokens : Array[Index]) -> Unit {
 }
 
 ///|
-fn Generator::save_file(self : Self, path : String) -> Unit raise {
-  @fs.write_string_to_file(path, self.builder.to_string())
+pub fn Generator::save(self : Self, path : String) -> Unit raise {
+  let path = @path.Path::new(path)
+  path.push("lexer.mbt")
+  @fs.write_string_to_file("\{path}", self.builder.to_string())
 }

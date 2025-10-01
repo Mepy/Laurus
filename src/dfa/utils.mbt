@@ -2,7 +2,7 @@
 const LAURUS_RESERVED_TOKEN_NAME : String = "LAURUS"
 
 ///|
-typealias Char as CodePoint
+pub typealias Char as CodePoint
 
 ///|
 const MinCodePoint = '\u{0}'
