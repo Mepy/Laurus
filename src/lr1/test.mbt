@@ -19,4 +19,5 @@ test "simple" {
   println("\{maker.goto_table}")
   println("\{maker.shift_table}")
   println("\{maker.reduce_table}")
+  println("\{maker.first_table}")
 }

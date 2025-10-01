@@ -50,6 +50,8 @@ struct LR1Maker {
   shift_table : Array[Map[Token, (StateIndex, Array[(Sort, RuleIndex)])]]
   // reduce_table[state_i][token] = [(sort1, rule_i1), (sort2, rule_i2), ...]
   reduce_table : Array[Map[Token, Array[(Sort, RuleIndex)]]]
+  // first_table[state_i] = {f1, f2, ...} first_set of the state
+  first_table : Array[Set[Token]]
 } derive(Show)
 
 ///|
@@ -68,6 +70,7 @@ fn LR1Maker::new(grammar : Grammar) -> LR1Maker {
     goto_table: Array::new(),
     shift_table: Array::new(),
     reduce_table: Array::new(),
+    first_table: Array::new(),
   }
   maker
 }
@@ -244,16 +247,29 @@ fn LR1Maker::add_state(self : Self, new_state : State) -> StateIndex {
     self.goto_table.push(Map::new())
     self.shift_table.push(Map::new())
     let reduce_map = Map::new()
+    let first_set = Set::new()
     for item in new_state.items.0 {
-      guard item.cur == item.sentence.length() else { continue }
-      let lookahead = item.lookahead
-      if false == reduce_map.contains(lookahead) {
-        reduce_map[lookahead] = Array::new()
+      if item.cur < item.sentence.length() {
+        let symbol = item.sentence[item.cur]
+        if self.is_token(symbol) {
+          first_set.add(symbol)
+        } else { // symbol is a Sort
+          for f in self.first[symbol] {
+            first_set.add(f)
+          }
+        }
+      } else { // item.cur == item.sentence.length()
+        let lookahead = item.lookahead
+        if false == reduce_map.contains(lookahead) {
+          reduce_map[lookahead] = Array::new()
+        }
+        reduce_map[lookahead].push((item.sort, item.rule_i))
+        first_set.add(lookahead)
       }
-      reduce_map[lookahead].push((item.sort, item.rule_i))
     }
     // assert reduce_map[lookahead].length() > 0 when lookahead \in reduce_map
     self.reduce_table.push(reduce_map)
+    self.first_table.push(first_set)
   }
   actual_index
 }
