@@ -404,7 +404,6 @@ fn LR1Maker::to_lr1(self : Self) -> LR1 {
       (sort, rule_i, rule_size)
     }))
     .to_array()
-  println("\{dfa_tokens}")
   LR1::{
     grammar,
     sort_len,

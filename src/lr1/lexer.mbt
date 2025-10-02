@@ -3,18 +3,25 @@ pub enum TOKEN {
   LAURUS
   A
   B
+  C
 } derive(Show)
 
 ///|
 pub struct Lexeme {
   mut token : TOKEN
-  beg : Int
+  mut beg : Int
   mut end : Int
 } derive(Show)
 
 ///|
 fn Lexeme::new(beg? : Int = 0) -> Self {
   { token: LAURUS, beg, end: 0 }
+}
+
+///|
+fn Lexeme::init(self : Self) -> Unit {
+  self.token = LAURUS
+  self.beg = 0
 }
 
 ///|
@@ -33,6 +40,7 @@ pub fn Lexer::new(src? : String = "") -> Self {
 pub fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
   self.src = src
   self.cur = cur
+  self.lexeme.init()
 }
 
 ///|
@@ -94,6 +102,26 @@ pub fn Lexer::scan1(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan2(self : Self) -> Lexeme {
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          'c' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = C
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan3(self : Self) -> Lexeme {
   loop 0 {
     0 => break
     _ => break

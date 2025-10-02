@@ -47,13 +47,19 @@ fn Generator::init(self : Self) -> Unit {
     #|///|
     #|pub struct Lexeme {
     #|  mut token : TOKEN
-    #|  beg : Int
+    #|  mut beg : Int
     #|  mut end : Int
     #|} derive(Show)
     #|
     #|///|
     #|fn Lexeme::new(beg? : Int = 0) -> Self {
     $|  { token: \{LAURUS_RESERVED_TOKEN_NAME}, beg, end: 0 }
+    #|}
+    #|
+    #|///|
+    #|fn Lexeme::init(self : Self) -> Unit {
+    $|  self.token = \{LAURUS_RESERVED_TOKEN_NAME}
+    #|  self.beg = 0
     #|}
     #|
     #|///|
@@ -72,6 +78,7 @@ fn Generator::init(self : Self) -> Unit {
     #|pub fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
     #|  self.src = src
     #|  self.cur = cur
+    #|  self.lexeme.init()
     #|}
     #|
     #|///|
