@@ -94,10 +94,11 @@ test "codegen:simple" {
     ("c", @dfa.Single('c')),
   ]
   let generator = Generator::new(named_regexps)
+  generator.codegen_lexer(lr1)
   generator.codegen_sort_type(lr1, sem)
   generator.codegen_node_type(sem)
   generator.codegen_interpreter(lr1, sem)
-  generator.codegen(lr1, sem)
+  generator.codegen_parse(lr1, sem)
   generator.save("./src/lr1")
 }
 
@@ -105,7 +106,7 @@ test "codegen:simple" {
 test "parse:simple" {
   let parser = Parser::new()
   parser.init("abcb")
-  parser.scan() |> println
+  parser.parse() |> println
   parser.init("ab")
-  parser.scan() |> println
+  parser.parse() |> println
 }

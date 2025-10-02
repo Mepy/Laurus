@@ -1,6 +1,7 @@
 ///|
 struct Generator {
   builder : StringBuilder
+  syntax_builder : StringBuilder
   interpreter_builder : StringBuilder
   lex_gen : @dfa.Generator
 } derive(Show)
@@ -8,9 +9,10 @@ struct Generator {
 ///|
 pub fn Generator::new(named_regexps : Array[(String, @dfa.RegExp)]) -> Self {
   let builder = StringBuilder::new()
+  let syntax_builder = StringBuilder::new()
   let interpreter_builder = StringBuilder::new()
   let lex_gen = @dfa.Generator::new(named_regexps)
-  let generator = { builder, interpreter_builder, lex_gen }
+  let generator = { builder, syntax_builder, interpreter_builder, lex_gen }
   generator.init()
   generator
 }
@@ -69,23 +71,23 @@ pub fn Generator::codegen_sort_type(
         let sort_footer =
           #|} derive(Show)
           #|
-        self.builder.write_string(sort_header)
+        self.syntax_builder.write_string(sort_header)
         let rule_len = rules.length()
         for rule_i in 0..<rule_len {
           let rule = rules[rule_i]
           match rule {
             Constructor(name) => {
-              self.builder.write_string("  \{name}(")
+              self.syntax_builder.write_string("  \{name}(")
               for symbol in lr1.grammar.rules[sort_i][rule_i] {
                 let type_name = sem.type_names[symbol]
                 if Semantics::is_NOT_ignored(type_name) {
-                  self.builder.write_string("\{type_name}, ")
+                  self.syntax_builder.write_string("\{type_name}, ")
                 }
               }
-              self.builder.write_string(")\n")
+              self.syntax_builder.write_string(")\n")
             }
             NamedConstructor(name, field_names~) => {
-              self.builder.write_string(" \{name}(")
+              self.syntax_builder.write_string(" \{name}(")
               let sentence = lr1.grammar.rules[sort_i][rule_i]
               let rule_size = sentence.length()
               let mut ignore_offset = 0
@@ -94,17 +96,17 @@ pub fn Generator::codegen_sort_type(
                 if Semantics::is_ignored(type_name) {
                   ignore_offset += 1
                 } else {
-                  self.builder.write_string(
+                  self.syntax_builder.write_string(
                     "\{field_names[i - ignore_offset]}~ : \{type_name}, ",
                   )
                 }
               }
-              self.builder.write_string(")\n")
+              self.syntax_builder.write_string(")\n")
             }
             _ => ()
           }
         }
-        self.builder.write_string(sort_footer)
+        self.syntax_builder.write_string(sort_footer)
       }
       StructType => {
         let sort_header =
@@ -114,7 +116,7 @@ pub fn Generator::codegen_sort_type(
         let sort_footer =
           #|} derive(Show)
           #|
-        self.builder.write_string(sort_header)
+        self.syntax_builder.write_string(sort_header)
         let rule_len = rules.length()
         for rule_i in 0..<rule_len {
           let rule = rules[rule_i]
@@ -128,7 +130,7 @@ pub fn Generator::codegen_sort_type(
                 if Semantics::is_ignored(type_name) {
                   ignore_offset += 1
                 } else {
-                  self.builder.write_string(
+                  self.syntax_builder.write_string(
                     "  \{field_names[i - ignore_offset]} : \{type_name}\n",
                   )
                 }
@@ -137,7 +139,7 @@ pub fn Generator::codegen_sort_type(
             _ => ()
           }
         }
-        self.builder.write_string(sort_footer)
+        self.syntax_builder.write_string(sort_footer)
       }
       TupleType => {
         let sort_header =
@@ -146,7 +148,7 @@ pub fn Generator::codegen_sort_type(
         let sort_footer =
           #|) derive(Show)
           #|
-        self.builder.write_string(sort_header)
+        self.syntax_builder.write_string(sort_header)
         let rule_len = rules.length()
         for rule_i in 0..<rule_len {
           let rule = rules[rule_i]
@@ -155,13 +157,13 @@ pub fn Generator::codegen_sort_type(
               for symbol in lr1.grammar.rules[sort_i][rule_i] {
                 let type_name = sem.type_names[symbol]
                 if Semantics::is_NOT_ignored(type_name) {
-                  self.builder.write_string("\{type_name}, ")
+                  self.syntax_builder.write_string("\{type_name}, ")
                 }
               }
             _ => ()
           }
         }
-        self.builder.write_string(sort_footer)
+        self.syntax_builder.write_string(sort_footer)
       }
       AsType => ()
     }
@@ -248,19 +250,26 @@ pub fn Generator::codegen_interpreter(
 }
 
 ///|
-pub fn Generator::codegen(self : Self, lr1 : LR1, sem : Semantics) -> Unit {
+pub fn Generator::codegen_lexer(self : Self, lr1 : LR1) -> Unit {
   // codegen dfas
   for dfa_token in lr1.dfa_tokens {
     self.lex_gen.codegen(dfa_token.iter())
   }
-  // codegen scan
-  let scan_header =
+}
+
+///|
+pub fn Generator::codegen_parse(
+  self : Self,
+  lr1 : LR1,
+  sem : Semantics,
+) -> Unit {
+  let parse_header =
     #|///|
-    $|pub fn Parser::scan(self : Self) -> \{sem.type_names[1]}? {
+    $|pub fn Parser::parse(self : Self) -> \{sem.type_names[1]}? {
     #|  let mut lexeme = self.lexer.scan0()
     #|  loop 0 {
     #|
-  let scan_footer =
+  let parse_footer =
     #|    _ => break
     #|  }
     #|  match self.node_stack[0] {
@@ -269,7 +278,7 @@ pub fn Generator::codegen(self : Self, lr1 : LR1, sem : Semantics) -> Unit {
     #|  }
     #|}
     #|
-  self.builder.write_string(scan_header)
+  self.builder.write_string(parse_header)
   let state_len = lr1.states.length()
   for state_i in 0..<state_len {
     self.builder.write_string("    \{state_i} => {\n")
@@ -334,11 +343,14 @@ pub fn Generator::codegen(self : Self, lr1 : LR1, sem : Semantics) -> Unit {
         #|          }
         #|
       self.builder.write_string(reduce_header)
+      // pop state_stack
       for i in 0..<rule_size {
         self.builder.write_string(
           "            self.state_stack.unsafe_pop() |> ignore\n",
         )
       }
+
+      // pop node_stack
       for i = rule_size - 1; i >= 0; i = i - 1 {
         let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
         if Semantics::is_ignored(type_name) {
@@ -351,6 +363,7 @@ pub fn Generator::codegen(self : Self, lr1 : LR1, sem : Semantics) -> Unit {
           )
         }
       }
+      // construct new node according to the semantics of the rule
       let type_name = sem.type_names[sort]
       if Semantics::is_NOT_ignored(type_name) {
         match sem.rules[sort][rule_i] {
@@ -460,7 +473,7 @@ pub fn Generator::codegen(self : Self, lr1 : LR1, sem : Semantics) -> Unit {
     self.builder.write_string("        }\n")
     self.builder.write_string("    }\n")
   }
-  self.builder.write_string(scan_footer)
+  self.builder.write_string(parse_footer)
 }
 
 ///|
@@ -469,6 +482,9 @@ pub fn Generator::save(self : Self, path : String) -> Unit raise {
   let path = @path.Path::new(path)
   path.push("parser.mbt")
   @fs.write_string_to_file("\{path}", self.builder.to_string())
+  path.pop() |> ignore
+  path.push("syntax.mbt")
+  @fs.write_string_to_file("\{path}", self.syntax_builder.to_string())
   path.pop() |> ignore
   path.push("interpreter.mbt")
   if false == path.is_exists() {

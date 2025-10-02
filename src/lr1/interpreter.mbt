@@ -16,6 +16,5 @@ fn Interpreter::parseB(str : String) -> String {
 ///|
 #inline
 fn Interpreter::parseStart(s : TyS) -> TyS {
-  println("\{s}")
   s
 }

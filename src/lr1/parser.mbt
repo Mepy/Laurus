@@ -28,21 +28,6 @@ fn Parser::enter_state(self : Self, state_i : Int) -> Unit {
 }
 
 ///|
-struct TyS {
-  a : TyA
-  b : TyB
-} derive(Show)
-
-///|
-struct TyA(String) derive(Show)
-
-///|
-enum TyB {
-  One(String)
-  Two(first~ : String, second~ : String)
-} derive(Show)
-
-///|
 enum Node {
   TyS(TyS)
   TyA(TyA)
@@ -52,7 +37,7 @@ enum Node {
 } derive(Show)
 
 ///|
-pub fn Parser::scan(self : Self) -> TyS? {
+pub fn Parser::parse(self : Self) -> TyS? {
   let mut lexeme = self.lexer.scan0()
   loop 0 {
     0 => {
