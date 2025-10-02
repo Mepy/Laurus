@@ -47,9 +47,7 @@ pub fn Parser::parse(self : Self) -> TyS? {
       // A -> ● a | b
       continue match lexeme.token {
           A => { // shift
-            let node = self.lexer.get(lexeme)
-              |> Interpreter::parseA
-              |> Node::String
+            let node = self.lexer.get(lexeme) |> Node::String
             self.node_stack.push(node)
             lexeme = self.lexer.scan1()
             3

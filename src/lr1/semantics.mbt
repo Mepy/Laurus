@@ -5,6 +5,12 @@ const INGORED_TYPE_NAME : String = "Unit"
 const SEMANTIC_FUNC_PREFIX : String = "Interpreter::"
 
 ///|
+const IDENTITY_TYPE_NAME : String = "String"
+
+///|
+const IDENTITY_FUNC_NAME : String = ""
+
+///|
 enum SortTag {
   EnumType
   TupleType
@@ -86,4 +92,16 @@ fn Semantics::is_ignored(type_name : String) -> Bool {
 #inline
 fn Semantics::is_NOT_ignored(type_name : String) -> Bool {
   type_name != INGORED_TYPE_NAME
+}
+
+///|
+#inline
+fn Semantics::is_identity(type_name : String) -> Bool {
+  type_name == IDENTITY_TYPE_NAME
+}
+
+///|
+#inline
+fn Semantics::is_identity_func_name(func_name : String) -> Bool {
+  func_name == IDENTITY_FUNC_NAME
 }

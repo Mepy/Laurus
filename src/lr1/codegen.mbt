@@ -203,6 +203,10 @@ pub fn Generator::codegen_interpreter(
     guard token is Conversion(type_name~, parse_func_name~, ..) else {
       continue
     }
+    if Semantics::is_identity_func_name(parse_func_name) &&
+      Semantics::is_identity(type_name) {
+      continue
+    }
     let func_code =
       #|///|
       #|#inline
@@ -321,13 +325,21 @@ pub fn Generator::codegen_parse(
           )
         Ignore =>
           self.builder.write_string("            // ignore the old lexeme\n")
-        Conversion(type_name~, parse_func_name~, ..) => {
-          let shift_node =
-            $|            let node = self.lexer.get(lexeme) |> \{SEMANTIC_FUNC_PREFIX}\{parse_func_name} |> Node::\{type_name}
-            $|            self.node_stack.push(node)
-            $|
-          self.builder.write_string(shift_node)
-        }
+        Conversion(type_name~, parse_func_name~, ..) =>
+          if Semantics::is_identity_func_name(parse_func_name) &&
+            Semantics::is_identity(type_name) {
+            let shift_node =
+              $|            let node = self.lexer.get(lexeme) |> Node::\{type_name}
+              $|            self.node_stack.push(node)
+              $|
+            self.builder.write_string(shift_node)
+          } else {
+            let shift_node =
+              $|            let node = self.lexer.get(lexeme) |> \{SEMANTIC_FUNC_PREFIX}\{parse_func_name} |> Node::\{type_name}
+              $|            self.node_stack.push(node)
+              $|
+            self.builder.write_string(shift_node)
+          }
       }
       self.builder.write_string(shift_footer)
     }
