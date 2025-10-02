@@ -18,10 +18,17 @@ pub fn Parser::init(self : Self, src : String, cur? : Int = -1) -> Unit {
 }
 
 ///|
+#inline
+fn Parser::enter_state(self : Self, state_i : Int) -> Unit {
+  self.state_stack.push(state_i)
+}
+
+///|
 pub fn Parser::scan(self : Self) -> Unit {
   let mut lexeme = self.lexer.scan0()
   loop 0 {
-    0 => // state_0
+    0 => {
+      self.enter_state(0)
       // %START -> ● S | LAURUS
       // S -> ● A B | LAURUS
       // A -> ● a | b
@@ -32,7 +39,9 @@ pub fn Parser::scan(self : Self) -> Unit {
           }
           _ => break
         }
-    1 => // state_1
+    }
+    1 => {
+      self.enter_state(1)
       // %START -> S ● | LAURUS
       continue match lexeme.token {
           LAURUS => { // reduce
@@ -41,7 +50,9 @@ pub fn Parser::scan(self : Self) -> Unit {
           }
           _ => break
         }
-    2 => // state_2
+    }
+    2 => {
+      self.enter_state(2)
       // S -> A ● B | LAURUS
       // B -> ● b | LAURUS
       continue match lexeme.token {
@@ -51,7 +62,9 @@ pub fn Parser::scan(self : Self) -> Unit {
           }
           _ => break
         }
-    3 => // state_3
+    }
+    3 => {
+      self.enter_state(3)
       // A -> a ● | b
       continue match lexeme.token {
           B => { // reduce
@@ -60,7 +73,9 @@ pub fn Parser::scan(self : Self) -> Unit {
           }
           _ => break
         }
-    4 => // state_4
+    }
+    4 => {
+      self.enter_state(4)
       // S -> A B ● | LAURUS
       continue match lexeme.token {
           LAURUS => { // reduce
@@ -70,7 +85,9 @@ pub fn Parser::scan(self : Self) -> Unit {
           }
           _ => break
         }
-    5 => // state_5
+    }
+    5 => {
+      self.enter_state(5)
       // B -> b ● | LAURUS
       continue match lexeme.token {
           LAURUS => { // reduce
@@ -79,6 +96,7 @@ pub fn Parser::scan(self : Self) -> Unit {
           }
           _ => break
         }
+    }
     _ => break
   }
 }

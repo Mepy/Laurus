@@ -35,6 +35,12 @@ fn Generator::init(self : Self) -> Unit {
     #|  self.state_stack.clear()
     #|}
     #|
+    #|///|
+    #|#inline
+    #|fn Parser::enter_state(self : Self, state_i : Int) -> Unit {
+    #|  self.state_stack.push(state_i)
+    #|}
+    #|
   self.builder.write_string(parser)
 }
 
@@ -64,7 +70,8 @@ pub fn Generator::codegen(
   self.builder.write_string(scan_header)
   let state_len = lr1.states.length()
   for state_i in 0..<state_len {
-    self.builder.write_string("    \{state_i} => { // state_\{state_i}\n")
+    self.builder.write_string("    \{state_i} => {\n")
+    self.builder.write_string("      self.enter_state(\{state_i})\n")
     // codegen LR1 items
     for item in lr1.states[state_i] {
       self.builder.write_string("      // \{names[item.sort]} ->") // indent
