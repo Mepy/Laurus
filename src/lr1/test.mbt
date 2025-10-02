@@ -39,12 +39,21 @@ test "codegen:simple" {
   } // B -> b
   let maker = LR1Maker::new(grammar)
   maker.construct_states()
-  let names = ["S'", "S", "A", "B", "LAURUS", "a", "b"]
+  let lr1 = maker.to_lr1()
+  let names = [
+    "%START",
+    "S",
+    "A",
+    "B",
+    @dfa.LAURUS_RESERVED_TOKEN_NAME,
+    "a",
+    "b",
+  ]
   let named_regexps : Array[(String, @dfa.RegExp)] = [
     ("a", @dfa.Single('a')),
     ("b", @dfa.Single('b')),
   ]
   let generator = Generator::new(named_regexps)
-  generator.codegen(maker, names)
+  generator.codegen(lr1, names)
   generator.save("./src/lr1")
 }

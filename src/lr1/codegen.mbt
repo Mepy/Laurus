@@ -41,28 +41,18 @@ fn Generator::init(self : Self) -> Unit {
 ///|
 pub fn Generator::codegen(
   self : Self,
-  maker : LR1Maker,
+  lr1 : LR1,
   names : Array[String],
 ) -> Unit {
-  let _lexer_scan0 = self.lex_gen.add_dfa(
-    maker.first_table[0].iter().map(token => token - maker.sort_len)
-    |> Set::from_iter,
-  )
-  let state_len = maker.goto_table.length()
-  let goto_table = Array::makei(maker.sort_len, _ => Map::new(
-    capacity=state_len,
-  ))
-  for state_i in 0..<state_len {
-    for sort_next in maker.goto_table[state_i] {
-      let (sort, next) = sort_next
-      goto_table[sort][state_i] = next
-    }
+  // codegen dfas
+  for dfa_token in lr1.dfa_tokens {
+    self.lex_gen.codegen(dfa_token.iter())
   }
+  // codegen scan
   let scan_header =
     #|///|
     #|pub fn Parser::scan(self : Self) -> Unit {
     #|  let mut lexeme = self.lexer.scan0()
-    $|  let goto_table = \{goto_table}
     #|  loop 0 {
     #|
   let scan_footer =
@@ -72,34 +62,39 @@ pub fn Generator::codegen(
     #|}
     #|
   self.builder.write_string(scan_header)
-  let state_len = maker.goto_table.length()
-  for i in 0..<state_len {
-    self.builder.write_string("    \{i} => {\n")
+  let state_len = lr1.states.length()
+  for state_i in 0..<state_len {
+    self.builder.write_string("    \{state_i} => { // state_\{state_i}\n")
+    // codegen LR1 items
+    for item in lr1.states[state_i] {
+      self.builder.write_string("      // \{names[item.sort]} ->") // indent
+      let sentence_len = item.sentence.length()
+      for i in 0..<item.cur {
+        self.builder.write_string(" \{names[item.sentence[i]]}")
+      }
+      self.builder.write_string(" ●")
+      for i in item.cur..<sentence_len {
+        self.builder.write_string(" \{names[item.sentence[i]]}")
+      }
+      self.builder.write_string(" | \{names[item.lookahead]}\n")
+    }
     self.builder.write_string("      continue match lexeme.token {\n")
-    let shift_map = maker.shift_table[i]
-    let reduce_map = maker.reduce_table[i]
-    for token_state_xxxx in shift_map {
-      let (token, (next_state, _)) = token_state_xxxx
+    let shift_map = lr1.shift_table[state_i]
+    let reduce_map = lr1.reduce_table[state_i]
+    for token_state_dfa in shift_map {
+      let (token, (state_j, dfa_j)) = token_state_dfa
       let token_name = names[token].to_upper()
-      let next_dfa = self.lex_gen.add_dfa(
-        maker.first_table[next_state]
-        .iter()
-        .map(token => token - maker.sort_len)
-        |> Set::from_iter,
-      )
       let shift_code =
         $|          \{token_name} => { // shift
-        $|            lexeme = self.lexer.scan\{next_dfa}()
-        $|            \{next_state}
+        $|            lexeme = self.lexer.scan\{dfa_j}()
+        $|            \{state_j}
         #|          }
         #|
       self.builder.write_string(shift_code)
     }
-    for token_sort_rules in reduce_map {
-      let (token, sort_rules) = token_sort_rules
-      let (sort, rule_i) = sort_rules[0]
+    for token_sort_rule_i_size in reduce_map {
+      let (token, (sort, _rule_i, rule_size)) = token_sort_rule_i_size
       let token_name = names[token].to_upper()
-      let rule_size = maker.grammar.rules[sort][rule_i].length()
       let reduce_header =
         $|          \{token_name} => { // reduce
         $|
@@ -112,23 +107,33 @@ pub fn Generator::codegen(
           "            self.state_stack.unsafe_pop() |> ignore\n",
         )
       }
-      let goto_table_sort = goto_table[sort]
-      match goto_table_sort.size() {
+      let goto_map = lr1.goto_table[sort]
+      match goto_map.size() {
         0 => // S' -> S
           self.builder.write_string("            break\n")
         1 => {
           let goto_code =
-            $|            \{goto_table_sort.values().peek().unwrap()}
+            $|            \{goto_map.values().peek().unwrap()}
             #|
           self.builder.write_string(goto_code)
         }
         _ => {
-          let goto_code =
-            #|            let former_state = self.state_stack[self.state_stack.length()-1]
-            $|            let next = goto_table[\{sort}][former_state]
-            #|            next
+          let goto_header =
+            #|            let former = self.state_stack[self.state_stack.length()-1]
+            #|            match former {
             #|
-          self.builder.write_string(goto_code)
+          let goto_footer =
+            #|              _ => break
+            #|            }
+            #|
+          self.builder.write_string(goto_header)
+          for state_jk in goto_map {
+            let (state_j, state_k) = state_jk
+            self.builder.write_string(
+              "              \{state_j} => \{state_k}\n",
+            )
+          }
+          self.builder.write_string(goto_footer)
         }
       }
       self.builder.write_string(reduce_footer)

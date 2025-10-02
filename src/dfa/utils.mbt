@@ -1,5 +1,5 @@
 ///|
-const LAURUS_RESERVED_TOKEN_NAME : String = "LAURUS"
+pub const LAURUS_RESERVED_TOKEN_NAME : String = "LAURUS"
 
 ///|
 pub typealias Char as CodePoint
@@ -24,18 +24,18 @@ fn CodePoint::prev(self : CodePoint) -> CodePoint {
 typealias Int as Token
 
 ///|
-struct TokenSet(Set[Token]) derive(Show, Eq)
+pub(all) struct TokenSet(Set[Token]) derive(Show, Eq)
 
 ///|
 suberror TokenConflicts Set[TokenSet]
 
 ///|
-impl Hash for TokenSet with hash_combine(self : TokenSet, hasher : Hasher) {
+pub impl Hash for TokenSet with hash_combine(self : TokenSet, hasher : Hasher) {
   hasher.combine(self.hash())
 }
 
 ///|
-impl Hash for TokenSet with hash(self : TokenSet) -> Int {
+pub impl Hash for TokenSet with hash(self : TokenSet) -> Int {
   let s = self.0.to_array()
   s.sort()
   s.hash()

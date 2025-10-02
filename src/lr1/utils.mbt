@@ -8,6 +8,9 @@ typealias Index as StateIndex
 typealias Index as RuleIndex
 
 ///|
+typealias Int as RuleSize
+
+///|
 typealias Int as Token
 
 ///|

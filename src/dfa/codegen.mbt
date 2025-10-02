@@ -4,7 +4,6 @@ struct Generator {
   names : Array[String]
   nfas : Array[NFA]
   mut dfa_count : Int
-  dfas : Map[TokenSet, Index] // using token_set to index dfa
 } derive(Show)
 
 ///|
@@ -22,7 +21,7 @@ pub fn Generator::new(named_regexps : Array[(String, RegExp)]) -> Self {
     names.push(name)
     nfas.push(nfa)
   }
-  let generator = { builder, names, nfas, dfa_count: 0, dfas: Map::new() }
+  let generator = { builder, names, nfas, dfa_count: 0 }
   generator.init()
   generator
 }
@@ -97,23 +96,7 @@ fn Generator::init(self : Self) -> Unit {
 }
 
 ///|
-pub fn Generator::add_dfa(self : Self, tokens : Set[Token]) -> Index {
-  let tokens = TokenSet(tokens)
-  match self.dfas.get(tokens) {
-    Some(index) => index
-    None => {
-      let index = self.dfa_count
-      self.unsafe_add_dfa(tokens.0.iter())
-      self.dfas[tokens] = index
-      index
-    }
-  }
-}
-
-///|
-/// it does not check the redundancy, please do not use this directly.
-/// use Generator::add_dfa instead
-fn Generator::unsafe_add_dfa(self : Self, regexp_tokens : Iter[Index]) -> Unit {
+pub fn Generator::codegen(self : Self, regexp_tokens : Iter[Index]) -> Unit {
   let nfa = regexp_tokens.map(token => self.nfas[token]) |> NFA::token_union
   let maker = DFAMaker::from_nfa(nfa)
   let dfa = maker.to_dfa()
