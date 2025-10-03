@@ -59,7 +59,7 @@ fn Laurus::add_sort(
 
 ///|
 #inline
-fn Char::esc_origin(str : String) -> Char {
+fn Char::get0(str : String) -> Char {
   str[0].unsafe_to_char()
 }
 

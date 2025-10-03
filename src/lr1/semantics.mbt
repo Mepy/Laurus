@@ -30,22 +30,14 @@ enum RuleSemantics {
   NamedConstructor(String, field_names~ : Array[String])
   Tuple
   Fields(Array[String])
-  Reduction(
-    parse_func_name~ : String,
-    parse_parameter_names~ : Array[String],
-    print_func_name~ : String
-  )
+  Reduction(parse_func_name~ : String, parse_parameter_names~ : Array[String])
 } derive(Show)
 
 ///|
 pub(all) enum TokenSemantics {
   Ignore
   BuiltIn(String)
-  Conversion(
-    type_name~ : String,
-    parse_func_name~ : String,
-    print_func_name~ : String
-  )
+  Conversion(type_name~ : String, parse_func_name~ : String)
 } derive(Show)
 
 ///|

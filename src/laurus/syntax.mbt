@@ -1,5 +1,16 @@
 ///|
-typealias @dfa.RegExp
+enum RegExp {
+  Bor(Array[Range])
+  Bnot(Array[Range])
+  Any
+  Emp
+  Union(RegExp, RegExp)
+  Seq(RegExp, RegExp)
+  Star(RegExp)
+  Plus(RegExp)
+  Ques(RegExp)
+  Single(Char)
+} derive(Show)
 
 ///|
 typealias @lr1.TokenSemantics as TokenConv
@@ -15,7 +26,7 @@ enum SortType {
 enum Generics {
   Atom(String)
   Gen(String, Generics)
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 struct Rule {
@@ -39,7 +50,7 @@ enum ShiftReduce {
 
 ///|
 enum Action {
-  Simple
+  Wrapper
   Constructor(String)
   Method(String)
 } derive(Show)

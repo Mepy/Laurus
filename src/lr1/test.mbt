@@ -58,13 +58,7 @@ test "codegen:simple" {
       { tag: EnumType, type_name: "TyB" }, // B
     ]
     let rules = [
-      [
-        Reduction(
-          parse_func_name="parseStart",
-          parse_parameter_names=["s"],
-          print_func_name="printStart",
-        ),
-      ],
+      [Reduction(parse_func_name="parseStart", parse_parameter_names=["s"])],
       [Fields(["a", "b"])],
       [Tuple],
       [
@@ -74,12 +68,8 @@ test "codegen:simple" {
     ]
     let tokens = [
       TokenSemantics::BuiltIn("Lexeme"),
-      Conversion(type_name="String", parse_func_name="", print_func_name=""),
-      Conversion(
-        type_name="String",
-        parse_func_name="parseB",
-        print_func_name="printB",
-      ),
+      Conversion(type_name="String", parse_func_name=""),
+      Conversion(type_name="String", parse_func_name="parseB"),
       TokenSemantics::Ignore,
     ]
     Semantics::new(names, sorts, rules, tokens)
