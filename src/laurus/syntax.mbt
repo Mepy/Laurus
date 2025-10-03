@@ -52,6 +52,9 @@ enum Symbol {
 } derive(Show)
 
 ///|
+struct Range(Char, Char) derive(Show)
+
+///|
 struct Laurus {
   comments : Array[String]
   mut space : RegExp

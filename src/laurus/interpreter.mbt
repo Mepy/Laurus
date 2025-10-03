@@ -59,7 +59,24 @@ fn Laurus::add_sort(
 
 ///|
 #inline
-fn String::decode(unicode : String) -> String {
+fn Char::esc_origin(str : String) -> Char {
+  str[0].unsafe_to_char()
+}
+
+///|
+#inline
+fn Char::esc_space(str : String) -> Char {
+  match str[0] {
+    's' => ' '
+    't' => '\t'
+    'n' => '\n'
+    _ => ' '
+  }
+}
+
+///|
+#inline
+fn Char::esc_unicode(unicode : String) -> Char {
   let mut code = 0
   for c in unicode {
     let x = match c {
@@ -83,7 +100,7 @@ fn String::decode(unicode : String) -> String {
     }
     code = code * 16 + x
   }
-  code.unsafe_to_char().to_string()
+  code.unsafe_to_char()
 }
 
 ///|
@@ -103,4 +120,10 @@ fn[T] Array::empty() -> Array[T] {
 fn[T] Array::snoc(array : Array[T], x : T) -> Array[T] {
   array.push(x)
   array
+}
+
+///|
+#inline
+fn Range::single(c : Char) -> Range {
+  Range(c, c)
 }

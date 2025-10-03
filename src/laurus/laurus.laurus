@@ -11,11 +11,11 @@ ColonColon = (::)
 Shift = (@shift|@right)
 Reduce = (@reduce|@left)
 Esc = (\\)
-EscNo = String([^\\\/\.\*\+\?\-\^\|\[\]\(\)])
-EscOrigin = String([\\\/\.\*\+\?\-\^\|\[\]\(\)])
-EscSpace = String([stn])
+EscNo = Char([^\\\/\.\*\+\?\-\^\|\[\]\(\)])
+EscOrigin = Char::esc_origin([\\\/\.\*\+\?\-\^\|\[\]\(\)])
+EscSpace = Char::esc_space([stn])
 EscU = (u)
-EscUnicode = String::decode
+EscUnicode = Char::esc_unicode
     ([0-9a-fA-F]
     |[0-9a-fA-F][0-9a-fA-F]
     |[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]
@@ -144,7 +144,7 @@ range : Range {
 = (char To char)
 }
 
-char : String {
+char : Char {
 = (EscNo)
 = (Esc EscOrigin)
 = (Esc EscSpace)
