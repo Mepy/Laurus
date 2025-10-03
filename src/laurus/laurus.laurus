@@ -33,7 +33,7 @@ Percent = %
 Start = start
 Space = space
 
-CommentHead = \/\/
+CommentHead = (\/\/)
 CommentBody = String([^\n]*)
 
 %start clause
@@ -107,7 +107,7 @@ reg_exp : RegExp {
 | Seq(reg_exp reg_exp) 
 | Star(reg_exp Star)
 = Plus(reg_exp Plus)
-= Option(reg_exp Ques)
+= Ques(reg_exp Ques)
 | Single(char)
 }
 

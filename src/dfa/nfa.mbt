@@ -398,6 +398,31 @@ fn NFA::plus(nfa : NFA) -> NFA {
 }
 
 ///|
+/// nfa?
+fn NFA::ques(nfa : NFA) -> NFA {
+  let wrapper = NFA::new([])
+  let initial_state = wrapper.states[0]
+  let halting_state = wrapper.states[1]
+  let len = nfa.states.length()
+  let states = Array::new(capacity=len + 2)
+  let halting_i = len + 1
+  initial_state.empty.add(1)
+  initial_state.empty.add(halting_i - 0)
+  let nfa_halt_i = len - 1
+  let nfa_halt_state = nfa.states[nfa_halt_i]
+  nfa_halt_state.token = None
+  nfa_halt_state.empty.add(1)
+  // comment this line compared to NFA::star(), 1 or 0, no repeat
+  // nfa_halt_state.empty.add(0 - nfa_halt_i)
+  states.push(initial_state)
+  for s in nfa.states {
+    states.push(s)
+  }
+  states.push(halting_state)
+  NFA::{ states, }
+}
+
+///|
 /// 接受字符串
 fn NFA::string(str : String) -> NFA {
   let states = Array::new(capacity=str.length() + 1)

@@ -10,6 +10,7 @@ pub(all) enum RegExp {
   Seq(Array[RegExp])
   Star(RegExp)
   Plus(RegExp)
+  Ques(RegExp)
   String(String)
 } derive(Show)
 
@@ -58,6 +59,7 @@ fn RegExp::check(self : RegExp) -> Unit raise {
       }
     RegExp::Star(re) => re.check()
     RegExp::Plus(re) => re.check()
+    RegExp::Ques(re) => re.check()
     RegExp::String(_) => ()
   }
 }
@@ -87,6 +89,7 @@ fn RegExp::to_nfa(self : RegExp) -> NFA {
     }
     RegExp::Star(re) => re.to_nfa().star()
     RegExp::Plus(re) => re.to_nfa().plus()
+    RegExp::Ques(re) => re.to_nfa().ques()
     RegExp::String(s) => NFA::string(s)
   }
 }
@@ -116,6 +119,7 @@ fn RegExp::to_nfa_rev(self : RegExp) -> NFA {
     }
     RegExp::Star(re) => re.to_nfa_rev().star()
     RegExp::Plus(re) => re.to_nfa_rev().plus()
+    RegExp::Ques(re) => re.to_nfa_rev().ques()
     RegExp::String(s) => NFA::string_rev(s)
   }
 }
