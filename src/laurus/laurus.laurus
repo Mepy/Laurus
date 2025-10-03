@@ -1,0 +1,129 @@
+Lower = String([a-z][a-zA-Z0-9_]*)
+Upper = String([A-Z][a-zA-Z0-9_]*)
+MethodName = String([a-z][a-zA-Z0-9_]*)
+ConstructorName = String([A-Z][a-zA-Z0-9_]*)
+TypeName = String([A-Z]+(\[[A-Z][a-zA-Z0-9_]*\])?)
+
+Eq = (=)
+Colon = (:)
+Shift = (@shift|@right)
+Reduce = (@reduce|@left)
+Esc = (\\)
+EscNo = String([^\\\/\.\*\+\?\-\^\|\[\]\(\)])
+EscOrigin = String([\\\/\.\*\+\?\-\^\|\[\]\(\)])
+EscSpace = String([stn])
+EscU = (u)
+EscUnicode = String.decode([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])
+Dot = (\.)
+Star = (\*)
+Plus = (\+)
+Ques = (\?)
+To = (\-)
+Caret = (\^)
+Or = (\|)
+Tilde =(~)
+LParen = (\()
+RParen = (\))
+LBrack = (\[)
+RBrack = (\])
+LBrace = ({)
+LBrace = (})
+
+Percent = %
+Start = start
+Space = space
+
+CommentHead = \/\/
+CommentBody = String([^\n]*)
+
+%start clause
+
+clause : Clause {
+= Comment(CommentHead CommentBody)
+= Space(Percent Space reg_exp)
+= Start(Percent Start Lower)
+= Token([token_name : Upper] Eq [token_tag~] LParen [reg_exp~] RParen)
+= Sort([sort_name : Lower] [sort_tag~] LBrace rules RBrace)
+}
+
+sort_tag : SortTag {
+= Ignore()
+= Reduction(Colon TypeName)
+}
+
+rules : Array[Rule] {
+= new()
+= push(rules rule)
+}
+
+rule : Rule {
+= ([priority~] [shift_reduce~] [semantics~] LParen [symbols~] RParen)
+}
+
+priority : Priority {
+= Equal(Eq)
+= Higher(Or)
+}
+
+shift_reduce : ShiftReduce {
+= Reduce()
+= Reduce(Reduce)
+= Shift(Shift)
+}
+
+// semantics for reduce
+semantics : Semantics {
+= No()
+= Constructor(ConstructorName)
+= Method(MethodName)
+}
+
+symbols : Array[Symbol] {
+= new()
+= push(symbols symbol)
+}
+
+symbol : Symbol {
+= Token(Upper)
+= Sort(Lower)
+= NamedSymbol(LBrack [field_name : Lower] Colon symbol RBrack)
+= NamedSortAbbrev(LBrack [field_sort_name : FieldName] Tilde RBrack) 
+}
+
+
+// Builtin = { String, Int, Lexeme }
+token_tag : TokenTag {
+= Ignore()
+= Builtin(TypeName)
+= Conversion(TypeName Dot MethodName)
+}
+
+reg_exp : RegExp {
+= (LParen reg_exp RParen)
+= Bor(LBrack ranges RBrack)
+= Bnot(LBrack Caret ranges RBrack)
+= Any(Dot)
+| Union(reg_exp Or reg_exp) 
+| Seq(reg_exp reg_exp) 
+| Star(reg_exp Star)
+= Plus(reg_exp Plus)
+= Option(reg_exp Ques)
+| Single(char)
+}
+
+ranges : Array[Range] {
+= one(range)
+= more(ranges range)
+}
+
+range : Range {
+= single(char)
+= (char To char)
+}
+
+char : String {
+= (EscNo)
+= (Esc EscOrigin)
+= (Esc EscSpace)
+= (Esc EscU EscUnicode)
+}
