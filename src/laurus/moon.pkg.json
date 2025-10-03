@@ -1,0 +1,6 @@
+{
+  "import": [
+    "Mepy/Laurus/dfa",
+    "Mepy/Laurus/lr1"
+  ]
+}

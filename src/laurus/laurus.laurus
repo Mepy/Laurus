@@ -1,11 +1,13 @@
 Lower = String([a-z][a-zA-Z0-9_]*)
 Upper = String([A-Z][a-zA-Z0-9_]*)
+Symbol = String([a-zA-Z][a-zA-Z0-9_]*)
 MethodName = String([a-z][a-zA-Z0-9_]*)
 ConstructorName = String([A-Z][a-zA-Z0-9_]*)
 TypeName = String([A-Z]+(\[[A-Z][a-zA-Z0-9_]*\])?)
 
 Eq = (=)
 Colon = (:)
+ColonColon = (::)
 Shift = (@shift|@right)
 Reduce = (@reduce|@left)
 Esc = (\\)
@@ -13,7 +15,14 @@ EscNo = String([^\\\/\.\*\+\?\-\^\|\[\]\(\)])
 EscOrigin = String([\\\/\.\*\+\?\-\^\|\[\]\(\)])
 EscSpace = String([stn])
 EscU = (u)
-EscUnicode = String.decode([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])
+EscUnicode = String::decode
+    ([0-9a-fA-F]
+    |[0-9a-fA-F][0-9a-fA-F]
+    |[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]
+    |[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]
+    |[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]
+    |10[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]
+    )
 Dot = (\.)
 Star = (\*)
 Plus = (\+)
@@ -36,28 +45,39 @@ Space = space
 CommentHead = (\/\/)
 CommentBody = String([^\n]*)
 
-%start clause
 
-clause : Clause {
-= Comment(CommentHead CommentBody)
-= Space(Percent Space reg_exp)
-= Start(Percent Start Lower)
-= Token([token_name : Upper] Eq [token_tag~] LParen [reg_exp~] RParen)
-= Sort([sort_name : Lower] [sort_tag~] LBrace rules RBrace)
+%start cur
+
+// @self 
+// waiting for @attribute system
+cur : Laurus {
+= empty()
+= add_comment(cur CommentHead CommentBody)
+= set_space(cur Percent Space reg_exp)
+= set_start(cur Percent Start Lower)
+= add_token(cur [token_name : Upper] Eq [token_conv~] LParen [reg_exp~] RParen)
+= add_sort(cur [sort_name : Lower] [sort_type~] LBrace [rules~] RBrace)
 }
 
-sort_tag : SortTag {
+sort_type : SortType {
 = Ignore()
-= Reduction(Colon TypeName)
+= Atom(Colon TypeName)
+= Gen(Colon TypeName LBrack generics RBrack)
 }
 
+generics : Generics {
+= Atom(TypeName)
+= Gen(TypeName LBrack generics RBrack)
+}
+
+// @self 
 rules : Array[Rule] {
-= new()
-= push(rules rule)
+= empty()
+= snoc(rules rule)
 }
 
 rule : Rule {
-= ([priority~] [shift_reduce~] [semantics~] LParen [symbols~] RParen)
+= ([priority~] [shift_reduce~] [action~] LParen [symbols~] RParen)
 }
 
 priority : Priority {
@@ -71,31 +91,32 @@ shift_reduce : ShiftReduce {
 = Shift(Shift)
 }
 
-// semantics for reduce
-semantics : Semantics {
-= No()
+// semantic action for reduce
+action : Action {
+= Simple()
 = Constructor(ConstructorName)
 = Method(MethodName)
 }
 
+// @self 
 symbols : Array[Symbol] {
-= new()
-= push(symbols symbol)
+= empty()
+= snoc(symbols symbol)
 }
+
 
 symbol : Symbol {
-= Token(Upper)
-= Sort(Lower)
-= NamedSymbol(LBrack [field_name : Lower] Colon symbol RBrack)
-= NamedSortAbbrev(LBrack [field_sort_name : FieldName] Tilde RBrack) 
+= Unnamed(Symbol)
+= Named(LBrack [field_name : Lower] Colon Symbol RBrack)
+= NamedAbbrev(LBrack [field_sort_name : FieldName] Tilde RBrack) 
 }
 
 
-// Builtin = { String, Int, Lexeme }
-token_tag : TokenTag {
+// Builtin = { String, Lexeme }
+token_conv : TokenConv {
 = Ignore()
 = Builtin(TypeName)
-= Conversion(TypeName Dot MethodName)
+= Conversion([type_name : TypeName] ColonColon [parse_func_name : MethodName])
 }
 
 reg_exp : RegExp {
@@ -103,6 +124,7 @@ reg_exp : RegExp {
 = Bor(LBrack ranges RBrack)
 = Bnot(LBrack Caret ranges RBrack)
 = Any(Dot)
+= Emp()
 | Union(reg_exp Or reg_exp) 
 | Seq(reg_exp reg_exp) 
 | Star(reg_exp Star)
@@ -111,9 +133,10 @@ reg_exp : RegExp {
 | Single(char)
 }
 
+// @self 
 ranges : Array[Range] {
-= one(range)
-= more(ranges range)
+= singleton(range)
+= snoc(ranges range)
 }
 
 range : Range {

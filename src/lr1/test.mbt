@@ -73,7 +73,7 @@ test "codegen:simple" {
       ],
     ]
     let tokens = [
-      TokenSemantics::Lexeme,
+      TokenSemantics::BuiltIn("Lexeme"),
       Conversion(type_name="String", parse_func_name="", print_func_name=""),
       Conversion(
         type_name="String",

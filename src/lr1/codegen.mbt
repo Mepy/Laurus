@@ -319,12 +319,22 @@ pub fn Generator::codegen_parse(
       self.builder.write_string(shift_header)
       // token - lr1.sort_len !!!
       match sem.tokens[token - lr1.sort_len] {
-        Lexeme =>
+        Ignore =>
+          self.builder.write_string("            // ignore the old lexeme\n")
+        BuiltIn("Lexeme") =>
           self.builder.write_string(
             "            self.node_stack.push(Node::Lexeme(lexeme))\n",
           )
-        Ignore =>
-          self.builder.write_string("            // ignore the old lexeme\n")
+        BuiltIn("String") => {
+          let shift_node =
+            $|            let node = self.lexer.get(lexeme) |> Node::String
+            $|            self.node_stack.push(node)
+            $|
+          self.builder.write_string(shift_node)
+        }
+        BuiltIn(unknown) =>
+          // We will not finish this branch until there are more builtins
+          ...
         Conversion(type_name~, parse_func_name~, ..) =>
           if Semantics::is_identity_func_name(parse_func_name) &&
             Semantics::is_identity(type_name) {

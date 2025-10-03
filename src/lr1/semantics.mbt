@@ -38,10 +38,9 @@ enum RuleSemantics {
 } derive(Show)
 
 ///|
-enum TokenSemantics {
-  // just as Lexeme at lexer.mbt
-  Lexeme
+pub(all) enum TokenSemantics {
   Ignore
+  BuiltIn(String)
   Conversion(
     type_name~ : String,
     parse_func_name~ : String,
@@ -73,8 +72,8 @@ fn Semantics::new(
   }
   for token in 0..<tokens.length() {
     let type_name = match tokens[token] {
-      Lexeme => "Lexeme"
       Ignore => INGORED_TYPE_NAME
+      BuiltIn(type_name) => type_name
       Conversion(type_name~, ..) => type_name
     }
     type_names.push(type_name)
