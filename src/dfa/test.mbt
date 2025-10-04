@@ -18,12 +18,26 @@ test "pa|pb" {
 }
 
 ///|
+fn Generator::test_helper(named_regexps : Map[String, RegExp]) -> Generator {
+  let len = named_regexps.size()
+  let names = Array::new(capacity=len + 1)
+  let nfas = Array::new(capacity=len + 1)
+  names.push(LAURUS_RESERVED_TOKEN_NAME)
+  nfas.push(NFA::new([])) // we dont care
+  for name_regexp in named_regexps {
+    let (name, regexp) = name_regexp
+    nfas.push(regexp.to_token_nfa(names.length()))
+    names.push(name)
+  }
+  Generator::new(names, nfas)
+}
+
+///|
 test "codegen:play|pray" {
-  let named_regexp : Array[(String, RegExp)] = [
-    ("play", RegExp::String("play")),
-    ("pray", RegExp::String("pray")),
-  ]
-  let generator = Generator::new(named_regexp)
-  generator.codegen([1, 2].iter()) |> ignore
+  let generator = Generator::test_helper({
+    "Play": RegExp::String("play"),
+    "Pray": RegExp::String("pray"),
+  })
+  generator.codegen([1, 2]) |> ignore
   generator.save("./src/dfa/")
 }

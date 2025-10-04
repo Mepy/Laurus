@@ -89,7 +89,7 @@ test "codegen::laurus" {
   .add_token("Star", Ignore, Single('*'))
   .add_token("Plus", Ignore, Single('+'))
   .add_token("Ques", Ignore, Single('?'))
-  .add_token("Dasg", Ignore, Single('-'))
+  .add_token("Dash", Ignore, Single('-'))
   .add_token("Caret", Ignore, Single('^'))
   .add_token("Or", Ignore, Single('|'))
   .add_token("Tilde", Ignore, Single('~'))
@@ -206,7 +206,9 @@ test "codegen::laurus" {
       Unnamed("laurus"),
       Named(field_name="sort_name", "SortName"),
       NamedAbbrev(field_name="sort_type"),
+      Unnamed("LBrace"),
       NamedAbbrev(field_name="rules"),
+      Unnamed("RBrace"),
     ]),
   ])
   // sorts of tokens
@@ -329,6 +331,7 @@ test "codegen::laurus" {
     ]),
   ])
   |> ignore
+  laurus.workbench()
 }
 
 ///|

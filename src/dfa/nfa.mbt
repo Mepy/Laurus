@@ -244,7 +244,7 @@ fn NFA::new(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
 
 ///|
 /// 接受单字符
-fn NFA::single(c : CodePoint) -> NFA {
+pub fn NFA::single(c : CodePoint) -> NFA {
   NFA::new([(c, c)])
 }
 
@@ -256,13 +256,13 @@ fn NFA::range(left : CodePoint, right : CodePoint) -> NFA {
 
 ///|
 /// 接受多个区间 [A-Z0-9]
-fn NFA::bor(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
+pub fn NFA::bor(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
   NFA::new(ranges)
 }
 
 ///|
 /// 接受多个区间的取反 [^A-Z0-9]
-fn NFA::bnot(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
+pub fn NFA::bnot(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
   let nfa = NFA::new(ranges)
   nfa.states[0].not()
   nfa
@@ -270,13 +270,13 @@ fn NFA::bnot(ranges : Array[(CodePoint, CodePoint)]) -> NFA {
 
 ///|
 /// 接受任意字符
-fn NFA::any() -> NFA {
+pub fn NFA::any() -> NFA {
   NFA::new([(MinCodePoint, MaxCodePoint)])
 }
 
 ///|
 /// 接受空串
-fn NFA::emp() -> NFA {
+pub fn NFA::emp() -> NFA {
   let nfa = NFA::new([])
   nfa.states[0].empty.add(1)
   nfa
@@ -284,7 +284,7 @@ fn NFA::emp() -> NFA {
 
 ///|
 /// nfa1 | nfa2 | ... | nfan
-fn NFA::union(nfas : Array[NFA]) -> NFA {
+pub fn NFA::union(nfas : Array[NFA]) -> NFA {
   if nfas.length() == 0 {
     return NFA::new([])
   }
@@ -343,7 +343,7 @@ fn NFA::seq(nfas : Array[NFA]) -> NFA {
 
 ///|
 /// 接受 nfan·nfa(n-1)·...·nfa1
-fn NFA::seq_rev(nfas : Array[NFA]) -> NFA {
+pub fn NFA::seq_rev(nfas : Array[NFA]) -> NFA {
   if nfas.length() == 0 {
     return NFA::emp()
   }
@@ -352,7 +352,7 @@ fn NFA::seq_rev(nfas : Array[NFA]) -> NFA {
 
 ///|
 /// nfa*
-fn NFA::star(nfa : NFA) -> NFA {
+pub fn NFA::star(nfa : NFA) -> NFA {
   let wrapper = NFA::new([])
   let initial_state = wrapper.states[0]
   let halting_state = wrapper.states[1]
@@ -376,7 +376,7 @@ fn NFA::star(nfa : NFA) -> NFA {
 
 ///|
 /// nfa+
-fn NFA::plus(nfa : NFA) -> NFA {
+pub fn NFA::plus(nfa : NFA) -> NFA {
   let wrapper = NFA::new([])
   let initial_state = wrapper.states[0]
   let halting_state = wrapper.states[1]
@@ -399,7 +399,7 @@ fn NFA::plus(nfa : NFA) -> NFA {
 
 ///|
 /// nfa?
-fn NFA::ques(nfa : NFA) -> NFA {
+pub fn NFA::ques(nfa : NFA) -> NFA {
   let wrapper = NFA::new([])
   let initial_state = wrapper.states[0]
   let halting_state = wrapper.states[1]

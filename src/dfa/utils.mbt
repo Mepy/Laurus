@@ -21,7 +21,7 @@ fn CodePoint::prev(self : CodePoint) -> CodePoint {
 }
 
 ///|
-typealias Int as Token
+pub typealias Int as Token
 
 ///|
 pub(all) struct TokenSet(Set[Token]) derive(Show, Eq)

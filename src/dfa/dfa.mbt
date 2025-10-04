@@ -13,7 +13,7 @@ struct DFA {
 
 ///|
 /// 将 DFA 转换为反向的 NFA
-fn DFA::to_nfa_rev(self : DFA, token? : Token = 1) -> NFA {
+pub fn DFA::to_nfa_rev(self : DFA, token? : Token = 1) -> NFA {
   let dlen = self.states.length()
   let nlen = dlen + 1
   let nstates = Array::makei(nlen, _ => NState::new())
@@ -57,7 +57,7 @@ struct DFAMaker {
 }
 
 ///|
-fn DFAMaker::from_nfa(nfa : NFA) -> DFAMaker {
+pub fn DFAMaker::from_nfa(nfa : NFA) -> DFAMaker {
   DFAMaker::{
     states: nfa.states,
     cached_empty: Map::new(),
@@ -159,7 +159,7 @@ fn DFAMaker::subset_construction(self : Self) -> Unit {
 }
 
 ///|
-fn DFAMaker::to_dfa(self : Self) -> DFA {
+pub fn DFAMaker::to_dfa(self : Self) -> DFA {
   self.subset_construction()
   let dstates = Array::new(capacity=self.dfa_nstates.length())
   for nstate in self.dfa_nstates {

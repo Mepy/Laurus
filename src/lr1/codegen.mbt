@@ -1,5 +1,5 @@
 ///|
-struct Generator {
+pub(all) struct Generator {
   builder : StringBuilder
   syntax_builder : StringBuilder
   interpreter_builder : StringBuilder
@@ -7,11 +7,10 @@ struct Generator {
 } derive(Show)
 
 ///|
-pub fn Generator::new(named_regexps : Array[(String, @dfa.RegExp)]) -> Self {
+pub fn Generator::new(lex_gen : @dfa.Generator) -> Self {
   let builder = StringBuilder::new()
   let syntax_builder = StringBuilder::new()
   let interpreter_builder = StringBuilder::new()
-  let lex_gen = @dfa.Generator::new(named_regexps)
   let generator = { builder, syntax_builder, interpreter_builder, lex_gen }
   generator.init()
   generator
@@ -257,7 +256,7 @@ pub fn Generator::codegen_interpreter(
 pub fn Generator::codegen_lexer(self : Self, lr1 : LR1) -> Unit {
   // codegen dfas
   for dfa_token in lr1.dfa_tokens {
-    self.lex_gen.codegen(dfa_token.iter())
+    self.lex_gen.codegen(dfa_token)
   }
 }
 

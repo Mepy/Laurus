@@ -1,5 +1,5 @@
 ///|
-struct Grammar {
+pub(all) struct Grammar {
   rules : Array[Array[Sentence]] // rules[sort][rule_i]
 } derive(Show)
 
@@ -75,7 +75,7 @@ struct LR1 {
 } derive(Show)
 
 ///|
-fn LR1Maker::new(grammar : Grammar) -> LR1Maker {
+pub fn LR1Maker::new(grammar : Grammar) -> LR1Maker {
   let sort_len = grammar.rules.length()
   let empty = LR1Maker::initialize_empty(grammar, sort_len)
   let (supergraph, first) = LR1Maker::initialize_first(grammar, sort_len, empty)
@@ -295,7 +295,7 @@ fn LR1Maker::add_state(self : Self, new_state : State) -> StateIndex {
 }
 
 ///|
-fn LR1Maker::construct_states(self : Self) -> Unit {
+pub fn LR1Maker::construct_states(self : Self) -> Unit {
   let initial_state = State::{
     items: ItemSet(
       Set::from_iter(
@@ -353,7 +353,7 @@ fn LR1Maker::construct_states(self : Self) -> Unit {
 }
 
 ///|
-fn LR1Maker::to_lr1(self : Self) -> LR1 {
+pub fn LR1Maker::to_lr1(self : Self) -> LR1 {
   let { grammar, sort_len, state_indices, .. } = self
   let states : Array[Set[Item]] = Array::make(
     state_indices.size(),

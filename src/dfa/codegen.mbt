@@ -7,20 +7,8 @@ struct Generator {
 } derive(Show)
 
 ///|
-pub fn Generator::new(named_regexps : Array[(String, RegExp)]) -> Self {
+pub fn Generator::new(names : Array[String], nfas : Array[NFA]) -> Self {
   let builder = StringBuilder::new()
-  let len = named_regexps.length()
-  let names = Array::new(capacity=len + 1)
-  let nfas = Array::new(capacity=len + 1)
-  names.push(LAURUS_RESERVED_TOKEN_NAME)
-  nfas.push(NFA::new([])) // ignore
-  for i in 0..<len {
-    let (name, regexp) = named_regexps[i]
-    let name = name.to_upper()
-    let nfa = regexp.to_token_nfa(i + 1)
-    names.push(name)
-    nfas.push(nfa)
-  }
   let generator = { builder, names, nfas, dfa_count: 0 }
   generator.init()
   generator
@@ -53,12 +41,12 @@ fn Generator::init(self : Self) -> Unit {
     #|
     #|///|
     #|fn Lexeme::new(beg? : Int = 0) -> Self {
-    $|  { token: \{LAURUS_RESERVED_TOKEN_NAME}, beg, end: 0 }
+    $|  { token: \{self.names[0]}, beg, end: 0 }
     #|}
     #|
     #|///|
     #|fn Lexeme::init(self : Self) -> Unit {
-    $|  self.token = \{LAURUS_RESERVED_TOKEN_NAME}
+    $|  self.token = \{self.names[0]}
     #|  self.beg = 0
     #|}
     #|
@@ -103,13 +91,19 @@ fn Generator::init(self : Self) -> Unit {
 }
 
 ///|
-pub fn Generator::codegen(self : Self, regexp_tokens : Iter[Index]) -> Unit {
-  let nfa = regexp_tokens.map(token => self.nfas[token]) |> NFA::token_union
+pub fn Generator::codegen(self : Self, regexp_tokens : Array[Index]) -> Unit {
+  let nfa = regexp_tokens.iter().map(token => self.nfas[token])
+    |> NFA::token_union
   let maker = DFAMaker::from_nfa(nfa)
   let dfa = maker.to_dfa()
+  let token_names = {
+    regexp_tokens.sort()
+    regexp_tokens.map(token => self.names[token]).join(", "[:])
+  }
   let scan_header =
     #|///|
     $|pub fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme {
+    $|  // [\{token_names}]
     #|  loop 0 {
     #|
   let scan_footer =

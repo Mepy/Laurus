@@ -125,7 +125,7 @@ fn RegExp::to_nfa_rev(self : RegExp) -> NFA {
 }
 
 ///|
-fn RegExp::to_token_nfa(self : RegExp, token : Token) -> NFA {
+pub fn RegExp::to_token_nfa(self : RegExp, token : Token) -> NFA {
   let nfa_rev = self.to_nfa_rev()
   let maker = DFAMaker::from_nfa(nfa_rev)
   let dfa_rev = maker.to_dfa()

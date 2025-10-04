@@ -17,10 +17,10 @@ typealias Int as Token
 typealias Int as Sort
 
 ///|
-typealias Int as Symbol
+pub typealias Int as Symbol
 
 ///|
-typealias Array[Symbol] as Sentence
+pub typealias Array[Symbol] as Sentence
 
 ///|
 struct Graph {

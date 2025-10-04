@@ -42,9 +42,9 @@ pub fn Parser::parse(self : Self) -> TyS? {
   loop 0 {
     0 => {
       self.enter_state(0)
-      // %START -> ● S | LAURUS
-      // S -> ● A B | LAURUS
-      // A -> ● a | b
+      // %START -> ● s | LAURUS
+      // s -> ● a b | LAURUS
+      // a -> ● A | B
       continue match lexeme.token {
           A => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -57,7 +57,7 @@ pub fn Parser::parse(self : Self) -> TyS? {
     }
     1 => {
       self.enter_state(1)
-      // %START -> S ● | LAURUS
+      // %START -> s ● | LAURUS
       continue match lexeme.token {
           LAURUS => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -71,9 +71,9 @@ pub fn Parser::parse(self : Self) -> TyS? {
     }
     2 => {
       self.enter_state(2)
-      // S -> A ● B | LAURUS
-      // B -> ● b | LAURUS
-      // B -> ● b c b | LAURUS
+      // s -> a ● b | LAURUS
+      // b -> ● B | LAURUS
+      // b -> ● B C B | LAURUS
       continue match lexeme.token {
           B => { // shift
             let node = self.lexer.get(lexeme)
@@ -88,7 +88,7 @@ pub fn Parser::parse(self : Self) -> TyS? {
     }
     3 => {
       self.enter_state(3)
-      // A -> a ● | b
+      // a -> A ● | B
       continue match lexeme.token {
           B => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -102,7 +102,7 @@ pub fn Parser::parse(self : Self) -> TyS? {
     }
     4 => {
       self.enter_state(4)
-      // S -> A B ● | LAURUS
+      // s -> a b ● | LAURUS
       continue match lexeme.token {
           LAURUS => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -118,8 +118,8 @@ pub fn Parser::parse(self : Self) -> TyS? {
     }
     5 => {
       self.enter_state(5)
-      // B -> b ● | LAURUS
-      // B -> b ● c b | LAURUS
+      // b -> B ● | LAURUS
+      // b -> B ● C B | LAURUS
       continue match lexeme.token {
           C => { // shift
             // ignore the old lexeme
@@ -138,7 +138,7 @@ pub fn Parser::parse(self : Self) -> TyS? {
     }
     6 => {
       self.enter_state(6)
-      // B -> b c ● b | LAURUS
+      // b -> B C ● B | LAURUS
       continue match lexeme.token {
           B => { // shift
             let node = self.lexer.get(lexeme)
@@ -153,7 +153,7 @@ pub fn Parser::parse(self : Self) -> TyS? {
     }
     7 => {
       self.enter_state(7)
-      // B -> b c b ● | LAURUS
+      // b -> B C B ● | LAURUS
       continue match lexeme.token {
           LAURUS => { // reduce
             self.state_stack.unsafe_pop() |> ignore

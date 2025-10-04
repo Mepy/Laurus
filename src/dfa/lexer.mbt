@@ -1,8 +1,8 @@
 ///|
 pub enum TOKEN {
   LAURUS
-  PLAY
-  PRAY
+  Play
+  Pray
 } derive(Show)
 
 ///|
@@ -61,6 +61,7 @@ fn Lexer::next(self : Self) -> Int {
 
 ///|
 pub fn Lexer::scan0(self : Self) -> Lexeme {
+  // [Play, Pray]
   loop 0 {
     0 =>
       continue match self.next() {
@@ -90,7 +91,7 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
         }
     5 => {
       self.lexeme.end = self.cur
-      self.lexeme.token = PRAY
+      self.lexeme.token = Pray
       break
     }
     6 =>
@@ -100,7 +101,7 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
         }
     7 => {
       self.lexeme.end = self.cur
-      self.lexeme.token = PLAY
+      self.lexeme.token = Play
       break
     }
     _ => break

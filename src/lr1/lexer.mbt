@@ -62,6 +62,7 @@ fn Lexer::next(self : Self) -> Int {
 
 ///|
 pub fn Lexer::scan0(self : Self) -> Lexeme {
+  // [A]
   loop 0 {
     0 =>
       continue match self.next() {
@@ -82,6 +83,7 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan1(self : Self) -> Lexeme {
+  // [B]
   loop 0 {
     0 =>
       continue match self.next() {
@@ -102,12 +104,16 @@ pub fn Lexer::scan1(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan2(self : Self) -> Lexeme {
+  // [LAURUS, C]
   loop 0 {
-    0 =>
+    0 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = LAURUS
       continue match self.next() {
           'c' => 1
           _ => break
         }
+    }
     1 => {
       self.lexeme.end = self.cur
       self.lexeme.token = C
@@ -122,8 +128,13 @@ pub fn Lexer::scan2(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan3(self : Self) -> Lexeme {
+  // [LAURUS]
   loop 0 {
-    0 => break
+    0 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = LAURUS
+      break
+    }
     _ => break
   }
   let lexeme = self.lexeme
