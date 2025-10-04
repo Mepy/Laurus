@@ -52,120 +52,67 @@ fn Generator::init(self : Self) -> Unit {
 }
 
 ///|
-pub fn Generator::codegen_sort_type(
-  self : Self,
-  lr1 : LR1,
-  sem : Semantics,
-) -> Unit {
-  let sort_len = sem.sorts.length()
-  for sort_i in 0..<sort_len {
-    let sort = sem.sorts[sort_i]
-    let rules = sem.rules[sort_i]
-    match sort.tag {
-      EnumType => {
-        let sort_header =
-          #|///|
-          $|enum \{sort.type_name} {
-          #|
-        let sort_footer =
-          #|} derive(Show)
-          #|
-        self.syntax_builder.write_string(sort_header)
-        let rule_len = rules.length()
-        for rule_i in 0..<rule_len {
-          let rule = rules[rule_i]
-          match rule {
-            Constructor(name) => {
-              self.syntax_builder.write_string("  \{name}(")
-              for symbol in lr1.grammar.rules[sort_i][rule_i] {
-                let type_name = sem.type_names[symbol]
-                if Semantics::is_NOT_ignored(type_name) {
-                  self.syntax_builder.write_string("\{type_name}, ")
-                }
-              }
-              self.syntax_builder.write_string(")\n")
-            }
-            NamedConstructor(name, field_names~) => {
-              self.syntax_builder.write_string(" \{name}(")
-              let sentence = lr1.grammar.rules[sort_i][rule_i]
-              let rule_size = sentence.length()
-              let mut ignore_offset = 0
-              for i in 0..<rule_size {
-                let type_name = sem.type_names[sentence[i]]
-                if Semantics::is_ignored(type_name) {
-                  ignore_offset += 1
-                } else {
-                  self.syntax_builder.write_string(
-                    "\{field_names[i - ignore_offset]}~ : \{type_name}, ",
-                  )
-                }
-              }
-              self.syntax_builder.write_string(")\n")
-            }
-            _ => ()
-          }
-        }
-        self.syntax_builder.write_string(sort_footer)
-      }
-      StructType => {
-        let sort_header =
-          #|///|
-          $|struct \{sort.type_name} {
-          #|
-        let sort_footer =
-          #|} derive(Show)
-          #|
-        self.syntax_builder.write_string(sort_header)
-        let rule_len = rules.length()
-        for rule_i in 0..<rule_len {
-          let rule = rules[rule_i]
-          match rule {
-            Fields(field_names) => {
-              let sentence = lr1.grammar.rules[sort_i][rule_i]
-              let rule_size = sentence.length()
-              let mut ignore_offset = 0
-              for i in 0..<rule_size {
-                let type_name = sem.type_names[sentence[i]]
-                if Semantics::is_ignored(type_name) {
-                  ignore_offset += 1
-                } else {
-                  self.syntax_builder.write_string(
-                    "  \{field_names[i - ignore_offset]} : \{type_name}\n",
-                  )
-                }
-              }
-            }
-            _ => ()
-          }
-        }
-        self.syntax_builder.write_string(sort_footer)
-      }
-      TupleType => {
-        let sort_header =
-          #|///|
-          $|struct \{sort.type_name} (
-        let sort_footer =
-          #|) derive(Show)
-          #|
-        self.syntax_builder.write_string(sort_header)
-        let rule_len = rules.length()
-        for rule_i in 0..<rule_len {
-          let rule = rules[rule_i]
-          match rule {
-            Tuple =>
-              for symbol in lr1.grammar.rules[sort_i][rule_i] {
-                let type_name = sem.type_names[symbol]
-                if Semantics::is_NOT_ignored(type_name) {
-                  self.syntax_builder.write_string("\{type_name}, ")
-                }
-              }
-            _ => ()
-          }
-        }
-        self.syntax_builder.write_string(sort_footer)
-      }
-      AsType => ()
+pub fn Generator::codegen_syntax_type(self : Self, sem : Semantics) -> Unit {
+  for named_tuple_type in sem.tuple_types {
+    let (type_name, { field_type_names }) = named_tuple_type
+    let type_header =
+      #|///|
+      $|struct \{type_name} (
+    let type_footer =
+      #|) derive(Show)
+      #|
+    self.syntax_builder.write_string(type_header)
+    for field_type_name in field_type_names {
+      self.syntax_builder.write_string("\{field_type_name}, ")
     }
+    self.syntax_builder.write_string(type_footer)
+  }
+  for named_struct_type in sem.struct_types {
+    let (type_name, { field_and_type_names }) = named_struct_type
+    let type_header =
+      #|///|
+      $|struct \{type_name} {
+      $|
+    let type_footer =
+      #|} derive(Show)
+      #|
+    self.syntax_builder.write_string(type_header)
+    for field_and_type_name in field_and_type_names {
+      let (field_name, type_name) = field_and_type_name
+      self.syntax_builder.write_string("\t\{field_name} : \{type_name}\n")
+    }
+    self.syntax_builder.write_string(type_footer)
+  }
+  for named_enum_type in sem.enum_types {
+    let (type_name, { branches }) = named_enum_type
+    let type_header =
+      #|///|
+      $|enum \{type_name} {
+      $|
+    let type_footer =
+      #|} derive(Show)
+      #|
+    self.syntax_builder.write_string(type_header)
+    for branch in branches {
+      let (branch_name, { field_and_type_names }) = branch
+      if field_and_type_names.length() == 0 {
+        self.syntax_builder.write_string("\t\{branch_name}\n")
+      } else {
+        self.syntax_builder.write_string("\t\{branch_name}(")
+        for field_and_type_name in field_and_type_names {
+          match field_and_type_name {
+            (None, type_name) =>
+              self.syntax_builder.write_string("\{type_name}, ")
+            (Some(field_name), type_name) =>
+              self.syntax_builder.write_string(
+                "\{field_name}~ : \{type_name}, ",
+              )
+          }
+        }
+        self.syntax_builder.write_string(")\n")
+      }
+    }
+    self.syntax_builder.write_string(type_footer)
   }
 }
 
@@ -179,76 +126,37 @@ pub fn Generator::codegen_node_type(self : Self, sem : Semantics) -> Unit {
     #|} derive(Show)
     #|
   self.builder.write_string(node_header)
-  for type_name in Set::from_array(sem.type_names) {
-    if Semantics::is_NOT_ignored(type_name) {
-      self.builder.write_string("  \{type_name}(\{type_name})\n")
-    }
+  for branch in sem.node_branches {
+    let (type_constr_name, type_name) = branch
+    self.builder.write_string("  \{type_constr_name}(\{type_name})\n")
   }
   self.builder.write_string(node_footer)
 }
 
 ///|
-pub fn Generator::codegen_interpreter(
-  self : Self,
-  lr1 : LR1,
-  sem : Semantics,
-) -> Unit {
-  let interpreter_header =
-    #|///|
-    #|struct Interpreter {} derive(Show)
-    #|
-  self.interpreter_builder.write_string(interpreter_header)
-  for token in sem.tokens {
-    guard token is Conversion(type_name~, parse_func_name~, ..) else {
-      continue
-    }
-    if Semantics::is_identity_func_name(parse_func_name) &&
-      Semantics::is_identity(type_name) {
-      continue
-    }
-    let func_code =
+pub fn Generator::codegen_interpret(self : Self, sem : Semantics) -> Unit {
+  for interp in sem.interpret_funcs {
+    let (interp_name, interp_type) = interp
+    let interpret_func_header =
       #|///|
       #|#inline
-      $|fn \{SEMANTIC_FUNC_PREFIX}\{parse_func_name}(str : String) -> \{type_name} {
-      #|  ...
-      #|}
+      $|fn \{interp_name.type_namespace}::\{interp_name.func_name}(
+    let interpret_func_footer =
+      $|) -> \{interp_type.retype_name} { ... }
       #|
-    self.interpreter_builder.write_string(func_code)
-  }
-  let sort_len = sem.sorts.length()
-  for sort in 0..<sort_len {
-    let rules = sem.rules[sort]
-    let rule_len = rules.length()
-    for rule_i in 0..<rule_len {
-      guard rules[rule_i]
-        is Reduction(parse_func_name~, parse_parameter_names~, ..) else {
-        continue
-      }
-      let func_header =
-        #|///|
-        #|#inline
-        $|fn \{SEMANTIC_FUNC_PREFIX}\{parse_func_name}(
-      let func_footer =
-        #|  ...
-        #|}
-        #|
-      self.interpreter_builder.write_string(func_header)
-      let sentence = lr1.grammar.rules[sort][rule_i]
-      let rule_size = sentence.length()
-      let mut ignore_offset = 0
-      for i in 0..<rule_size {
-        let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
-        if Semantics::is_ignored(type_name) {
-          ignore_offset += 1
-        } else {
+    self.interpreter_builder.write_string(interpret_func_header)
+    let param_len = interp_type.param_and_type_names.length()
+    for i in 0..<param_len {
+      match interp_type.param_and_type_names[i] {
+        (Some(param_name), type_name) =>
           self.interpreter_builder.write_string(
-            "\{parse_parameter_names[i - ignore_offset]} : \{type_name}, ",
+            "\{param_name} : \{type_name}, ",
           )
-        }
+        (None, type_name) =>
+          self.interpreter_builder.write_string("_\{i} : \{type_name}, ")
       }
-      self.interpreter_builder.write_string(") -> \{sem.type_names[sort]}{\n")
-      self.interpreter_builder.write_string(func_footer)
     }
+    self.interpreter_builder.write_string(interpret_func_footer)
   }
 }
 
@@ -268,7 +176,7 @@ pub fn Generator::codegen_parse(
 ) -> Unit {
   let parse_header =
     #|///|
-    $|pub fn Parser::parse(self : Self) -> \{sem.type_names[1]}? {
+    $|pub fn Parser::parse(self : Self) -> \{sem.type_names[0].unwrap()}? {
     #|  let mut lexeme = self.lexer.scan0()
     #|  loop 0 {
     #|
@@ -276,7 +184,7 @@ pub fn Generator::codegen_parse(
     #|    _ => break
     #|  }
     #|  match self.node_stack[0] {
-    $|    \{sem.type_names[1]}(node) => Some(node)
+    $|    \{sem.type_constr_names[0].unwrap()}(node) => Some(node)
     $|    _ => None
     #|  }
     #|}
@@ -306,7 +214,7 @@ pub fn Generator::codegen_parse(
     // codegen shift
     for token_state_dfa in shift_map {
       let (token, (state_j, dfa_j)) = token_state_dfa
-      let token_name = sem.names[token].to_upper()
+      let token_name = sem.names[token]
       let shift_header =
         $|          \{token_name} => { // shift
         #|
@@ -320,35 +228,24 @@ pub fn Generator::codegen_parse(
       match sem.tokens[token - lr1.sort_len] {
         Ignore =>
           self.builder.write_string("            // ignore the old lexeme\n")
-        BuiltIn("Lexeme") =>
+        Lexeme =>
           self.builder.write_string(
             "            self.node_stack.push(Node::Lexeme(lexeme))\n",
           )
-        BuiltIn("String") => {
+        String => {
           let shift_node =
             $|            let node = self.lexer.get(lexeme) |> Node::String
             $|            self.node_stack.push(node)
             $|
           self.builder.write_string(shift_node)
         }
-        BuiltIn(unknown) =>
-          // We will not finish this branch until there are more builtins
-          ...
-        Conversion(type_name~, parse_func_name~, ..) =>
-          if Semantics::is_identity_func_name(parse_func_name) &&
-            Semantics::is_identity(type_name) {
-            let shift_node =
-              $|            let node = self.lexer.get(lexeme) |> Node::\{type_name}
-              $|            self.node_stack.push(node)
-              $|
-            self.builder.write_string(shift_node)
-          } else {
-            let shift_node =
-              $|            let node = self.lexer.get(lexeme) |> \{SEMANTIC_FUNC_PREFIX}\{parse_func_name} |> Node::\{type_name}
-              $|            self.node_stack.push(node)
-              $|
-            self.builder.write_string(shift_node)
-          }
+        Interpret(type_name~, parse_func_name~) => {
+          let shift_node =
+            $|            let node = self.lexer.get(lexeme) |> \{type_name}::\{parse_func_name} |> Node::\{type_name}
+            $|            self.node_stack.push(node)
+            $|
+          self.builder.write_string(shift_node)
+        }
       }
       self.builder.write_string(shift_footer)
     }
@@ -356,7 +253,7 @@ pub fn Generator::codegen_parse(
     // codegen reduce
     for token_sort_rule_i_size in reduce_map {
       let (token, (sort, rule_i, rule_size)) = token_sort_rule_i_size
-      let token_name = sem.names[token].to_upper()
+      let token_name = sem.names[token]
       let reduce_header =
         $|          \{token_name} => { // reduce
         $|
@@ -373,89 +270,168 @@ pub fn Generator::codegen_parse(
 
       // pop node_stack
       for i = rule_size - 1; i >= 0; i = i - 1 {
-        let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
-        if Semantics::is_ignored(type_name) {
-          self.builder.write_string(
-            "            //                             ignore Node::\{INGORED_TYPE_NAME}(x\{i})\n",
-          )
-        } else {
-          self.builder.write_string(
-            "            guard self.node_stack.unsafe_pop() is Node::\{type_name}(x\{i})\n",
-          )
+        let symbol = lr1.grammar.rules[sort][rule_i][i]
+        match sem.type_constr_names[symbol] {
+          None =>
+            self.builder.write_string(
+              "            // ignore Node [x\{i} : \{sem.names[symbol]}]\n",
+            )
+          Some(type_constr_name) =>
+            self.builder.write_string(
+              "            guard self.node_stack.unsafe_pop() is Node::\{type_constr_name}(x\{i})\n",
+            )
         }
       }
       // construct new node according to the semantics of the rule
-      let type_name = sem.type_names[sort]
-      if Semantics::is_NOT_ignored(type_name) {
-        match sem.rules[sort][rule_i] {
-          Constructor(constructor_name) => {
-            self.builder.write_string(
-              "            let node = \{constructor_name}(",
-            )
-            for i in 0..<rule_size {
-              let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
-              if Semantics::is_NOT_ignored(type_name) {
-                self.builder.write_string("x\{i}, ")
-              }
-            }
-            self.builder.write_string(") |> Node::\{type_name}\n")
-          }
-          NamedConstructor(constructor_name, field_names~) => {
-            self.builder.write_string(
-              "            let node = \{constructor_name}(",
-            )
-            let mut ignore_offset = 0
-            for i in 0..<rule_size {
-              let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
-              if Semantics::is_ignored(type_name) {
-                ignore_offset += 1
+      match (sem.type_namespaces[sort], sem.type_constr_names[sort]) {
+        (Some(type_namespace), Some(type_constr_name)) => {
+          match sem.rules[sort][rule_i] {
+            Constructor(constructor_name, field_names) => {
+              let no_arg = lr1.grammar.rules[sort][rule_i]
+                .iter()
+                .all(symbol => match sem.type_names[symbol] {
+                  None => true
+                  _ => false
+                })
+              if no_arg {
+                self.builder.write_string(
+                  "            let node = \{type_namespace}::\{constructor_name} |> Node::\{type_constr_name}\n",
+                )
               } else {
                 self.builder.write_string(
-                  "\{field_names[i - ignore_offset]} = x\{i}, ",
+                  "            let node = \{type_namespace}::\{constructor_name}(",
                 )
+                let mut ignore_offset = 0
+                for i in 0..<rule_size {
+                  let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+                  guard type_name is Some(_) else { ignore_offset += 1 }
+                  match field_names[i - ignore_offset] {
+                    None => self.builder.write_string("x\{i}, ")
+                    Some(field_name) =>
+                      self.builder.write_string("\{field_name} = x\{i}, ")
+                  }
+                }
+                self.builder.write_string(") |> Node::\{type_constr_name}\n")
               }
             }
-            self.builder.write_string(") |> Node::\{type_name}\n")
-          }
-          Tuple => {
-            self.builder.write_string("            let node = \{type_name}(")
-            for i in 0..<rule_size {
-              let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
-              if Semantics::is_NOT_ignored(type_name) {
+            Struct(field_names) => {
+              self.builder.write_string(
+                "            let node = \{type_namespace}::{",
+              )
+              let mut ignore_offset = 0
+              for i in 0..<rule_size {
+                let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+                guard type_name is Some(_) else { ignore_offset += 1 }
+                let field_name = field_names[i - ignore_offset]
+                self.builder.write_string("\{field_name} : x\{i}, ")
+              }
+              self.builder.write_string("} |> Node::\{type_constr_name}\n")
+            }
+            Tuple => {
+              self.builder.write_string(
+                "            let node = \{type_namespace}(",
+              )
+              for i in 0..<rule_size {
+                let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+                guard type_name is Some(_) else { continue }
                 self.builder.write_string("x\{i}, ")
               }
+              self.builder.write_string(") |> Node::\{type_constr_name}\n")
             }
-            self.builder.write_string(") |> Node::\{type_name}\n")
-          }
-          Fields(field_names) => {
-            self.builder.write_string("            let node = \{type_name}::{")
-            let mut ignore_offset = 0
-            for i in 0..<rule_size {
-              let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
-              if Semantics::is_ignored(type_name) {
-                ignore_offset += 1
-              } else {
-                self.builder.write_string(
-                  "\{field_names[i-ignore_offset]} : x\{i}, ",
-                )
-              }
-            }
-            self.builder.write_string("} |> Node::\{type_name}\n")
-          }
-          Reduction(parse_func_name~, ..) => {
-            self.builder.write_string(
-              "            let node = \{SEMANTIC_FUNC_PREFIX}\{parse_func_name}(",
-            )
-            for i in 0..<rule_size {
-              let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
-              if Semantics::is_NOT_ignored(type_name) {
+            Identity => {
+              self.builder.write_string("            let node = (")
+              for i in 0..<rule_size {
+                let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+                guard type_name is Some(_) else { continue }
                 self.builder.write_string("x\{i}, ")
               }
+              self.builder.write_string(") |> Node::\{type_constr_name}\n")
             }
-            self.builder.write_string(") |> Node::\{type_name}\n")
+            Interpret(parse_func_name~) => {
+              self.builder.write_string(
+                "            let node = \{type_namespace}::\{parse_func_name}(",
+              )
+              for i in 0..<rule_size {
+                let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+                guard type_name is Some(_) else { continue }
+                self.builder.write_string("x\{i}, ")
+              }
+              self.builder.write_string(") |> Node::\{type_constr_name}\n")
+            }
           }
+          // match sem.rules[sort][rule_i] {
+          //   Constructor(constructor_name) => {
+          //     self.builder.write_string(
+          //       "            let node = \{constructor_name}(",
+          //     )
+          //     for i in 0..<rule_size {
+          //       let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+          //       if Semantics::is_NOT_ignored(type_name) {
+          //         self.builder.write_string("x\{i}, ")
+          //       }
+          //     }
+          //     self.builder.write_string(") |> Node::\{type_name}\n")
+          //   }
+          //   NamedConstructor(constructor_name, field_names~) => {
+          //     self.builder.write_string(
+          //       "            let node = \{constructor_name}(",
+          //     )
+          //     let mut ignore_offset = 0
+          //     for i in 0..<rule_size {
+          //       let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+          //       if Semantics::is_ignored(type_name) {
+          //         ignore_offset += 1
+          //       } else {
+          //         self.builder.write_string(
+          //           "\{field_names[i - ignore_offset]} = x\{i}, ",
+          //         )
+          //       }
+          //     }
+          //     self.builder.write_string(") |> Node::\{type_name}\n")
+          //   }
+          //   Tuple => {
+          //     self.builder.write_string("            let node = \{type_name}(")
+          //     for i in 0..<rule_size {
+          //       let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+          //       if Semantics::is_NOT_ignored(type_name) {
+          //         self.builder.write_string("x\{i}, ")
+          //       }
+          //     }
+          //     self.builder.write_string(") |> Node::\{type_name}\n")
+          //   }
+          //   Fields(field_names) => {
+          //     self.builder.write_string(
+          //       "            let node = \{type_name}::{",
+          //     )
+          //     let mut ignore_offset = 0
+          //     for i in 0..<rule_size {
+          //       let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+          //       if Semantics::is_ignored(type_name) {
+          //         ignore_offset += 1
+          //       } else {
+          //         self.builder.write_string(
+          //           "\{field_names[i-ignore_offset]} : x\{i}, ",
+          //         )
+          //       }
+          //     }
+          //     self.builder.write_string("} |> Node::\{type_name}\n")
+          //   }
+          //   Reduction(parse_func_name~, ..) => {
+          //     self.builder.write_string(
+          //       "            let node = \{SEMANTIC_FUNC_PREFIX}\{parse_func_name}(",
+          //     )
+          //     for i in 0..<rule_size {
+          //       let type_name = sem.type_names[lr1.grammar.rules[sort][rule_i][i]]
+          //       if Semantics::is_NOT_ignored(type_name) {
+          //         self.builder.write_string("x\{i}, ")
+          //       }
+          //     }
+          //     self.builder.write_string(") |> Node::\{type_name}\n")
+          //   }
+          // }
+          self.builder.write_string("            self.node_stack.push(node)\n")
         }
-        self.builder.write_string("            self.node_stack.push(node)\n")
+        _ => ()
       }
 
       // codegen goto

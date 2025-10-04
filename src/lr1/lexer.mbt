@@ -4,6 +4,7 @@ pub enum TOKEN {
   A
   B
   C
+  D
 } derive(Show)
 
 ///|
@@ -83,16 +84,22 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan1(self : Self) -> Lexeme {
-  // [B]
+  // [B, D]
   loop 0 {
     0 =>
       continue match self.next() {
           'b' => 1
+          'd' => 2
           _ => break
         }
     1 => {
       self.lexeme.end = self.cur
       self.lexeme.token = B
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = D
       break
     }
     _ => break
@@ -128,11 +135,80 @@ pub fn Lexer::scan2(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan3(self : Self) -> Lexeme {
+  // [B]
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          'b' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = B
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan4(self : Self) -> Lexeme {
+  // [C, D]
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          'c' => 1
+          'd' => 2
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = C
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = D
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan5(self : Self) -> Lexeme {
   // [LAURUS]
   loop 0 {
     0 => {
       self.lexeme.end = self.cur
       self.lexeme.token = LAURUS
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan6(self : Self) -> Lexeme {
+  // [D]
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          'd' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = D
       break
     }
     _ => break

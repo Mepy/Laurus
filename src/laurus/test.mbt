@@ -104,7 +104,7 @@ test "codegen::laurus" {
   // Char token
   .add_token(
     "EscNo",
-    Conversion(type_name="Char", parse_func_name="get0"),
+    Interpret(type_name="Char", parse_func_name="get0"),
     Bnot([
       Range::single('\\'),
       Range::single('/'),
@@ -123,7 +123,7 @@ test "codegen::laurus" {
   )
   .add_token(
     "EscOrigin",
-    Conversion(type_name="Char", parse_func_name="get0"),
+    Interpret(type_name="Char", parse_func_name="get0"),
     Bor([
       Range::single('\\'),
       Range::single('/'),
@@ -142,12 +142,12 @@ test "codegen::laurus" {
   )
   .add_token(
     "EscSpace",
-    Conversion(type_name="Char", parse_func_name="esc_space"),
+    Interpret(type_name="Char", parse_func_name="esc_space"),
     Bor([Range::single('s'), Range::single('t'), Range::single('n')]),
   )
   .add_token(
     "EscUnicode",
-    Conversion(type_name="Char", parse_func_name="esc_unicode"),
+    Interpret(type_name="Char", parse_func_name="esc_unicode"),
     Union(
       hex,
       Union(
@@ -214,8 +214,8 @@ test "codegen::laurus" {
   // sorts of tokens
   .add_sort("token_conv", Atom("TokenConv"), [
     Rule::eq_Cons("Ignore", []),
-    Rule::eq_Cons("Builtin", [Unnamed("TypeName")]),
-    Rule::eq_Cons("Conversion", [
+    Rule::eq_Cons("BuiltIn", [Unnamed("TypeName")]),
+    Rule::eq_Cons("Interpret", [
       Named(field_name="type_name", "TypeName"),
       Unnamed("ColonColon"),
       Named(field_name="parse_func_name", "MethodName"),
@@ -331,7 +331,15 @@ test "codegen::laurus" {
     ]),
   ])
   |> ignore
-  laurus.workbench()
+  laurus.workbench().save("./src/laurus")
+}
+
+///|
+test "parse::laurus" {
+  let parser = Parser::new()
+  let laurus_source = @fs.read_file_to_string("./src/laurus/laurus.laurus")
+  parser.init(laurus_source)
+  parser.parse() |> println
 }
 
 ///|

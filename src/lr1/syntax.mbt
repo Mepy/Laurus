@@ -1,11 +1,11 @@
 ///|
+struct TyA(String) derive(Show)
+
+///|
 struct TyS {
   a : TyA
   b : TyB
 } derive(Show)
-
-///|
-struct TyA(String) derive(Show)
 
 ///|
 enum TyB {

@@ -55,7 +55,7 @@ struct LR1Maker {
 } derive(Show)
 
 ///|
-struct LR1 {
+pub(all) struct LR1 {
   grammar : Grammar
   sort_len : Symbol
   states : Array[Set[Item]]

@@ -24,7 +24,7 @@ test "simple" {
 
 ///|
 test "codegen:simple" {
-  // 0 => s', 1 => s, 2 => a, 3 => b, 4 => EOF, 5 => A, 6 => B, 7 => C
+  // 0 => s', 1 => s, 2 => a, 3 => b, 4 => EOF, 5 => A, 6 => B, 7 => C, 8 => D
   // s' -> s 
   // s -> a b
   // a -> A
@@ -34,9 +34,9 @@ test "codegen:simple" {
       [[1]], // s' -> s
       [[2, 3]], // s -> a b
       [[5]], // a -> A
-      [[6], [6, 7, 6]],
+      [[6], [6, 7, 6], [8, 3, 8]],
     ],
-  } // b -> B | B C B
+  } // b -> B | B C B | D b D
   let maker = LR1Maker::new(grammar)
   maker.construct_states()
   let lr1 = maker.to_lr1()
@@ -50,43 +50,79 @@ test "codegen:simple" {
       "A",
       "B",
       "C",
+      "D",
     ]
-    let sorts = [
-      { tag: AsType, type_name: "TyS" }, // %START
-      { tag: StructType, type_name: "TyS" }, // s
-      { tag: TupleType, type_name: "TyA" }, // A
-      { tag: EnumType, type_name: "TyB" }, // B
-    ]
-    let rules = [
-      [Reduction(parse_func_name="parseStart", parse_parameter_names=["s"])],
-      [Fields(["a", "b"])],
+    let rules : Array[Array[RuleSemantics]] = [
+      [Interpret(parse_func_name="parseStart")],
+      [Struct(["a", "b"])],
       [Tuple],
       [
-        Constructor("One"),
-        NamedConstructor("Two", field_names=["first", "second"]),
+        Constructor("One", [None]),
+        Constructor("Two", [Some("first"), Some("second")]),
+        Identity,
       ],
     ]
-    let tokens = [
-      TokenSemantics::BuiltIn("Lexeme"),
-      Conversion(type_name="String", parse_func_name=""),
-      Conversion(type_name="String", parse_func_name="parseB"),
-      TokenSemantics::Ignore,
+    let tokens : Array[TokenSemantics] = [
+      Lexeme,
+      String,
+      Interpret(type_name="String", parse_func_name="parseB"),
+      Ignore,
+      Ignore,
     ]
-    Semantics::new(names, sorts, rules, tokens)
+    let type_names : Array[String?] = [
+      Some("TyS"),
+      Some("TyS"),
+      Some("TyA"),
+      Some("TyB"),
+    ]
+    for token in 0..<tokens.length() {
+      let type_name = match tokens[token] {
+        Ignore => None
+        Lexeme => Some("Lexeme")
+        String => Some("String")
+        Interpret(type_name~, ..) => Some(type_name)
+      }
+      type_names.push(type_name)
+    }
+    let tuple_types = { "TyA": TupleType::new(["String"]) }
+    let struct_types = { "TyS": StructType::new([("a", "TyA"), ("b", "TyB")]) }
+    let enum_types = {
+      "TyB": EnumType::new({
+        "One": EnumBranch::new([(None, "String")]),
+        "Two": EnumBranch::new([
+          (Some("first"), "String"),
+          (Some("second"), "String"),
+        ]),
+      }),
+    }
+    let interpret_funcs : Map[InterpretFuncName, InterpretFuncType] = {}
+    interpret_funcs[InterpretFuncName::new("String", "parseB")] = InterpretFuncType::new(
+      [(Some("str"), "String")],
+      "String",
+    )
+    interpret_funcs[InterpretFuncName::new("TyS", "parseStart")] = InterpretFuncType::new(
+      [(None, "TyS")],
+      "TyS",
+    )
+    Semantics::new(
+      names, rules, tokens, type_names, type_names, type_names, tuple_types, struct_types,
+      enum_types, interpret_funcs,
+    )
   }
-  let token_names = [@dfa.LAURUS_RESERVED_TOKEN_NAME, "A", "B", "C"]
+  let token_names = [@dfa.LAURUS_RESERVED_TOKEN_NAME, "A", "B", "C", "D"]
   let token_nfas = [
     @dfa.Emp,
     @dfa.Single('a'),
     @dfa.Single('b'),
     @dfa.Single('c'),
+    @dfa.Single('d'),
   ].mapi((i, regexp) => regexp.to_token_nfa(i))
   let lex_gen = @dfa.Generator::new(token_names, token_nfas)
   let generator = Generator::new(lex_gen)
   generator.codegen_lexer(lr1)
-  generator.codegen_sort_type(lr1, sem)
+  generator.codegen_syntax_type(sem)
   generator.codegen_node_type(sem)
-  generator.codegen_interpreter(lr1, sem)
+  generator.codegen_interpret(sem)
   generator.codegen_parse(lr1, sem)
   generator.save("./src/lr1")
 }
@@ -97,5 +133,7 @@ test "parse:simple" {
   parser.init("abcb")
   parser.parse() |> println
   parser.init("ab")
+  parser.parse() |> println
+  parser.init("adbcbd")
   parser.parse() |> println
 }

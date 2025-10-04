@@ -1,4 +1,22 @@
 ///|
+struct Range(Char, Char) derive(Show)
+
+///|
+struct Rule {
+  priority : Priority
+  shift_reduce : ShiftReduce
+  action : Action
+  symbols : Array[Symbol]
+} derive(Show)
+
+///|
+enum TokenConv {
+  Ignore
+  BuiltIn(String)
+  Interpret(type_name~ : String, parse_func_name~ : String)
+} derive(Show)
+
+///|
 enum RegExp {
   Bor(Array[Range])
   Bnot(Array[Range])
@@ -13,9 +31,6 @@ enum RegExp {
 } derive(Show)
 
 ///|
-typealias @lr1.TokenSemantics as TokenConv
-
-///|
 enum SortType {
   Ignore
   Atom(String)
@@ -26,14 +41,6 @@ enum SortType {
 enum Generics {
   Atom(String)
   Gen(String, Generics)
-} derive(Show, Eq)
-
-///|
-struct Rule {
-  priority : Priority
-  shift_reduce : ShiftReduce
-  action : Action
-  symbols : Array[Symbol]
 } derive(Show)
 
 ///|
@@ -60,20 +67,4 @@ enum Symbol {
   Unnamed(String)
   Named(field_name~ : String, String)
   NamedAbbrev(field_name~ : String)
-} derive(Show)
-
-///|
-struct Range(Char, Char) derive(Show)
-
-///|
-struct Laurus {
-  comments : Array[String]
-  mut space : RegExp
-  mut start : String
-  token_names : Array[String]
-  token_convs : Array[TokenConv]
-  token_reg_exps : Array[RegExp]
-  sort_names : Array[String]
-  sort_types : Array[SortType]
-  sort_rules : Array[Array[Rule]]
 } derive(Show)

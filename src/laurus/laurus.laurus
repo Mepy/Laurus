@@ -67,7 +67,7 @@ laurus : Laurus {
 token_conv : TokenConv {
 = Ignore()
 = Builtin(TypeName)
-= Conversion([type_name : TypeName] ColonColon [parse_func_name : MethodName])
+= Interpret([type_name : TypeName] ColonColon [parse_func_name : MethodName])
 }
 
 reg_exp : RegExp {
