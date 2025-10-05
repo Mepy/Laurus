@@ -11,6 +11,7 @@ pub fn Generator::new(names : Array[String], nfas : Array[NFA]) -> Self {
   let builder = StringBuilder::new()
   let generator = { builder, names, nfas, dfa_count: 0 }
   generator.init()
+  generator.codegen_skip_space()
   generator
 }
 
@@ -59,11 +60,11 @@ fn Generator::init(self : Self) -> Unit {
     #|
     #|///|
     #|pub fn Lexer::new(src? : String = "") -> Self {
-    #|  { src, cur: -1, lexeme: Lexeme::new() }
+    #|  { src, cur: 0, lexeme: Lexeme::new() }
     #|}
     #|
     #|///|
-    #|pub fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
+    #|pub fn Lexer::init(self : Self, src : String, cur? : Int = 0) -> Unit {
     #|  self.src = src
     #|  self.cur = cur
     #|  self.lexeme.init()
@@ -73,14 +74,15 @@ fn Generator::init(self : Self) -> Unit {
     #|pub fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
     #|  let beg = lexeme.beg
     #|  let end = lexeme.end
-    #|  self.src.unsafe_substring(start=beg, end=end + 1)
+    #|  self.src.unsafe_substring(start=beg, end=end)
     #|}
     #|
     #|///|
     #|fn Lexer::next(self : Self) -> Int {
-    #|  self.cur += 1 
     #|  if self.cur < self.src.length() {
-    #|    self.src[self.cur]
+    #|    let c = self.src[self.cur]
+    #|    self.cur += 1 
+    #|    c
     #|  } else {
     #|    -1
     #|  }
@@ -91,26 +93,13 @@ fn Generator::init(self : Self) -> Unit {
 }
 
 ///|
-pub fn Generator::codegen(self : Self, regexp_tokens : Array[Index]) -> Unit {
-  let nfa = regexp_tokens.iter().map(token => self.nfas[token])
-    |> NFA::token_union
-  let maker = DFAMaker::from_nfa(nfa)
-  let dfa = maker.to_dfa()
-  let token_names = {
-    regexp_tokens.sort()
-    regexp_tokens.map(token => self.names[token]).join(", "[:])
-  }
-  let scan_header =
-    #|///|
-    $|pub fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme {
-    $|  // [\{token_names}]
-    #|  loop 0 {
-    #|
+fn Generator::codegen_dfa(self : Self, dfa : DFA, scan_header : String) -> Unit {
   let scan_footer =
     #|    _ => break
     #|  }
     #|  let lexeme = self.lexeme
-    #|  self.lexeme = Lexeme::new(beg=lexeme.end+1)
+    #|  self.cur = lexeme.end
+    #|  self.lexeme = Lexeme::new(beg=lexeme.end)
     #|  lexeme
     #|}
   self.builder.write_string(scan_header)
@@ -140,6 +129,9 @@ pub fn Generator::codegen(self : Self, regexp_tokens : Array[Index]) -> Unit {
           match l {
             '\u{0}' => "'\\u{0}'"
             '\u{10FFFF}' => "'\\u{10FFFF}'"
+            ' ' => "' '"
+            '\t' => "'\\t'"
+            '\n' => "'\\n'"
             '\'' => "'\\''"
             '\\' => "'\\\\'"
             _ as c => "'\{c}'"
@@ -160,7 +152,44 @@ pub fn Generator::codegen(self : Self, regexp_tokens : Array[Index]) -> Unit {
     self.builder.write_string("    }\n")
   }
   self.builder.write_string(scan_footer)
+}
+
+///|
+pub fn Generator::codegen_scan(
+  self : Self,
+  regexp_tokens : Array[Index],
+) -> Unit {
+  let nfa = regexp_tokens.iter().map(token => self.nfas[token])
+    |> NFA::token_union
+  let maker = DFAMaker::from_nfa(nfa)
+  let dfa = maker.to_dfa()
+  let token_names = {
+    regexp_tokens.sort()
+    regexp_tokens.map(token => self.names[token]).join(", "[:])
+  }
+  let scan_header =
+    #|///|
+    $|pub fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme {
+    $|  // [\{token_names}]
+    $|  self.skip_space() |> ignore
+    #|  loop 0 {
+    #|
+  self.codegen_dfa(dfa, scan_header)
   self.dfa_count += 1
+}
+
+///|
+/// We assume nfas[1] is the space, and names[1] = LAURUS_RESERVED_SPACE
+pub fn Generator::codegen_skip_space(self : Self) -> Unit {
+  let nfa = self.nfas[1]
+  let maker = DFAMaker::from_nfa(nfa)
+  let dfa = maker.to_dfa()
+  let scan_header =
+    #|///|
+    $|pub fn Lexer::skip_space(self : Self) -> Lexeme {
+    #|  loop 0 {
+    #|
+  self.codegen_dfa(dfa, scan_header)
 }
 
 ///|

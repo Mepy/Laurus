@@ -1,6 +1,7 @@
 ///|
 pub enum TOKEN {
-  LAURUS
+  LAURUS_EOF
+  LAURUS_SPACE
   A
   B
   C
@@ -16,12 +17,12 @@ pub struct Lexeme {
 
 ///|
 fn Lexeme::new(beg? : Int = 0) -> Self {
-  { token: LAURUS, beg, end: 0 }
+  { token: LAURUS_EOF, beg, end: 0 }
 }
 
 ///|
 fn Lexeme::init(self : Self) -> Unit {
-  self.token = LAURUS
+  self.token = LAURUS_EOF
   self.beg = 0
 }
 
@@ -34,11 +35,11 @@ struct Lexer {
 
 ///|
 pub fn Lexer::new(src? : String = "") -> Self {
-  { src, cur: -1, lexeme: Lexeme::new() }
+  { src, cur: 0, lexeme: Lexeme::new() }
 }
 
 ///|
-pub fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
+pub fn Lexer::init(self : Self, src : String, cur? : Int = 0) -> Unit {
   self.src = src
   self.cur = cur
   self.lexeme.init()
@@ -48,22 +49,53 @@ pub fn Lexer::init(self : Self, src : String, cur? : Int = -1) -> Unit {
 pub fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
   let beg = lexeme.beg
   let end = lexeme.end
-  self.src.unsafe_substring(start=beg, end=end + 1)
+  self.src.unsafe_substring(start=beg, end~)
 }
 
 ///|
 fn Lexer::next(self : Self) -> Int {
-  self.cur += 1
   if self.cur < self.src.length() {
-    self.src[self.cur]
+    let c = self.src[self.cur]
+    self.cur += 1
+    c
   } else {
     -1
   }
 }
 
 ///|
+pub fn Lexer::skip_space(self : Self) -> Lexeme {
+  loop 0 {
+    0 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = LAURUS_SPACE
+      continue match self.next() {
+          '\t'..='\n' => 1
+          ' ' => 1
+          _ => break
+        }
+    }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = LAURUS_SPACE
+      continue match self.next() {
+          '\t'..='\n' => 1
+          ' ' => 1
+          _ => break
+        }
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
+  lexeme
+} ///|
+
+///|
 pub fn Lexer::scan0(self : Self) -> Lexeme {
   // [A]
+  self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
@@ -78,13 +110,15 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
 } ///|
 
 ///|
 pub fn Lexer::scan1(self : Self) -> Lexeme {
   // [B, D]
+  self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
@@ -105,17 +139,19 @@ pub fn Lexer::scan1(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
 } ///|
 
 ///|
 pub fn Lexer::scan2(self : Self) -> Lexeme {
-  // [LAURUS, C]
+  // [LAURUS_EOF, C]
+  self.skip_space() |> ignore
   loop 0 {
     0 => {
       self.lexeme.end = self.cur
-      self.lexeme.token = LAURUS
+      self.lexeme.token = LAURUS_EOF
       continue match self.next() {
           'c' => 1
           _ => break
@@ -129,13 +165,15 @@ pub fn Lexer::scan2(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
 } ///|
 
 ///|
 pub fn Lexer::scan3(self : Self) -> Lexeme {
   // [B]
+  self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
@@ -150,13 +188,15 @@ pub fn Lexer::scan3(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
 } ///|
 
 ///|
 pub fn Lexer::scan4(self : Self) -> Lexeme {
   // [C, D]
+  self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
@@ -177,29 +217,33 @@ pub fn Lexer::scan4(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
 } ///|
 
 ///|
 pub fn Lexer::scan5(self : Self) -> Lexeme {
-  // [LAURUS]
+  // [LAURUS_EOF]
+  self.skip_space() |> ignore
   loop 0 {
     0 => {
       self.lexeme.end = self.cur
-      self.lexeme.token = LAURUS
+      self.lexeme.token = LAURUS_EOF
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
 } ///|
 
 ///|
 pub fn Lexer::scan6(self : Self) -> Lexeme {
   // [D]
+  self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
@@ -214,6 +258,7 @@ pub fn Lexer::scan6(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.lexeme = Lexeme::new(beg=lexeme.end + 1)
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
 }

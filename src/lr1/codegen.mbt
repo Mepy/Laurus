@@ -36,7 +36,7 @@ fn Generator::init(self : Self) -> Unit {
     #|}
     #|
     #|///|
-    #|pub fn Parser::init(self : Self, src : String, cur? : Int = -1) -> Unit {
+    #|pub fn Parser::init(self : Self, src : String, cur? : Int = 0) -> Unit {
     #|  self.lexer.init(src, cur~)
     #|  self.state_stack.clear()
     #|  self.node_stack.clear()
@@ -164,7 +164,7 @@ pub fn Generator::codegen_interpret(self : Self, sem : Semantics) -> Unit {
 pub fn Generator::codegen_lexer(self : Self, lr1 : LR1) -> Unit {
   // codegen dfas
   for dfa_token in lr1.dfa_tokens {
-    self.lex_gen.codegen(dfa_token)
+    self.lex_gen.codegen_scan(dfa_token)
   }
 }
 
@@ -194,19 +194,19 @@ pub fn Generator::codegen_parse(
   for state_i in 0..<state_len {
     self.builder.write_string("    \{state_i} => {\n")
     self.builder.write_string("      self.enter_state(\{state_i})\n")
-    // codegen LR1 items
-    for item in lr1.states[state_i] {
-      self.builder.write_string("      // \{sem.names[item.sort]} ->") // indent
-      let sentence_len = item.sentence.length()
-      for i in 0..<item.cur {
-        self.builder.write_string(" \{sem.names[item.sentence[i]]}")
-      }
-      self.builder.write_string(" ●")
-      for i in item.cur..<sentence_len {
-        self.builder.write_string(" \{sem.names[item.sentence[i]]}")
-      }
-      self.builder.write_string(" | \{sem.names[item.lookahead]}\n")
-    }
+    // // codegen LR1 items
+    // for item in lr1.states[state_i] {
+    //   self.builder.write_string("      // \{sem.names[item.sort]} ->") // indent
+    //   let sentence_len = item.sentence.length()
+    //   for i in 0..<item.cur {
+    //     self.builder.write_string(" \{sem.names[item.sentence[i]]}")
+    //   }
+    //   self.builder.write_string(" ●")
+    //   for i in item.cur..<sentence_len {
+    //     self.builder.write_string(" \{sem.names[item.sentence[i]]}")
+    //   }
+    //   self.builder.write_string(" | \{sem.names[item.lookahead]}\n")
+    // }
     self.builder.write_string("      continue match lexeme.token {\n")
     let shift_map = lr1.shift_table[state_i]
     let reduce_map = lr1.reduce_table[state_i]

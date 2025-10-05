@@ -17,16 +17,18 @@ struct Laurus {
 
 ///|
 fn Laurus::lex_gen(self : Self) -> @dfa.Generator {
-  let len = self.token_names.length() + 1
+  let len = self.token_names.length() + 2 // due to EOF and SPACE
   let names = Array::new(capacity=len)
-  names.push(@dfa.LAURUS_RESERVED_TOKEN_NAME)
+  names.push(@dfa.LAURUS_RESERVED_EOF)
+  names.push(@dfa.LAURUS_RESERVED_SPACE)
   for name in self.token_names {
     names.push(name)
   }
   let nfas : Array[@dfa.NFA] = Array::new(capacity=len)
   nfas.push(RegExp::Emp.to_token_nfa(0))
-  for i in 1..<len {
-    let reg_exp = self.token_reg_exps[i - 1] // due to EOF
+  nfas.push(self.space.to_token_nfa(1))
+  for i in 2..<len { // due to EOF and SPACE
+    let reg_exp = self.token_reg_exps[i - 2] // due to EOF and SPACE
     nfas.push(reg_exp.to_token_nfa(i))
   }
   @dfa.Generator::new(names, nfas)
@@ -37,7 +39,7 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
   // we assert sort_names.length() > 0, we will soon add a checker towards Laurus (TODO)
 
   let sort_len = self.sort_names.length() + 1 // + %start
-  let token_len = self.token_names.length() + 1 // + EOF
+  let token_len = self.token_names.length() + 2 // + EOF
   let len = sort_len + token_len
   let name_indices : Map[String, @lr1.Symbol] = Map::new(capacity=len)
   let start = if self.start != "" { self.start } else { self.sort_names[0] }
@@ -45,7 +47,8 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
   for name in self.sort_names {
     name_indices[name] = name_indices.size()
   }
-  name_indices[@dfa.LAURUS_RESERVED_TOKEN_NAME] = name_indices.size()
+  name_indices[@dfa.LAURUS_RESERVED_EOF] = name_indices.size()
+  name_indices[@dfa.LAURUS_RESERVED_SPACE] = name_indices.size()
   for name in self.token_names {
     name_indices[name] = name_indices.size()
   }
@@ -92,16 +95,19 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
   type_namespaces.push(None) // EOF
   type_names.push(None) // EOF
   type_constr_names.push(None) // EOF
+  type_namespaces.push(None) // SPACE
+  type_names.push(None) // SPACE
+  type_constr_names.push(None) // SPACE
   for token_conv in self.token_convs {
     let type_name = token_conv.type_name()
     type_namespaces.push(type_name)
     type_names.push(type_name)
     type_constr_names.push(type_name)
   }
-  let rules = Array::makei(sort_len, i => Array::new(
+  let rule_semantics = Array::makei(sort_len, i => Array::new(
     capacity=grammar.rules[i].length(),
   ))
-  rules[0].push(@lr1.RuleSemantics::Identity)
+  rule_semantics[0].push(@lr1.RuleSemantics::Identity)
   let tuple_types : Map[String, @lr1.TupleType] = Map::new()
   let struct_types : Map[String, @lr1.StructType] = Map::new()
   let enum_types : Map[String, @lr1.EnumType] = Map::new()
@@ -109,6 +115,7 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
   for sort_i in 0..<(sort_len - 1) {
     let type_namespace = type_namespaces[sort_i + 1] // %start
     let type_name = type_names[sort_i + 1] // %start
+    let rule_semantic = rule_semantics[sort_i + 1] // % start
     for rule in self.sort_rules[sort_i] {
       let field_and_type_names = rule.symbols.filter_map(symbol => {
         let (field_name, symbol_name) = symbol.field_and_name()
@@ -137,7 +144,7 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
               Some(enum_type)
             }
           })
-          rules[sort_i + 1].push(
+          rule_semantic.push(
             @lr1.RuleSemantics::Constructor(
               constructor_name,
               field_and_type_names.map(field_and_type_name => {
@@ -154,7 +161,7 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
           interpret_funcs[@lr1.InterpretFuncName::new(
             type_namespace, method_name,
           )] = @lr1.InterpretFuncType::new(field_and_type_names, type_name)
-          rules[sort_i + 1].push(
+          rule_semantic.push(
             @lr1.RuleSemantics::Interpret(parse_func_name=method_name),
           )
         }
@@ -162,7 +169,7 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
           match field_and_type_names {
             [] => ()
             [(_field_name, field_type_name)] if Some(field_type_name) ==
-              type_name => rules[sort_i + 1].push(@lr1.RuleSemantics::Identity)
+              type_name => rule_semantic.push(@lr1.RuleSemantics::Identity)
             _ => {
               guard type_name is Some(type_name) else { continue }
               if field_and_type_names
@@ -178,7 +185,7 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
                     (field_name, field_type_name)
                   }),
                 )
-                rules[sort_i + 1].push(
+                rule_semantic.push(
                   @lr1.RuleSemantics::Struct(
                     field_and_type_names.map(field_and_type_name => {
                       guard field_and_type_name
@@ -194,15 +201,16 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
                     field_type_name
                   }),
                 )
-                rules[sort_i + 1].push(@lr1.RuleSemantics::Tuple)
+                rule_semantic.push(@lr1.RuleSemantics::Tuple)
               }
             }
           }
       }
     }
   }
-  let tokens = Array::new(capacity=self.token_convs.length() + 1)
+  let tokens = Array::new(capacity=self.token_convs.length() + 2) // due to EOF SPACE
   tokens.push(@lr1.TokenSemantics::Lexeme)
+  tokens.push(@lr1.TokenSemantics::Ignore)
   for token_conv in self.token_convs {
     let token_sem = match token_conv {
       Ignore => @lr1.TokenSemantics::Ignore
@@ -215,8 +223,8 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
     tokens.push(token_sem)
   }
   let sem = @lr1.Semantics::new(
-    names, rules, tokens, type_namespaces, type_names, type_constr_names, tuple_types,
-    struct_types, enum_types, interpret_funcs,
+    names, rule_semantics, tokens, type_namespaces, type_names, type_constr_names,
+    tuple_types, struct_types, enum_types, interpret_funcs,
   )
   generator.codegen_syntax_type(sem)
   generator.codegen_node_type(sem)

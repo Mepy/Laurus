@@ -24,7 +24,7 @@ test "simple" {
 
 ///|
 test "codegen:simple" {
-  // 0 => s', 1 => s, 2 => a, 3 => b, 4 => EOF, 5 => A, 6 => B, 7 => C, 8 => D
+  // 0 => s', 1 => s, 2 => a, 3 => b, 4 => EOF, 5 => SPACE, 6 => A, 7 => B, 8 => C, 9 => D
   // s' -> s 
   // s -> a b
   // a -> A
@@ -33,8 +33,8 @@ test "codegen:simple" {
     rules: [
       [[1]], // s' -> s
       [[2, 3]], // s -> a b
-      [[5]], // a -> A
-      [[6], [6, 7, 6], [8, 3, 8]],
+      [[6]], // a -> A
+      [[7], [7, 8, 7], [9, 3, 9]],
     ],
   } // b -> B | B C B | D b D
   let maker = LR1Maker::new(grammar)
@@ -46,7 +46,8 @@ test "codegen:simple" {
       "s",
       "a",
       "b",
-      @dfa.LAURUS_RESERVED_TOKEN_NAME,
+      @dfa.LAURUS_RESERVED_EOF,
+      @dfa.LAURUS_RESERVED_SPACE,
       "A",
       "B",
       "C",
@@ -64,6 +65,7 @@ test "codegen:simple" {
     ]
     let tokens : Array[TokenSemantics] = [
       Lexeme,
+      Ignore,
       String,
       Interpret(type_name="String", parse_func_name="parseB"),
       Ignore,
@@ -109,9 +111,17 @@ test "codegen:simple" {
       enum_types, interpret_funcs,
     )
   }
-  let token_names = [@dfa.LAURUS_RESERVED_TOKEN_NAME, "A", "B", "C", "D"]
+  let token_names = [
+    @dfa.LAURUS_RESERVED_EOF,
+    @dfa.LAURUS_RESERVED_SPACE,
+    "A",
+    "B",
+    "C",
+    "D",
+  ]
   let token_nfas = [
     @dfa.Emp,
+    @dfa.Star(@dfa.Bor([(' ', ' '), ('\t', '\t'), ('\n', '\n')])),
     @dfa.Single('a'),
     @dfa.Single('b'),
     @dfa.Single('c'),
@@ -135,5 +145,12 @@ test "parse:simple" {
   parser.init("ab")
   parser.parse() |> println
   parser.init("adbcbd")
+  parser.parse() |> println
+  let with_space =
+    #| a 
+    #|                   d
+    #|  b 
+    #|d
+  parser.init(with_space)
   parser.parse() |> println
 }

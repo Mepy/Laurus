@@ -15,7 +15,7 @@ pub fn Parser::new(src? : String = "") -> Self {
 }
 
 ///|
-pub fn Parser::init(self : Self, src : String, cur? : Int = -1) -> Unit {
+pub fn Parser::init(self : Self, src : String, cur? : Int = 0) -> Unit {
   self.lexer.init(src, cur~)
   self.state_stack.clear()
   self.node_stack.clear()
@@ -53,39 +53,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
   loop 0 {
     0 => {
       self.enter_state(0)
-      // %start -> ● laurus | LAURUS
-      // laurus -> ● | LAURUS
-      // laurus -> ● laurus CommentHead CommentBody | LAURUS
-      // laurus -> ● laurus Percent Space reg_exp | LAURUS
-      // laurus -> ● laurus Percent Start SortName | LAURUS
-      // laurus -> ● laurus TokenName token_conv reg_exp | LAURUS
-      // laurus -> ● laurus SortName sort_type LBrace rules RBrace | LAURUS
-      // laurus -> ● | SortName
-      // laurus -> ● laurus CommentHead CommentBody | SortName
-      // laurus -> ● laurus Percent Space reg_exp | SortName
-      // laurus -> ● laurus Percent Start SortName | SortName
-      // laurus -> ● laurus TokenName token_conv reg_exp | SortName
-      // laurus -> ● laurus SortName sort_type LBrace rules RBrace | SortName
-      // laurus -> ● | TokenName
-      // laurus -> ● laurus CommentHead CommentBody | TokenName
-      // laurus -> ● laurus Percent Space reg_exp | TokenName
-      // laurus -> ● laurus Percent Start SortName | TokenName
-      // laurus -> ● laurus TokenName token_conv reg_exp | TokenName
-      // laurus -> ● laurus SortName sort_type LBrace rules RBrace | TokenName
-      // laurus -> ● | Percent
-      // laurus -> ● laurus CommentHead CommentBody | Percent
-      // laurus -> ● laurus Percent Space reg_exp | Percent
-      // laurus -> ● laurus Percent Start SortName | Percent
-      // laurus -> ● laurus TokenName token_conv reg_exp | Percent
-      // laurus -> ● laurus SortName sort_type LBrace rules RBrace | Percent
-      // laurus -> ● | CommentHead
-      // laurus -> ● laurus CommentHead CommentBody | CommentHead
-      // laurus -> ● laurus Percent Space reg_exp | CommentHead
-      // laurus -> ● laurus Percent Start SortName | CommentHead
-      // laurus -> ● laurus TokenName token_conv reg_exp | CommentHead
-      // laurus -> ● laurus SortName sort_type LBrace rules RBrace | CommentHead
       continue match lexeme.token {
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             let node = Laurus::new() |> Node::Laurus
             self.node_stack.push(node)
             1
@@ -115,32 +84,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     1 => {
       self.enter_state(1)
-      // %start -> laurus ● | LAURUS
-      // laurus -> laurus ● CommentHead CommentBody | LAURUS
-      // laurus -> laurus ● Percent Space reg_exp | LAURUS
-      // laurus -> laurus ● Percent Start SortName | LAURUS
-      // laurus -> laurus ● TokenName token_conv reg_exp | LAURUS
-      // laurus -> laurus ● SortName sort_type LBrace rules RBrace | LAURUS
-      // laurus -> laurus ● CommentHead CommentBody | SortName
-      // laurus -> laurus ● Percent Space reg_exp | SortName
-      // laurus -> laurus ● Percent Start SortName | SortName
-      // laurus -> laurus ● TokenName token_conv reg_exp | SortName
-      // laurus -> laurus ● SortName sort_type LBrace rules RBrace | SortName
-      // laurus -> laurus ● CommentHead CommentBody | TokenName
-      // laurus -> laurus ● Percent Space reg_exp | TokenName
-      // laurus -> laurus ● Percent Start SortName | TokenName
-      // laurus -> laurus ● TokenName token_conv reg_exp | TokenName
-      // laurus -> laurus ● SortName sort_type LBrace rules RBrace | TokenName
-      // laurus -> laurus ● CommentHead CommentBody | Percent
-      // laurus -> laurus ● Percent Space reg_exp | Percent
-      // laurus -> laurus ● Percent Start SortName | Percent
-      // laurus -> laurus ● TokenName token_conv reg_exp | Percent
-      // laurus -> laurus ● SortName sort_type LBrace rules RBrace | Percent
-      // laurus -> laurus ● CommentHead CommentBody | CommentHead
-      // laurus -> laurus ● Percent Space reg_exp | CommentHead
-      // laurus -> laurus ● Percent Start SortName | CommentHead
-      // laurus -> laurus ● TokenName token_conv reg_exp | CommentHead
-      // laurus -> laurus ● SortName sort_type LBrace rules RBrace | CommentHead
       continue match lexeme.token {
           CommentHead => { // shift
             // ignore the old lexeme
@@ -164,7 +107,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             lexeme = self.lexer.scan1()
             5
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
             let node = x0 |> Node::Laurus
@@ -176,11 +119,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     2 => {
       self.enter_state(2)
-      // laurus -> laurus CommentHead ● CommentBody | LAURUS
-      // laurus -> laurus CommentHead ● CommentBody | SortName
-      // laurus -> laurus CommentHead ● CommentBody | TokenName
-      // laurus -> laurus CommentHead ● CommentBody | Percent
-      // laurus -> laurus CommentHead ● CommentBody | CommentHead
       continue match lexeme.token {
           CommentBody => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -193,16 +131,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     3 => {
       self.enter_state(3)
-      // laurus -> laurus Percent ● Space reg_exp | LAURUS
-      // laurus -> laurus Percent ● Start SortName | LAURUS
-      // laurus -> laurus Percent ● Space reg_exp | SortName
-      // laurus -> laurus Percent ● Start SortName | SortName
-      // laurus -> laurus Percent ● Space reg_exp | TokenName
-      // laurus -> laurus Percent ● Start SortName | TokenName
-      // laurus -> laurus Percent ● Space reg_exp | Percent
-      // laurus -> laurus Percent ● Start SortName | Percent
-      // laurus -> laurus Percent ● Space reg_exp | CommentHead
-      // laurus -> laurus Percent ● Start SortName | CommentHead
       continue match lexeme.token {
           Space => { // shift
             // ignore the old lexeme
@@ -219,50 +147,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     4 => {
       self.enter_state(4)
-      // laurus -> laurus TokenName ● token_conv reg_exp | LAURUS
-      // laurus -> laurus TokenName ● token_conv reg_exp | SortName
-      // laurus -> laurus TokenName ● token_conv reg_exp | TokenName
-      // laurus -> laurus TokenName ● token_conv reg_exp | Percent
-      // laurus -> laurus TokenName ● token_conv reg_exp | CommentHead
-      // token_conv -> ● | EscNo
-      // token_conv -> ● | Esc
-      // token_conv -> ● | LBrack
-      // token_conv -> ● | Dot
-      // token_conv -> ● | Or
-      // token_conv -> ● | Star
-      // token_conv -> ● | Plus
-      // token_conv -> ● | Ques
-      // token_conv -> ● | CommentHead
-      // token_conv -> ● TypeName | EscNo
-      // token_conv -> ● TypeName | Esc
-      // token_conv -> ● TypeName | LBrack
-      // token_conv -> ● TypeName | Dot
-      // token_conv -> ● TypeName | Or
-      // token_conv -> ● TypeName | Star
-      // token_conv -> ● TypeName | Plus
-      // token_conv -> ● TypeName | Ques
-      // token_conv -> ● TypeName | CommentHead
-      // token_conv -> ● TypeName ColonColon MethodName | EscNo
-      // token_conv -> ● TypeName ColonColon MethodName | Esc
-      // token_conv -> ● TypeName ColonColon MethodName | LBrack
-      // token_conv -> ● TypeName ColonColon MethodName | Dot
-      // token_conv -> ● TypeName ColonColon MethodName | Or
-      // token_conv -> ● TypeName ColonColon MethodName | Star
-      // token_conv -> ● TypeName ColonColon MethodName | Plus
-      // token_conv -> ● TypeName ColonColon MethodName | Ques
-      // token_conv -> ● TypeName ColonColon MethodName | CommentHead
-      // token_conv -> ● | Percent
-      // token_conv -> ● TypeName | Percent
-      // token_conv -> ● TypeName ColonColon MethodName | Percent
-      // token_conv -> ● | TokenName
-      // token_conv -> ● TypeName | TokenName
-      // token_conv -> ● TypeName ColonColon MethodName | TokenName
-      // token_conv -> ● | SortName
-      // token_conv -> ● TypeName | SortName
-      // token_conv -> ● TypeName ColonColon MethodName | SortName
-      // token_conv -> ● | LAURUS
-      // token_conv -> ● TypeName | LAURUS
-      // token_conv -> ● TypeName ColonColon MethodName | LAURUS
       continue match lexeme.token {
           TypeName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -330,7 +214,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             41
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             let node = TokenConv::Ignore |> Node::TokenConv
             self.node_stack.push(node)
             41
@@ -340,14 +224,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     5 => {
       self.enter_state(5)
-      // laurus -> laurus SortName ● sort_type LBrace rules RBrace | LAURUS
-      // laurus -> laurus SortName ● sort_type LBrace rules RBrace | SortName
-      // laurus -> laurus SortName ● sort_type LBrace rules RBrace | TokenName
-      // laurus -> laurus SortName ● sort_type LBrace rules RBrace | Percent
-      // laurus -> laurus SortName ● sort_type LBrace rules RBrace | CommentHead
-      // sort_type -> ● | LBrace
-      // sort_type -> ● Colon TypeName | LBrace
-      // sort_type -> ● Colon TypeName LBrack generics RBrack | LBrace
       continue match lexeme.token {
           Colon => { // shift
             // ignore the old lexeme
@@ -364,11 +240,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     6 => {
       self.enter_state(6)
-      // laurus -> laurus SortName sort_type ● LBrace rules RBrace | LAURUS
-      // laurus -> laurus SortName sort_type ● LBrace rules RBrace | SortName
-      // laurus -> laurus SortName sort_type ● LBrace rules RBrace | TokenName
-      // laurus -> laurus SortName sort_type ● LBrace rules RBrace | Percent
-      // laurus -> laurus SortName sort_type ● LBrace rules RBrace | CommentHead
       continue match lexeme.token {
           LBrace => { // shift
             // ignore the old lexeme
@@ -380,8 +251,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     7 => {
       self.enter_state(7)
-      // sort_type -> Colon ● TypeName | LBrace
-      // sort_type -> Colon ● TypeName LBrack generics RBrack | LBrace
       continue match lexeme.token {
           TypeName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -394,8 +263,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     8 => {
       self.enter_state(8)
-      // sort_type -> Colon TypeName ● | LBrace
-      // sort_type -> Colon TypeName ● LBrack generics RBrack | LBrace
       continue match lexeme.token {
           LBrack => { // shift
             // ignore the old lexeme
@@ -416,9 +283,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     9 => {
       self.enter_state(9)
-      // sort_type -> Colon TypeName LBrack ● generics RBrack | LBrace
-      // generics -> ● TypeName | RBrack
-      // generics -> ● TypeName LBrack generics RBrack | RBrack
       continue match lexeme.token {
           TypeName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -431,7 +295,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     10 => {
       self.enter_state(10)
-      // sort_type -> Colon TypeName LBrack generics ● RBrack | LBrace
       continue match lexeme.token {
           RBrack => { // shift
             // ignore the old lexeme
@@ -443,8 +306,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     11 => {
       self.enter_state(11)
-      // generics -> TypeName ● | RBrack
-      // generics -> TypeName ● LBrack generics RBrack | RBrack
       continue match lexeme.token {
           LBrack => { // shift
             // ignore the old lexeme
@@ -468,9 +329,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     12 => {
       self.enter_state(12)
-      // generics -> TypeName LBrack ● generics RBrack | RBrack
-      // generics -> ● TypeName | RBrack
-      // generics -> ● TypeName LBrack generics RBrack | RBrack
       continue match lexeme.token {
           TypeName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -483,7 +341,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     13 => {
       self.enter_state(13)
-      // generics -> TypeName LBrack generics ● RBrack | RBrack
       continue match lexeme.token {
           RBrack => { // shift
             // ignore the old lexeme
@@ -495,7 +352,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     14 => {
       self.enter_state(14)
-      // generics -> TypeName LBrack generics RBrack ● | RBrack
       continue match lexeme.token {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -520,7 +376,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     15 => {
       self.enter_state(15)
-      // sort_type -> Colon TypeName LBrack generics RBrack ● | LBrace
       continue match lexeme.token {
           LBrace => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -542,17 +397,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     16 => {
       self.enter_state(16)
-      // laurus -> laurus SortName sort_type LBrace ● rules RBrace | LAURUS
-      // laurus -> laurus SortName sort_type LBrace ● rules RBrace | SortName
-      // laurus -> laurus SortName sort_type LBrace ● rules RBrace | TokenName
-      // laurus -> laurus SortName sort_type LBrace ● rules RBrace | Percent
-      // laurus -> laurus SortName sort_type LBrace ● rules RBrace | CommentHead
-      // rules -> ● | RBrace
-      // rules -> ● rules rule | RBrace
-      // rules -> ● | Eq
-      // rules -> ● | Or
-      // rules -> ● rules rule | Eq
-      // rules -> ● rules rule | Or
       continue match lexeme.token {
           RBrace => { // reduce
             let node = Array::empty() |> Node::Array_LB_Rule_RB_
@@ -574,27 +418,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     17 => {
       self.enter_state(17)
-      // laurus -> laurus SortName sort_type LBrace rules ● RBrace | LAURUS
-      // laurus -> laurus SortName sort_type LBrace rules ● RBrace | SortName
-      // laurus -> laurus SortName sort_type LBrace rules ● RBrace | TokenName
-      // laurus -> laurus SortName sort_type LBrace rules ● RBrace | Percent
-      // laurus -> laurus SortName sort_type LBrace rules ● RBrace | CommentHead
-      // rules -> rules ● rule | RBrace
-      // rules -> rules ● rule | Eq
-      // rules -> rules ● rule | Or
-      // rule -> ● priority shift_reduce action LParen symbols RParen | Or
-      // priority -> ● Eq | Reduce
-      // priority -> ● Eq | Shift
-      // priority -> ● Eq | ConstructorName
-      // priority -> ● Eq | MethodName
-      // priority -> ● Eq | LParen
-      // priority -> ● Or | Reduce
-      // priority -> ● Or | Shift
-      // priority -> ● Or | ConstructorName
-      // priority -> ● Or | MethodName
-      // priority -> ● Or | LParen
-      // rule -> ● priority shift_reduce action LParen symbols RParen | Eq
-      // rule -> ● priority shift_reduce action LParen symbols RParen | RBrace
       continue match lexeme.token {
           RBrace => { // shift
             // ignore the old lexeme
@@ -616,13 +439,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     18 => {
       self.enter_state(18)
-      // laurus -> laurus SortName sort_type LBrace rules RBrace ● | LAURUS
-      // laurus -> laurus SortName sort_type LBrace rules RBrace ● | SortName
-      // laurus -> laurus SortName sort_type LBrace rules RBrace ● | TokenName
-      // laurus -> laurus SortName sort_type LBrace rules RBrace ● | Percent
-      // laurus -> laurus SortName sort_type LBrace rules RBrace ● | CommentHead
       continue match lexeme.token {
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -712,9 +530,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     19 => {
       self.enter_state(19)
-      // rules -> rules rule ● | RBrace
-      // rules -> rules rule ● | Eq
-      // rules -> rules rule ● | Or
       continue match lexeme.token {
           RBrace => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -748,18 +563,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     20 => {
       self.enter_state(20)
-      // rule -> priority ● shift_reduce action LParen symbols RParen | Or
-      // rule -> priority ● shift_reduce action LParen symbols RParen | Eq
-      // rule -> priority ● shift_reduce action LParen symbols RParen | RBrace
-      // shift_reduce -> ● | ConstructorName
-      // shift_reduce -> ● | MethodName
-      // shift_reduce -> ● | LParen
-      // shift_reduce -> ● Reduce | ConstructorName
-      // shift_reduce -> ● Reduce | MethodName
-      // shift_reduce -> ● Reduce | LParen
-      // shift_reduce -> ● Shift | ConstructorName
-      // shift_reduce -> ● Shift | MethodName
-      // shift_reduce -> ● Shift | LParen
       continue match lexeme.token {
           Reduce => { // shift
             // ignore the old lexeme
@@ -791,11 +594,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     21 => {
       self.enter_state(21)
-      // priority -> Eq ● | Reduce
-      // priority -> Eq ● | Shift
-      // priority -> Eq ● | ConstructorName
-      // priority -> Eq ● | MethodName
-      // priority -> Eq ● | LParen
       continue match lexeme.token {
           Reduce => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -837,11 +635,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     22 => {
       self.enter_state(22)
-      // priority -> Or ● | Reduce
-      // priority -> Or ● | Shift
-      // priority -> Or ● | ConstructorName
-      // priority -> Or ● | MethodName
-      // priority -> Or ● | LParen
       continue match lexeme.token {
           Reduce => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -883,12 +676,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     23 => {
       self.enter_state(23)
-      // rule -> priority shift_reduce ● action LParen symbols RParen | Or
-      // rule -> priority shift_reduce ● action LParen symbols RParen | Eq
-      // rule -> priority shift_reduce ● action LParen symbols RParen | RBrace
-      // action -> ● | LParen
-      // action -> ● ConstructorName | LParen
-      // action -> ● MethodName | LParen
       continue match lexeme.token {
           ConstructorName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -912,9 +699,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     24 => {
       self.enter_state(24)
-      // shift_reduce -> Reduce ● | ConstructorName
-      // shift_reduce -> Reduce ● | MethodName
-      // shift_reduce -> Reduce ● | LParen
       continue match lexeme.token {
           ConstructorName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -942,9 +726,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     25 => {
       self.enter_state(25)
-      // shift_reduce -> Shift ● | ConstructorName
-      // shift_reduce -> Shift ● | MethodName
-      // shift_reduce -> Shift ● | LParen
       continue match lexeme.token {
           ConstructorName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -972,9 +753,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     26 => {
       self.enter_state(26)
-      // rule -> priority shift_reduce action ● LParen symbols RParen | Or
-      // rule -> priority shift_reduce action ● LParen symbols RParen | Eq
-      // rule -> priority shift_reduce action ● LParen symbols RParen | RBrace
       continue match lexeme.token {
           LParen => { // shift
             // ignore the old lexeme
@@ -986,7 +764,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     27 => {
       self.enter_state(27)
-      // action -> ConstructorName ● | LParen
       continue match lexeme.token {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -1000,7 +777,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     28 => {
       self.enter_state(28)
-      // action -> MethodName ● | LParen
       continue match lexeme.token {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -1014,15 +790,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     29 => {
       self.enter_state(29)
-      // rule -> priority shift_reduce action LParen ● symbols RParen | Or
-      // rule -> priority shift_reduce action LParen ● symbols RParen | Eq
-      // rule -> priority shift_reduce action LParen ● symbols RParen | RBrace
-      // symbols -> ● | RParen
-      // symbols -> ● symbols symbol | RParen
-      // symbols -> ● | Symbol
-      // symbols -> ● | LBrack
-      // symbols -> ● symbols symbol | Symbol
-      // symbols -> ● symbols symbol | LBrack
       continue match lexeme.token {
           RParen => { // reduce
             let node = Array::empty() |> Node::Array_LB_Symbol_RB_
@@ -1044,21 +811,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     30 => {
       self.enter_state(30)
-      // rule -> priority shift_reduce action LParen symbols ● RParen | Or
-      // rule -> priority shift_reduce action LParen symbols ● RParen | Eq
-      // rule -> priority shift_reduce action LParen symbols ● RParen | RBrace
-      // symbols -> symbols ● symbol | RParen
-      // symbols -> symbols ● symbol | Symbol
-      // symbols -> symbols ● symbol | LBrack
-      // symbol -> ● Symbol | LBrack
-      // symbol -> ● LBrack FieldName Colon Symbol RBrack | LBrack
-      // symbol -> ● LBrack FieldName Tilde RBrack | LBrack
-      // symbol -> ● Symbol | Symbol
-      // symbol -> ● LBrack FieldName Colon Symbol RBrack | Symbol
-      // symbol -> ● LBrack FieldName Tilde RBrack | Symbol
-      // symbol -> ● Symbol | RParen
-      // symbol -> ● LBrack FieldName Colon Symbol RBrack | RParen
-      // symbol -> ● LBrack FieldName Tilde RBrack | RParen
       continue match lexeme.token {
           RParen => { // shift
             // ignore the old lexeme
@@ -1081,9 +833,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     31 => {
       self.enter_state(31)
-      // rule -> priority shift_reduce action LParen symbols RParen ● | Or
-      // rule -> priority shift_reduce action LParen symbols RParen ● | Eq
-      // rule -> priority shift_reduce action LParen symbols RParen ● | RBrace
       continue match lexeme.token {
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -1159,9 +908,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     32 => {
       self.enter_state(32)
-      // symbols -> symbols symbol ● | RParen
-      // symbols -> symbols symbol ● | Symbol
-      // symbols -> symbols symbol ● | LBrack
       continue match lexeme.token {
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -1195,9 +941,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     33 => {
       self.enter_state(33)
-      // symbol -> Symbol ● | LBrack
-      // symbol -> Symbol ● | Symbol
-      // symbol -> Symbol ● | RParen
       continue match lexeme.token {
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -1225,12 +968,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     34 => {
       self.enter_state(34)
-      // symbol -> LBrack ● FieldName Colon Symbol RBrack | LBrack
-      // symbol -> LBrack ● FieldName Tilde RBrack | LBrack
-      // symbol -> LBrack ● FieldName Colon Symbol RBrack | Symbol
-      // symbol -> LBrack ● FieldName Tilde RBrack | Symbol
-      // symbol -> LBrack ● FieldName Colon Symbol RBrack | RParen
-      // symbol -> LBrack ● FieldName Tilde RBrack | RParen
       continue match lexeme.token {
           FieldName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -1243,12 +980,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     35 => {
       self.enter_state(35)
-      // symbol -> LBrack FieldName ● Colon Symbol RBrack | LBrack
-      // symbol -> LBrack FieldName ● Tilde RBrack | LBrack
-      // symbol -> LBrack FieldName ● Colon Symbol RBrack | Symbol
-      // symbol -> LBrack FieldName ● Tilde RBrack | Symbol
-      // symbol -> LBrack FieldName ● Colon Symbol RBrack | RParen
-      // symbol -> LBrack FieldName ● Tilde RBrack | RParen
       continue match lexeme.token {
           Colon => { // shift
             // ignore the old lexeme
@@ -1265,9 +996,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     36 => {
       self.enter_state(36)
-      // symbol -> LBrack FieldName Colon ● Symbol RBrack | LBrack
-      // symbol -> LBrack FieldName Colon ● Symbol RBrack | Symbol
-      // symbol -> LBrack FieldName Colon ● Symbol RBrack | RParen
       continue match lexeme.token {
           Symbol => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -1280,9 +1008,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     37 => {
       self.enter_state(37)
-      // symbol -> LBrack FieldName Tilde ● RBrack | LBrack
-      // symbol -> LBrack FieldName Tilde ● RBrack | Symbol
-      // symbol -> LBrack FieldName Tilde ● RBrack | RParen
       continue match lexeme.token {
           RBrack => { // shift
             // ignore the old lexeme
@@ -1294,9 +1019,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     38 => {
       self.enter_state(38)
-      // symbol -> LBrack FieldName Tilde RBrack ● | LBrack
-      // symbol -> LBrack FieldName Tilde RBrack ● | Symbol
-      // symbol -> LBrack FieldName Tilde RBrack ● | RParen
       continue match lexeme.token {
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -1342,9 +1064,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     39 => {
       self.enter_state(39)
-      // symbol -> LBrack FieldName Colon Symbol ● RBrack | LBrack
-      // symbol -> LBrack FieldName Colon Symbol ● RBrack | Symbol
-      // symbol -> LBrack FieldName Colon Symbol ● RBrack | RParen
       continue match lexeme.token {
           RBrack => { // shift
             // ignore the old lexeme
@@ -1356,9 +1075,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     40 => {
       self.enter_state(40)
-      // symbol -> LBrack FieldName Colon Symbol RBrack ● | LBrack
-      // symbol -> LBrack FieldName Colon Symbol RBrack ● | Symbol
-      // symbol -> LBrack FieldName Colon Symbol RBrack ● | RParen
       continue match lexeme.token {
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -1410,206 +1126,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     41 => {
       self.enter_state(41)
-      // laurus -> laurus TokenName token_conv ● reg_exp | LAURUS
-      // laurus -> laurus TokenName token_conv ● reg_exp | SortName
-      // laurus -> laurus TokenName token_conv ● reg_exp | TokenName
-      // laurus -> laurus TokenName token_conv ● reg_exp | Percent
-      // laurus -> laurus TokenName token_conv ● reg_exp | CommentHead
-      // reg_exp -> ● reg_exp | CommentHead
-      // reg_exp -> ● LBrack ranges RBrack | CommentHead
-      // reg_exp -> ● LBrack Caret ranges RBrack | CommentHead
-      // reg_exp -> ● Dot | CommentHead
-      // reg_exp -> ● | CommentHead
-      // reg_exp -> ● reg_exp Or reg_exp | CommentHead
-      // reg_exp -> ● reg_exp reg_exp | CommentHead
-      // reg_exp -> ● reg_exp Star | CommentHead
-      // reg_exp -> ● reg_exp Plus | CommentHead
-      // reg_exp -> ● reg_exp Ques | CommentHead
-      // reg_exp -> ● char | CommentHead
-      // char -> ● EscNo | CommentHead
-      // char -> ● Esc EscOrigin | CommentHead
-      // char -> ● Esc EscSpace | CommentHead
-      // char -> ● Esc EscU EscUnicode | CommentHead
-      // reg_exp -> ● reg_exp | Ques
-      // reg_exp -> ● LBrack ranges RBrack | Ques
-      // reg_exp -> ● LBrack Caret ranges RBrack | Ques
-      // reg_exp -> ● Dot | Ques
-      // reg_exp -> ● | Ques
-      // reg_exp -> ● reg_exp Or reg_exp | Ques
-      // reg_exp -> ● reg_exp reg_exp | Ques
-      // reg_exp -> ● reg_exp Star | Ques
-      // reg_exp -> ● reg_exp Plus | Ques
-      // reg_exp -> ● reg_exp Ques | Ques
-      // reg_exp -> ● char | Ques
-      // char -> ● EscNo | Ques
-      // char -> ● Esc EscOrigin | Ques
-      // char -> ● Esc EscSpace | Ques
-      // char -> ● Esc EscU EscUnicode | Ques
-      // reg_exp -> ● reg_exp | Plus
-      // reg_exp -> ● LBrack ranges RBrack | Plus
-      // reg_exp -> ● LBrack Caret ranges RBrack | Plus
-      // reg_exp -> ● Dot | Plus
-      // reg_exp -> ● | Plus
-      // reg_exp -> ● reg_exp Or reg_exp | Plus
-      // reg_exp -> ● reg_exp reg_exp | Plus
-      // reg_exp -> ● reg_exp Star | Plus
-      // reg_exp -> ● reg_exp Plus | Plus
-      // reg_exp -> ● reg_exp Ques | Plus
-      // reg_exp -> ● char | Plus
-      // char -> ● EscNo | Plus
-      // char -> ● Esc EscOrigin | Plus
-      // char -> ● Esc EscSpace | Plus
-      // char -> ● Esc EscU EscUnicode | Plus
-      // reg_exp -> ● reg_exp | Star
-      // reg_exp -> ● LBrack ranges RBrack | Star
-      // reg_exp -> ● LBrack Caret ranges RBrack | Star
-      // reg_exp -> ● Dot | Star
-      // reg_exp -> ● | Star
-      // reg_exp -> ● reg_exp Or reg_exp | Star
-      // reg_exp -> ● reg_exp reg_exp | Star
-      // reg_exp -> ● reg_exp Star | Star
-      // reg_exp -> ● reg_exp Plus | Star
-      // reg_exp -> ● reg_exp Ques | Star
-      // reg_exp -> ● char | Star
-      // char -> ● EscNo | Star
-      // char -> ● Esc EscOrigin | Star
-      // char -> ● Esc EscSpace | Star
-      // char -> ● Esc EscU EscUnicode | Star
-      // reg_exp -> ● reg_exp | EscNo
-      // reg_exp -> ● reg_exp | Esc
-      // reg_exp -> ● reg_exp | LBrack
-      // reg_exp -> ● reg_exp | Dot
-      // reg_exp -> ● reg_exp | Or
-      // reg_exp -> ● LBrack ranges RBrack | EscNo
-      // reg_exp -> ● LBrack ranges RBrack | Esc
-      // reg_exp -> ● LBrack ranges RBrack | LBrack
-      // reg_exp -> ● LBrack ranges RBrack | Dot
-      // reg_exp -> ● LBrack ranges RBrack | Or
-      // reg_exp -> ● LBrack Caret ranges RBrack | EscNo
-      // reg_exp -> ● LBrack Caret ranges RBrack | Esc
-      // reg_exp -> ● LBrack Caret ranges RBrack | LBrack
-      // reg_exp -> ● LBrack Caret ranges RBrack | Dot
-      // reg_exp -> ● LBrack Caret ranges RBrack | Or
-      // reg_exp -> ● Dot | EscNo
-      // reg_exp -> ● Dot | Esc
-      // reg_exp -> ● Dot | LBrack
-      // reg_exp -> ● Dot | Dot
-      // reg_exp -> ● Dot | Or
-      // reg_exp -> ● | EscNo
-      // reg_exp -> ● | Esc
-      // reg_exp -> ● | LBrack
-      // reg_exp -> ● | Dot
-      // reg_exp -> ● | Or
-      // reg_exp -> ● reg_exp Or reg_exp | EscNo
-      // reg_exp -> ● reg_exp Or reg_exp | Esc
-      // reg_exp -> ● reg_exp Or reg_exp | LBrack
-      // reg_exp -> ● reg_exp Or reg_exp | Dot
-      // reg_exp -> ● reg_exp Or reg_exp | Or
-      // reg_exp -> ● reg_exp reg_exp | EscNo
-      // reg_exp -> ● reg_exp reg_exp | Esc
-      // reg_exp -> ● reg_exp reg_exp | LBrack
-      // reg_exp -> ● reg_exp reg_exp | Dot
-      // reg_exp -> ● reg_exp reg_exp | Or
-      // reg_exp -> ● reg_exp Star | EscNo
-      // reg_exp -> ● reg_exp Star | Esc
-      // reg_exp -> ● reg_exp Star | LBrack
-      // reg_exp -> ● reg_exp Star | Dot
-      // reg_exp -> ● reg_exp Star | Or
-      // reg_exp -> ● reg_exp Plus | EscNo
-      // reg_exp -> ● reg_exp Plus | Esc
-      // reg_exp -> ● reg_exp Plus | LBrack
-      // reg_exp -> ● reg_exp Plus | Dot
-      // reg_exp -> ● reg_exp Plus | Or
-      // reg_exp -> ● reg_exp Ques | EscNo
-      // reg_exp -> ● reg_exp Ques | Esc
-      // reg_exp -> ● reg_exp Ques | LBrack
-      // reg_exp -> ● reg_exp Ques | Dot
-      // reg_exp -> ● reg_exp Ques | Or
-      // reg_exp -> ● char | EscNo
-      // reg_exp -> ● char | Esc
-      // reg_exp -> ● char | LBrack
-      // reg_exp -> ● char | Dot
-      // reg_exp -> ● char | Or
-      // char -> ● EscNo | Or
-      // char -> ● Esc EscOrigin | Or
-      // char -> ● Esc EscSpace | Or
-      // char -> ● Esc EscU EscUnicode | Or
-      // char -> ● EscNo | Dot
-      // char -> ● Esc EscOrigin | Dot
-      // char -> ● Esc EscSpace | Dot
-      // char -> ● Esc EscU EscUnicode | Dot
-      // char -> ● EscNo | LBrack
-      // char -> ● Esc EscOrigin | LBrack
-      // char -> ● Esc EscSpace | LBrack
-      // char -> ● Esc EscU EscUnicode | LBrack
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // reg_exp -> ● reg_exp | Percent
-      // reg_exp -> ● LBrack ranges RBrack | Percent
-      // reg_exp -> ● LBrack Caret ranges RBrack | Percent
-      // reg_exp -> ● Dot | Percent
-      // reg_exp -> ● | Percent
-      // reg_exp -> ● reg_exp Or reg_exp | Percent
-      // reg_exp -> ● reg_exp reg_exp | Percent
-      // reg_exp -> ● reg_exp Star | Percent
-      // reg_exp -> ● reg_exp Plus | Percent
-      // reg_exp -> ● reg_exp Ques | Percent
-      // reg_exp -> ● char | Percent
-      // char -> ● EscNo | Percent
-      // char -> ● Esc EscOrigin | Percent
-      // char -> ● Esc EscSpace | Percent
-      // char -> ● Esc EscU EscUnicode | Percent
-      // reg_exp -> ● reg_exp | TokenName
-      // reg_exp -> ● LBrack ranges RBrack | TokenName
-      // reg_exp -> ● LBrack Caret ranges RBrack | TokenName
-      // reg_exp -> ● Dot | TokenName
-      // reg_exp -> ● | TokenName
-      // reg_exp -> ● reg_exp Or reg_exp | TokenName
-      // reg_exp -> ● reg_exp reg_exp | TokenName
-      // reg_exp -> ● reg_exp Star | TokenName
-      // reg_exp -> ● reg_exp Plus | TokenName
-      // reg_exp -> ● reg_exp Ques | TokenName
-      // reg_exp -> ● char | TokenName
-      // char -> ● EscNo | TokenName
-      // char -> ● Esc EscOrigin | TokenName
-      // char -> ● Esc EscSpace | TokenName
-      // char -> ● Esc EscU EscUnicode | TokenName
-      // reg_exp -> ● reg_exp | SortName
-      // reg_exp -> ● LBrack ranges RBrack | SortName
-      // reg_exp -> ● LBrack Caret ranges RBrack | SortName
-      // reg_exp -> ● Dot | SortName
-      // reg_exp -> ● | SortName
-      // reg_exp -> ● reg_exp Or reg_exp | SortName
-      // reg_exp -> ● reg_exp reg_exp | SortName
-      // reg_exp -> ● reg_exp Star | SortName
-      // reg_exp -> ● reg_exp Plus | SortName
-      // reg_exp -> ● reg_exp Ques | SortName
-      // reg_exp -> ● char | SortName
-      // char -> ● EscNo | SortName
-      // char -> ● Esc EscOrigin | SortName
-      // char -> ● Esc EscSpace | SortName
-      // char -> ● Esc EscU EscUnicode | SortName
-      // reg_exp -> ● reg_exp | LAURUS
-      // reg_exp -> ● LBrack ranges RBrack | LAURUS
-      // reg_exp -> ● LBrack Caret ranges RBrack | LAURUS
-      // reg_exp -> ● Dot | LAURUS
-      // reg_exp -> ● | LAURUS
-      // reg_exp -> ● reg_exp Or reg_exp | LAURUS
-      // reg_exp -> ● reg_exp reg_exp | LAURUS
-      // reg_exp -> ● reg_exp Star | LAURUS
-      // reg_exp -> ● reg_exp Plus | LAURUS
-      // reg_exp -> ● reg_exp Ques | LAURUS
-      // reg_exp -> ● char | LAURUS
-      // char -> ● EscNo | LAURUS
-      // char -> ● Esc EscOrigin | LAURUS
-      // char -> ● Esc EscSpace | LAURUS
-      // char -> ● Esc EscU EscUnicode | LAURUS
       continue match lexeme.token {
           LBrack => { // shift
             // ignore the old lexeme
@@ -1812,7 +1328,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
@@ -1832,32 +1348,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     42 => {
       self.enter_state(42)
-      // token_conv -> TypeName ● | EscNo
-      // token_conv -> TypeName ● | Esc
-      // token_conv -> TypeName ● | LBrack
-      // token_conv -> TypeName ● | Dot
-      // token_conv -> TypeName ● | Or
-      // token_conv -> TypeName ● | Star
-      // token_conv -> TypeName ● | Plus
-      // token_conv -> TypeName ● | Ques
-      // token_conv -> TypeName ● | CommentHead
-      // token_conv -> TypeName ● ColonColon MethodName | EscNo
-      // token_conv -> TypeName ● ColonColon MethodName | Esc
-      // token_conv -> TypeName ● ColonColon MethodName | LBrack
-      // token_conv -> TypeName ● ColonColon MethodName | Dot
-      // token_conv -> TypeName ● ColonColon MethodName | Or
-      // token_conv -> TypeName ● ColonColon MethodName | Star
-      // token_conv -> TypeName ● ColonColon MethodName | Plus
-      // token_conv -> TypeName ● ColonColon MethodName | Ques
-      // token_conv -> TypeName ● ColonColon MethodName | CommentHead
-      // token_conv -> TypeName ● | Percent
-      // token_conv -> TypeName ● ColonColon MethodName | Percent
-      // token_conv -> TypeName ● | TokenName
-      // token_conv -> TypeName ● ColonColon MethodName | TokenName
-      // token_conv -> TypeName ● | SortName
-      // token_conv -> TypeName ● ColonColon MethodName | SortName
-      // token_conv -> TypeName ● | LAURUS
-      // token_conv -> TypeName ● ColonColon MethodName | LAURUS
       continue match lexeme.token {
           ColonColon => { // shift
             // ignore the old lexeme
@@ -1948,7 +1438,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             41
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
             let node = TokenConv::BuiltIn(x0) |> Node::TokenConv
@@ -1960,19 +1450,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     43 => {
       self.enter_state(43)
-      // token_conv -> TypeName ColonColon ● MethodName | EscNo
-      // token_conv -> TypeName ColonColon ● MethodName | Esc
-      // token_conv -> TypeName ColonColon ● MethodName | LBrack
-      // token_conv -> TypeName ColonColon ● MethodName | Dot
-      // token_conv -> TypeName ColonColon ● MethodName | Or
-      // token_conv -> TypeName ColonColon ● MethodName | Star
-      // token_conv -> TypeName ColonColon ● MethodName | Plus
-      // token_conv -> TypeName ColonColon ● MethodName | Ques
-      // token_conv -> TypeName ColonColon ● MethodName | CommentHead
-      // token_conv -> TypeName ColonColon ● MethodName | Percent
-      // token_conv -> TypeName ColonColon ● MethodName | TokenName
-      // token_conv -> TypeName ColonColon ● MethodName | SortName
-      // token_conv -> TypeName ColonColon ● MethodName | LAURUS
       continue match lexeme.token {
           MethodName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -1985,19 +1462,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     44 => {
       self.enter_state(44)
-      // token_conv -> TypeName ColonColon MethodName ● | EscNo
-      // token_conv -> TypeName ColonColon MethodName ● | Esc
-      // token_conv -> TypeName ColonColon MethodName ● | LBrack
-      // token_conv -> TypeName ColonColon MethodName ● | Dot
-      // token_conv -> TypeName ColonColon MethodName ● | Or
-      // token_conv -> TypeName ColonColon MethodName ● | Star
-      // token_conv -> TypeName ColonColon MethodName ● | Plus
-      // token_conv -> TypeName ColonColon MethodName ● | Ques
-      // token_conv -> TypeName ColonColon MethodName ● | CommentHead
-      // token_conv -> TypeName ColonColon MethodName ● | Percent
-      // token_conv -> TypeName ColonColon MethodName ● | TokenName
-      // token_conv -> TypeName ColonColon MethodName ● | SortName
-      // token_conv -> TypeName ColonColon MethodName ● | LAURUS
       continue match lexeme.token {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -2143,7 +1607,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             41
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -2160,284 +1624,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     45 => {
       self.enter_state(45)
-      // laurus -> laurus TokenName token_conv reg_exp ● | LAURUS
-      // laurus -> laurus TokenName token_conv reg_exp ● | SortName
-      // laurus -> laurus TokenName token_conv reg_exp ● | TokenName
-      // laurus -> laurus TokenName token_conv reg_exp ● | Percent
-      // laurus -> laurus TokenName token_conv reg_exp ● | CommentHead
-      // reg_exp -> reg_exp ● | CommentHead
-      // reg_exp -> reg_exp ● Or reg_exp | CommentHead
-      // reg_exp -> reg_exp ● reg_exp | CommentHead
-      // reg_exp -> reg_exp ● Star | CommentHead
-      // reg_exp -> reg_exp ● Plus | CommentHead
-      // reg_exp -> reg_exp ● Ques | CommentHead
-      // reg_exp -> reg_exp ● | Ques
-      // reg_exp -> reg_exp ● Or reg_exp | Ques
-      // reg_exp -> reg_exp ● reg_exp | Ques
-      // reg_exp -> reg_exp ● Star | Ques
-      // reg_exp -> reg_exp ● Plus | Ques
-      // reg_exp -> reg_exp ● Ques | Ques
-      // reg_exp -> reg_exp ● | Plus
-      // reg_exp -> reg_exp ● Or reg_exp | Plus
-      // reg_exp -> reg_exp ● reg_exp | Plus
-      // reg_exp -> reg_exp ● Star | Plus
-      // reg_exp -> reg_exp ● Plus | Plus
-      // reg_exp -> reg_exp ● Ques | Plus
-      // reg_exp -> reg_exp ● | Star
-      // reg_exp -> reg_exp ● Or reg_exp | Star
-      // reg_exp -> reg_exp ● reg_exp | Star
-      // reg_exp -> reg_exp ● Star | Star
-      // reg_exp -> reg_exp ● Plus | Star
-      // reg_exp -> reg_exp ● Ques | Star
-      // reg_exp -> reg_exp ● | EscNo
-      // reg_exp -> reg_exp ● | Esc
-      // reg_exp -> reg_exp ● | LBrack
-      // reg_exp -> reg_exp ● | Dot
-      // reg_exp -> reg_exp ● | Or
-      // reg_exp -> reg_exp ● Or reg_exp | EscNo
-      // reg_exp -> reg_exp ● Or reg_exp | Esc
-      // reg_exp -> reg_exp ● Or reg_exp | LBrack
-      // reg_exp -> reg_exp ● Or reg_exp | Dot
-      // reg_exp -> reg_exp ● Or reg_exp | Or
-      // reg_exp -> reg_exp ● reg_exp | EscNo
-      // reg_exp -> reg_exp ● reg_exp | Esc
-      // reg_exp -> reg_exp ● reg_exp | LBrack
-      // reg_exp -> reg_exp ● reg_exp | Dot
-      // reg_exp -> reg_exp ● reg_exp | Or
-      // reg_exp -> reg_exp ● Star | EscNo
-      // reg_exp -> reg_exp ● Star | Esc
-      // reg_exp -> reg_exp ● Star | LBrack
-      // reg_exp -> reg_exp ● Star | Dot
-      // reg_exp -> reg_exp ● Star | Or
-      // reg_exp -> reg_exp ● Plus | EscNo
-      // reg_exp -> reg_exp ● Plus | Esc
-      // reg_exp -> reg_exp ● Plus | LBrack
-      // reg_exp -> reg_exp ● Plus | Dot
-      // reg_exp -> reg_exp ● Plus | Or
-      // reg_exp -> reg_exp ● Ques | EscNo
-      // reg_exp -> reg_exp ● Ques | Esc
-      // reg_exp -> reg_exp ● Ques | LBrack
-      // reg_exp -> reg_exp ● Ques | Dot
-      // reg_exp -> reg_exp ● Ques | Or
-      // reg_exp -> reg_exp ● | Percent
-      // reg_exp -> reg_exp ● Or reg_exp | Percent
-      // reg_exp -> reg_exp ● reg_exp | Percent
-      // reg_exp -> reg_exp ● Star | Percent
-      // reg_exp -> reg_exp ● Plus | Percent
-      // reg_exp -> reg_exp ● Ques | Percent
-      // reg_exp -> reg_exp ● | TokenName
-      // reg_exp -> reg_exp ● Or reg_exp | TokenName
-      // reg_exp -> reg_exp ● reg_exp | TokenName
-      // reg_exp -> reg_exp ● Star | TokenName
-      // reg_exp -> reg_exp ● Plus | TokenName
-      // reg_exp -> reg_exp ● Ques | TokenName
-      // reg_exp -> reg_exp ● | SortName
-      // reg_exp -> reg_exp ● Or reg_exp | SortName
-      // reg_exp -> reg_exp ● reg_exp | SortName
-      // reg_exp -> reg_exp ● Star | SortName
-      // reg_exp -> reg_exp ● Plus | SortName
-      // reg_exp -> reg_exp ● Ques | SortName
-      // reg_exp -> reg_exp ● | LAURUS
-      // reg_exp -> reg_exp ● Or reg_exp | LAURUS
-      // reg_exp -> reg_exp ● reg_exp | LAURUS
-      // reg_exp -> reg_exp ● Star | LAURUS
-      // reg_exp -> reg_exp ● Plus | LAURUS
-      // reg_exp -> reg_exp ● Ques | LAURUS
-      // reg_exp -> ● reg_exp | LAURUS
-      // reg_exp -> ● LBrack ranges RBrack | LAURUS
-      // reg_exp -> ● LBrack Caret ranges RBrack | LAURUS
-      // reg_exp -> ● Dot | LAURUS
-      // reg_exp -> ● | LAURUS
-      // reg_exp -> ● reg_exp Or reg_exp | LAURUS
-      // reg_exp -> ● reg_exp reg_exp | LAURUS
-      // reg_exp -> ● reg_exp Star | LAURUS
-      // reg_exp -> ● reg_exp Plus | LAURUS
-      // reg_exp -> ● reg_exp Ques | LAURUS
-      // reg_exp -> ● char | LAURUS
-      // char -> ● EscNo | LAURUS
-      // char -> ● Esc EscOrigin | LAURUS
-      // char -> ● Esc EscSpace | LAURUS
-      // char -> ● Esc EscU EscUnicode | LAURUS
-      // reg_exp -> ● reg_exp | Ques
-      // reg_exp -> ● LBrack ranges RBrack | Ques
-      // reg_exp -> ● LBrack Caret ranges RBrack | Ques
-      // reg_exp -> ● Dot | Ques
-      // reg_exp -> ● | Ques
-      // reg_exp -> ● reg_exp Or reg_exp | Ques
-      // reg_exp -> ● reg_exp reg_exp | Ques
-      // reg_exp -> ● reg_exp Star | Ques
-      // reg_exp -> ● reg_exp Plus | Ques
-      // reg_exp -> ● reg_exp Ques | Ques
-      // reg_exp -> ● char | Ques
-      // char -> ● EscNo | Ques
-      // char -> ● Esc EscOrigin | Ques
-      // char -> ● Esc EscSpace | Ques
-      // char -> ● Esc EscU EscUnicode | Ques
-      // reg_exp -> ● reg_exp | Plus
-      // reg_exp -> ● LBrack ranges RBrack | Plus
-      // reg_exp -> ● LBrack Caret ranges RBrack | Plus
-      // reg_exp -> ● Dot | Plus
-      // reg_exp -> ● | Plus
-      // reg_exp -> ● reg_exp Or reg_exp | Plus
-      // reg_exp -> ● reg_exp reg_exp | Plus
-      // reg_exp -> ● reg_exp Star | Plus
-      // reg_exp -> ● reg_exp Plus | Plus
-      // reg_exp -> ● reg_exp Ques | Plus
-      // reg_exp -> ● char | Plus
-      // char -> ● EscNo | Plus
-      // char -> ● Esc EscOrigin | Plus
-      // char -> ● Esc EscSpace | Plus
-      // char -> ● Esc EscU EscUnicode | Plus
-      // reg_exp -> ● reg_exp | Star
-      // reg_exp -> ● LBrack ranges RBrack | Star
-      // reg_exp -> ● LBrack Caret ranges RBrack | Star
-      // reg_exp -> ● Dot | Star
-      // reg_exp -> ● | Star
-      // reg_exp -> ● reg_exp Or reg_exp | Star
-      // reg_exp -> ● reg_exp reg_exp | Star
-      // reg_exp -> ● reg_exp Star | Star
-      // reg_exp -> ● reg_exp Plus | Star
-      // reg_exp -> ● reg_exp Ques | Star
-      // reg_exp -> ● char | Star
-      // char -> ● EscNo | Star
-      // char -> ● Esc EscOrigin | Star
-      // char -> ● Esc EscSpace | Star
-      // char -> ● Esc EscU EscUnicode | Star
-      // reg_exp -> ● reg_exp | EscNo
-      // reg_exp -> ● reg_exp | Esc
-      // reg_exp -> ● reg_exp | LBrack
-      // reg_exp -> ● reg_exp | Dot
-      // reg_exp -> ● reg_exp | Or
-      // reg_exp -> ● LBrack ranges RBrack | EscNo
-      // reg_exp -> ● LBrack ranges RBrack | Esc
-      // reg_exp -> ● LBrack ranges RBrack | LBrack
-      // reg_exp -> ● LBrack ranges RBrack | Dot
-      // reg_exp -> ● LBrack ranges RBrack | Or
-      // reg_exp -> ● LBrack Caret ranges RBrack | EscNo
-      // reg_exp -> ● LBrack Caret ranges RBrack | Esc
-      // reg_exp -> ● LBrack Caret ranges RBrack | LBrack
-      // reg_exp -> ● LBrack Caret ranges RBrack | Dot
-      // reg_exp -> ● LBrack Caret ranges RBrack | Or
-      // reg_exp -> ● Dot | EscNo
-      // reg_exp -> ● Dot | Esc
-      // reg_exp -> ● Dot | LBrack
-      // reg_exp -> ● Dot | Dot
-      // reg_exp -> ● Dot | Or
-      // reg_exp -> ● | EscNo
-      // reg_exp -> ● | Esc
-      // reg_exp -> ● | LBrack
-      // reg_exp -> ● | Dot
-      // reg_exp -> ● | Or
-      // reg_exp -> ● reg_exp Or reg_exp | EscNo
-      // reg_exp -> ● reg_exp Or reg_exp | Esc
-      // reg_exp -> ● reg_exp Or reg_exp | LBrack
-      // reg_exp -> ● reg_exp Or reg_exp | Dot
-      // reg_exp -> ● reg_exp Or reg_exp | Or
-      // reg_exp -> ● reg_exp reg_exp | EscNo
-      // reg_exp -> ● reg_exp reg_exp | Esc
-      // reg_exp -> ● reg_exp reg_exp | LBrack
-      // reg_exp -> ● reg_exp reg_exp | Dot
-      // reg_exp -> ● reg_exp reg_exp | Or
-      // reg_exp -> ● reg_exp Star | EscNo
-      // reg_exp -> ● reg_exp Star | Esc
-      // reg_exp -> ● reg_exp Star | LBrack
-      // reg_exp -> ● reg_exp Star | Dot
-      // reg_exp -> ● reg_exp Star | Or
-      // reg_exp -> ● reg_exp Plus | EscNo
-      // reg_exp -> ● reg_exp Plus | Esc
-      // reg_exp -> ● reg_exp Plus | LBrack
-      // reg_exp -> ● reg_exp Plus | Dot
-      // reg_exp -> ● reg_exp Plus | Or
-      // reg_exp -> ● reg_exp Ques | EscNo
-      // reg_exp -> ● reg_exp Ques | Esc
-      // reg_exp -> ● reg_exp Ques | LBrack
-      // reg_exp -> ● reg_exp Ques | Dot
-      // reg_exp -> ● reg_exp Ques | Or
-      // reg_exp -> ● char | EscNo
-      // reg_exp -> ● char | Esc
-      // reg_exp -> ● char | LBrack
-      // reg_exp -> ● char | Dot
-      // reg_exp -> ● char | Or
-      // char -> ● EscNo | Or
-      // char -> ● Esc EscOrigin | Or
-      // char -> ● Esc EscSpace | Or
-      // char -> ● Esc EscU EscUnicode | Or
-      // char -> ● EscNo | Dot
-      // char -> ● Esc EscOrigin | Dot
-      // char -> ● Esc EscSpace | Dot
-      // char -> ● Esc EscU EscUnicode | Dot
-      // char -> ● EscNo | LBrack
-      // char -> ● Esc EscOrigin | LBrack
-      // char -> ● Esc EscSpace | LBrack
-      // char -> ● Esc EscU EscUnicode | LBrack
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // reg_exp -> ● reg_exp | SortName
-      // reg_exp -> ● LBrack ranges RBrack | SortName
-      // reg_exp -> ● LBrack Caret ranges RBrack | SortName
-      // reg_exp -> ● Dot | SortName
-      // reg_exp -> ● | SortName
-      // reg_exp -> ● reg_exp Or reg_exp | SortName
-      // reg_exp -> ● reg_exp reg_exp | SortName
-      // reg_exp -> ● reg_exp Star | SortName
-      // reg_exp -> ● reg_exp Plus | SortName
-      // reg_exp -> ● reg_exp Ques | SortName
-      // reg_exp -> ● char | SortName
-      // char -> ● EscNo | SortName
-      // char -> ● Esc EscOrigin | SortName
-      // char -> ● Esc EscSpace | SortName
-      // char -> ● Esc EscU EscUnicode | SortName
-      // reg_exp -> ● reg_exp | TokenName
-      // reg_exp -> ● LBrack ranges RBrack | TokenName
-      // reg_exp -> ● LBrack Caret ranges RBrack | TokenName
-      // reg_exp -> ● Dot | TokenName
-      // reg_exp -> ● | TokenName
-      // reg_exp -> ● reg_exp Or reg_exp | TokenName
-      // reg_exp -> ● reg_exp reg_exp | TokenName
-      // reg_exp -> ● reg_exp Star | TokenName
-      // reg_exp -> ● reg_exp Plus | TokenName
-      // reg_exp -> ● reg_exp Ques | TokenName
-      // reg_exp -> ● char | TokenName
-      // char -> ● EscNo | TokenName
-      // char -> ● Esc EscOrigin | TokenName
-      // char -> ● Esc EscSpace | TokenName
-      // char -> ● Esc EscU EscUnicode | TokenName
-      // reg_exp -> ● reg_exp | Percent
-      // reg_exp -> ● LBrack ranges RBrack | Percent
-      // reg_exp -> ● LBrack Caret ranges RBrack | Percent
-      // reg_exp -> ● Dot | Percent
-      // reg_exp -> ● | Percent
-      // reg_exp -> ● reg_exp Or reg_exp | Percent
-      // reg_exp -> ● reg_exp reg_exp | Percent
-      // reg_exp -> ● reg_exp Star | Percent
-      // reg_exp -> ● reg_exp Plus | Percent
-      // reg_exp -> ● reg_exp Ques | Percent
-      // reg_exp -> ● char | Percent
-      // char -> ● EscNo | Percent
-      // char -> ● Esc EscOrigin | Percent
-      // char -> ● Esc EscSpace | Percent
-      // char -> ● Esc EscU EscUnicode | Percent
-      // reg_exp -> ● reg_exp | CommentHead
-      // reg_exp -> ● LBrack ranges RBrack | CommentHead
-      // reg_exp -> ● LBrack Caret ranges RBrack | CommentHead
-      // reg_exp -> ● Dot | CommentHead
-      // reg_exp -> ● | CommentHead
-      // reg_exp -> ● reg_exp Or reg_exp | CommentHead
-      // reg_exp -> ● reg_exp reg_exp | CommentHead
-      // reg_exp -> ● reg_exp Star | CommentHead
-      // reg_exp -> ● reg_exp Plus | CommentHead
-      // reg_exp -> ● reg_exp Ques | CommentHead
-      // reg_exp -> ● char | CommentHead
-      // char -> ● EscNo | CommentHead
-      // char -> ● Esc EscOrigin | CommentHead
-      // char -> ● Esc EscSpace | CommentHead
-      // char -> ● Esc EscU EscUnicode | CommentHead
       continue match lexeme.token {
           Or => { // shift
             // ignore the old lexeme
@@ -2480,7 +1666,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             lexeme = self.lexer.scan21()
             50
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -2686,60 +1872,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     46 => {
       self.enter_state(46)
-      // reg_exp -> LBrack ● ranges RBrack | CommentHead
-      // reg_exp -> LBrack ● Caret ranges RBrack | CommentHead
-      // reg_exp -> LBrack ● ranges RBrack | Ques
-      // reg_exp -> LBrack ● Caret ranges RBrack | Ques
-      // reg_exp -> LBrack ● ranges RBrack | Plus
-      // reg_exp -> LBrack ● Caret ranges RBrack | Plus
-      // reg_exp -> LBrack ● ranges RBrack | Star
-      // reg_exp -> LBrack ● Caret ranges RBrack | Star
-      // reg_exp -> LBrack ● ranges RBrack | EscNo
-      // reg_exp -> LBrack ● ranges RBrack | Esc
-      // reg_exp -> LBrack ● ranges RBrack | LBrack
-      // reg_exp -> LBrack ● ranges RBrack | Dot
-      // reg_exp -> LBrack ● ranges RBrack | Or
-      // reg_exp -> LBrack ● Caret ranges RBrack | EscNo
-      // reg_exp -> LBrack ● Caret ranges RBrack | Esc
-      // reg_exp -> LBrack ● Caret ranges RBrack | LBrack
-      // reg_exp -> LBrack ● Caret ranges RBrack | Dot
-      // reg_exp -> LBrack ● Caret ranges RBrack | Or
-      // reg_exp -> LBrack ● ranges RBrack | Percent
-      // reg_exp -> LBrack ● Caret ranges RBrack | Percent
-      // reg_exp -> LBrack ● ranges RBrack | TokenName
-      // reg_exp -> LBrack ● Caret ranges RBrack | TokenName
-      // reg_exp -> LBrack ● ranges RBrack | SortName
-      // reg_exp -> LBrack ● Caret ranges RBrack | SortName
-      // reg_exp -> LBrack ● ranges RBrack | LAURUS
-      // reg_exp -> LBrack ● Caret ranges RBrack | LAURUS
-      // ranges -> ● range | RBrack
-      // ranges -> ● ranges range | RBrack
-      // ranges -> ● range | EscNo
-      // ranges -> ● range | Esc
-      // ranges -> ● ranges range | EscNo
-      // ranges -> ● ranges range | Esc
-      // range -> ● char | Esc
-      // range -> ● char Dash char | Esc
-      // char -> ● EscNo | Dash
-      // char -> ● Esc EscOrigin | Dash
-      // char -> ● Esc EscSpace | Dash
-      // char -> ● Esc EscU EscUnicode | Dash
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // range -> ● char | EscNo
-      // range -> ● char Dash char | EscNo
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // range -> ● char | RBrack
-      // range -> ● char Dash char | RBrack
-      // char -> ● EscNo | RBrack
-      // char -> ● Esc EscOrigin | RBrack
-      // char -> ● Esc EscSpace | RBrack
-      // char -> ● Esc EscU EscUnicode | RBrack
       continue match lexeme.token {
           Caret => { // shift
             // ignore the old lexeme
@@ -2762,19 +1894,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     47 => {
       self.enter_state(47)
-      // reg_exp -> Dot ● | CommentHead
-      // reg_exp -> Dot ● | Ques
-      // reg_exp -> Dot ● | Plus
-      // reg_exp -> Dot ● | Star
-      // reg_exp -> Dot ● | EscNo
-      // reg_exp -> Dot ● | Esc
-      // reg_exp -> Dot ● | LBrack
-      // reg_exp -> Dot ● | Dot
-      // reg_exp -> Dot ● | Or
-      // reg_exp -> Dot ● | Percent
-      // reg_exp -> Dot ● | TokenName
-      // reg_exp -> Dot ● | SortName
-      // reg_exp -> Dot ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -2980,7 +2099,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
@@ -3002,19 +2121,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     48 => {
       self.enter_state(48)
-      // reg_exp -> char ● | CommentHead
-      // reg_exp -> char ● | Ques
-      // reg_exp -> char ● | Plus
-      // reg_exp -> char ● | Star
-      // reg_exp -> char ● | EscNo
-      // reg_exp -> char ● | Esc
-      // reg_exp -> char ● | LBrack
-      // reg_exp -> char ● | Dot
-      // reg_exp -> char ● | Or
-      // reg_exp -> char ● | Percent
-      // reg_exp -> char ● | TokenName
-      // reg_exp -> char ● | SortName
-      // reg_exp -> char ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -3220,7 +2326,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
             let node = RegExp::Single(x0) |> Node::RegExp
@@ -3242,19 +2348,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     49 => {
       self.enter_state(49)
-      // char -> EscNo ● | CommentHead
-      // char -> EscNo ● | Ques
-      // char -> EscNo ● | Plus
-      // char -> EscNo ● | Star
-      // char -> EscNo ● | Or
-      // char -> EscNo ● | Dot
-      // char -> EscNo ● | LBrack
-      // char -> EscNo ● | Esc
-      // char -> EscNo ● | EscNo
-      // char -> EscNo ● | Percent
-      // char -> EscNo ● | TokenName
-      // char -> EscNo ● | SortName
-      // char -> EscNo ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -3520,7 +2613,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
             let node = x0 |> Node::Char
@@ -3547,45 +2640,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     50 => {
       self.enter_state(50)
-      // char -> Esc ● EscOrigin | CommentHead
-      // char -> Esc ● EscSpace | CommentHead
-      // char -> Esc ● EscU EscUnicode | CommentHead
-      // char -> Esc ● EscOrigin | Ques
-      // char -> Esc ● EscSpace | Ques
-      // char -> Esc ● EscU EscUnicode | Ques
-      // char -> Esc ● EscOrigin | Plus
-      // char -> Esc ● EscSpace | Plus
-      // char -> Esc ● EscU EscUnicode | Plus
-      // char -> Esc ● EscOrigin | Star
-      // char -> Esc ● EscSpace | Star
-      // char -> Esc ● EscU EscUnicode | Star
-      // char -> Esc ● EscOrigin | Or
-      // char -> Esc ● EscSpace | Or
-      // char -> Esc ● EscU EscUnicode | Or
-      // char -> Esc ● EscOrigin | Dot
-      // char -> Esc ● EscSpace | Dot
-      // char -> Esc ● EscU EscUnicode | Dot
-      // char -> Esc ● EscOrigin | LBrack
-      // char -> Esc ● EscSpace | LBrack
-      // char -> Esc ● EscU EscUnicode | LBrack
-      // char -> Esc ● EscOrigin | Esc
-      // char -> Esc ● EscSpace | Esc
-      // char -> Esc ● EscU EscUnicode | Esc
-      // char -> Esc ● EscOrigin | EscNo
-      // char -> Esc ● EscSpace | EscNo
-      // char -> Esc ● EscU EscUnicode | EscNo
-      // char -> Esc ● EscOrigin | Percent
-      // char -> Esc ● EscSpace | Percent
-      // char -> Esc ● EscU EscUnicode | Percent
-      // char -> Esc ● EscOrigin | TokenName
-      // char -> Esc ● EscSpace | TokenName
-      // char -> Esc ● EscU EscUnicode | TokenName
-      // char -> Esc ● EscOrigin | SortName
-      // char -> Esc ● EscSpace | SortName
-      // char -> Esc ● EscU EscUnicode | SortName
-      // char -> Esc ● EscOrigin | LAURUS
-      // char -> Esc ● EscSpace | LAURUS
-      // char -> Esc ● EscU EscUnicode | LAURUS
       continue match lexeme.token {
           EscOrigin => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
@@ -3609,19 +2663,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     51 => {
       self.enter_state(51)
-      // char -> Esc EscOrigin ● | CommentHead
-      // char -> Esc EscOrigin ● | Ques
-      // char -> Esc EscOrigin ● | Plus
-      // char -> Esc EscOrigin ● | Star
-      // char -> Esc EscOrigin ● | Or
-      // char -> Esc EscOrigin ● | Dot
-      // char -> Esc EscOrigin ● | LBrack
-      // char -> Esc EscOrigin ● | Esc
-      // char -> Esc EscOrigin ● | EscNo
-      // char -> Esc EscOrigin ● | Percent
-      // char -> Esc EscOrigin ● | TokenName
-      // char -> Esc EscOrigin ● | SortName
-      // char -> Esc EscOrigin ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -3911,7 +2952,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
@@ -3940,19 +2981,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     52 => {
       self.enter_state(52)
-      // char -> Esc EscSpace ● | CommentHead
-      // char -> Esc EscSpace ● | Ques
-      // char -> Esc EscSpace ● | Plus
-      // char -> Esc EscSpace ● | Star
-      // char -> Esc EscSpace ● | Or
-      // char -> Esc EscSpace ● | Dot
-      // char -> Esc EscSpace ● | LBrack
-      // char -> Esc EscSpace ● | Esc
-      // char -> Esc EscSpace ● | EscNo
-      // char -> Esc EscSpace ● | Percent
-      // char -> Esc EscSpace ● | TokenName
-      // char -> Esc EscSpace ● | SortName
-      // char -> Esc EscSpace ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -4242,7 +3270,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
@@ -4271,19 +3299,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     53 => {
       self.enter_state(53)
-      // char -> Esc EscU ● EscUnicode | CommentHead
-      // char -> Esc EscU ● EscUnicode | Ques
-      // char -> Esc EscU ● EscUnicode | Plus
-      // char -> Esc EscU ● EscUnicode | Star
-      // char -> Esc EscU ● EscUnicode | Or
-      // char -> Esc EscU ● EscUnicode | Dot
-      // char -> Esc EscU ● EscUnicode | LBrack
-      // char -> Esc EscU ● EscUnicode | Esc
-      // char -> Esc EscU ● EscUnicode | EscNo
-      // char -> Esc EscU ● EscUnicode | Percent
-      // char -> Esc EscU ● EscUnicode | TokenName
-      // char -> Esc EscU ● EscUnicode | SortName
-      // char -> Esc EscU ● EscUnicode | LAURUS
       continue match lexeme.token {
           EscUnicode => { // shift
             let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
@@ -4296,19 +3311,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     54 => {
       self.enter_state(54)
-      // char -> Esc EscU EscUnicode ● | CommentHead
-      // char -> Esc EscU EscUnicode ● | Ques
-      // char -> Esc EscU EscUnicode ● | Plus
-      // char -> Esc EscU EscUnicode ● | Star
-      // char -> Esc EscU EscUnicode ● | Or
-      // char -> Esc EscU EscUnicode ● | Dot
-      // char -> Esc EscU EscUnicode ● | LBrack
-      // char -> Esc EscU EscUnicode ● | Esc
-      // char -> Esc EscU EscUnicode ● | EscNo
-      // char -> Esc EscU EscUnicode ● | Percent
-      // char -> Esc EscU EscUnicode ● | TokenName
-      // char -> Esc EscU EscUnicode ● | SortName
-      // char -> Esc EscU EscUnicode ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -4622,7 +3624,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -4653,44 +3655,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     55 => {
       self.enter_state(55)
-      // reg_exp -> LBrack ranges ● RBrack | CommentHead
-      // reg_exp -> LBrack ranges ● RBrack | Ques
-      // reg_exp -> LBrack ranges ● RBrack | Plus
-      // reg_exp -> LBrack ranges ● RBrack | Star
-      // reg_exp -> LBrack ranges ● RBrack | EscNo
-      // reg_exp -> LBrack ranges ● RBrack | Esc
-      // reg_exp -> LBrack ranges ● RBrack | LBrack
-      // reg_exp -> LBrack ranges ● RBrack | Dot
-      // reg_exp -> LBrack ranges ● RBrack | Or
-      // reg_exp -> LBrack ranges ● RBrack | Percent
-      // reg_exp -> LBrack ranges ● RBrack | TokenName
-      // reg_exp -> LBrack ranges ● RBrack | SortName
-      // reg_exp -> LBrack ranges ● RBrack | LAURUS
-      // ranges -> ranges ● range | RBrack
-      // ranges -> ranges ● range | EscNo
-      // ranges -> ranges ● range | Esc
-      // range -> ● char | Esc
-      // range -> ● char Dash char | Esc
-      // char -> ● EscNo | Dash
-      // char -> ● Esc EscOrigin | Dash
-      // char -> ● Esc EscSpace | Dash
-      // char -> ● Esc EscU EscUnicode | Dash
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // range -> ● char | EscNo
-      // range -> ● char Dash char | EscNo
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // range -> ● char | RBrack
-      // range -> ● char Dash char | RBrack
-      // char -> ● EscNo | RBrack
-      // char -> ● Esc EscOrigin | RBrack
-      // char -> ● Esc EscSpace | RBrack
-      // char -> ● Esc EscU EscUnicode | RBrack
       continue match lexeme.token {
           RBrack => { // shift
             // ignore the old lexeme
@@ -4713,47 +3677,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     56 => {
       self.enter_state(56)
-      // reg_exp -> LBrack Caret ● ranges RBrack | CommentHead
-      // reg_exp -> LBrack Caret ● ranges RBrack | Ques
-      // reg_exp -> LBrack Caret ● ranges RBrack | Plus
-      // reg_exp -> LBrack Caret ● ranges RBrack | Star
-      // reg_exp -> LBrack Caret ● ranges RBrack | EscNo
-      // reg_exp -> LBrack Caret ● ranges RBrack | Esc
-      // reg_exp -> LBrack Caret ● ranges RBrack | LBrack
-      // reg_exp -> LBrack Caret ● ranges RBrack | Dot
-      // reg_exp -> LBrack Caret ● ranges RBrack | Or
-      // reg_exp -> LBrack Caret ● ranges RBrack | Percent
-      // reg_exp -> LBrack Caret ● ranges RBrack | TokenName
-      // reg_exp -> LBrack Caret ● ranges RBrack | SortName
-      // reg_exp -> LBrack Caret ● ranges RBrack | LAURUS
-      // ranges -> ● range | RBrack
-      // ranges -> ● ranges range | RBrack
-      // ranges -> ● range | EscNo
-      // ranges -> ● range | Esc
-      // ranges -> ● ranges range | EscNo
-      // ranges -> ● ranges range | Esc
-      // range -> ● char | Esc
-      // range -> ● char Dash char | Esc
-      // char -> ● EscNo | Dash
-      // char -> ● Esc EscOrigin | Dash
-      // char -> ● Esc EscSpace | Dash
-      // char -> ● Esc EscU EscUnicode | Dash
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // range -> ● char | EscNo
-      // range -> ● char Dash char | EscNo
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // range -> ● char | RBrack
-      // range -> ● char Dash char | RBrack
-      // char -> ● EscNo | RBrack
-      // char -> ● Esc EscOrigin | RBrack
-      // char -> ● Esc EscSpace | RBrack
-      // char -> ● Esc EscU EscUnicode | RBrack
       continue match lexeme.token {
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
@@ -4771,9 +3694,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     57 => {
       self.enter_state(57)
-      // ranges -> range ● | RBrack
-      // ranges -> range ● | EscNo
-      // ranges -> range ● | Esc
       continue match lexeme.token {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -4816,12 +3736,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     58 => {
       self.enter_state(58)
-      // range -> char ● | Esc
-      // range -> char ● Dash char | Esc
-      // range -> char ● | EscNo
-      // range -> char ● Dash char | EscNo
-      // range -> char ● | RBrack
-      // range -> char ● Dash char | RBrack
       continue match lexeme.token {
           Dash => { // shift
             // ignore the old lexeme
@@ -4875,10 +3789,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     59 => {
       self.enter_state(59)
-      // char -> EscNo ● | Dash
-      // char -> EscNo ● | Esc
-      // char -> EscNo ● | EscNo
-      // char -> EscNo ● | RBrack
       continue match lexeme.token {
           Dash => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -4973,18 +3883,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     60 => {
       self.enter_state(60)
-      // char -> Esc ● EscOrigin | Dash
-      // char -> Esc ● EscSpace | Dash
-      // char -> Esc ● EscU EscUnicode | Dash
-      // char -> Esc ● EscOrigin | Esc
-      // char -> Esc ● EscSpace | Esc
-      // char -> Esc ● EscU EscUnicode | Esc
-      // char -> Esc ● EscOrigin | EscNo
-      // char -> Esc ● EscSpace | EscNo
-      // char -> Esc ● EscU EscUnicode | EscNo
-      // char -> Esc ● EscOrigin | RBrack
-      // char -> Esc ● EscSpace | RBrack
-      // char -> Esc ● EscU EscUnicode | RBrack
       continue match lexeme.token {
           EscOrigin => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
@@ -5008,10 +3906,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     61 => {
       self.enter_state(61)
-      // char -> Esc EscOrigin ● | Dash
-      // char -> Esc EscOrigin ● | Esc
-      // char -> Esc EscOrigin ● | EscNo
-      // char -> Esc EscOrigin ● | RBrack
       continue match lexeme.token {
           Dash => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5114,10 +4008,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     62 => {
       self.enter_state(62)
-      // char -> Esc EscSpace ● | Dash
-      // char -> Esc EscSpace ● | Esc
-      // char -> Esc EscSpace ● | EscNo
-      // char -> Esc EscSpace ● | RBrack
       continue match lexeme.token {
           Dash => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5220,10 +4110,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     63 => {
       self.enter_state(63)
-      // char -> Esc EscU ● EscUnicode | Dash
-      // char -> Esc EscU ● EscUnicode | Esc
-      // char -> Esc EscU ● EscUnicode | EscNo
-      // char -> Esc EscU ● EscUnicode | RBrack
       continue match lexeme.token {
           EscUnicode => { // shift
             let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
@@ -5236,10 +4122,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     64 => {
       self.enter_state(64)
-      // char -> Esc EscU EscUnicode ● | Dash
-      // char -> Esc EscU EscUnicode ● | Esc
-      // char -> Esc EscU EscUnicode ● | EscNo
-      // char -> Esc EscU EscUnicode ● | RBrack
       continue match lexeme.token {
           Dash => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5350,21 +4232,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     65 => {
       self.enter_state(65)
-      // range -> char Dash ● char | Esc
-      // range -> char Dash ● char | EscNo
-      // range -> char Dash ● char | RBrack
-      // char -> ● EscNo | RBrack
-      // char -> ● Esc EscOrigin | RBrack
-      // char -> ● Esc EscSpace | RBrack
-      // char -> ● Esc EscU EscUnicode | RBrack
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
       continue match lexeme.token {
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
@@ -5382,9 +4249,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     66 => {
       self.enter_state(66)
-      // range -> char Dash char ● | Esc
-      // range -> char Dash char ● | EscNo
-      // range -> char Dash char ● | RBrack
       continue match lexeme.token {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5445,9 +4309,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     67 => {
       self.enter_state(67)
-      // char -> EscNo ● | RBrack
-      // char -> EscNo ● | EscNo
-      // char -> EscNo ● | Esc
       continue match lexeme.token {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5520,15 +4381,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     68 => {
       self.enter_state(68)
-      // char -> Esc ● EscOrigin | RBrack
-      // char -> Esc ● EscSpace | RBrack
-      // char -> Esc ● EscU EscUnicode | RBrack
-      // char -> Esc ● EscOrigin | EscNo
-      // char -> Esc ● EscSpace | EscNo
-      // char -> Esc ● EscU EscUnicode | EscNo
-      // char -> Esc ● EscOrigin | Esc
-      // char -> Esc ● EscSpace | Esc
-      // char -> Esc ● EscU EscUnicode | Esc
       continue match lexeme.token {
           EscOrigin => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
@@ -5552,9 +4404,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     69 => {
       self.enter_state(69)
-      // char -> Esc EscOrigin ● | RBrack
-      // char -> Esc EscOrigin ● | EscNo
-      // char -> Esc EscOrigin ● | Esc
       continue match lexeme.token {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5633,9 +4482,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     70 => {
       self.enter_state(70)
-      // char -> Esc EscSpace ● | RBrack
-      // char -> Esc EscSpace ● | EscNo
-      // char -> Esc EscSpace ● | Esc
       continue match lexeme.token {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5714,9 +4560,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     71 => {
       self.enter_state(71)
-      // char -> Esc EscU ● EscUnicode | RBrack
-      // char -> Esc EscU ● EscUnicode | EscNo
-      // char -> Esc EscU ● EscUnicode | Esc
       continue match lexeme.token {
           EscUnicode => { // shift
             let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
@@ -5729,9 +4572,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     72 => {
       self.enter_state(72)
-      // char -> Esc EscU EscUnicode ● | RBrack
-      // char -> Esc EscU EscUnicode ● | EscNo
-      // char -> Esc EscU EscUnicode ● | Esc
       continue match lexeme.token {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5816,44 +4656,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     73 => {
       self.enter_state(73)
-      // reg_exp -> LBrack Caret ranges ● RBrack | CommentHead
-      // reg_exp -> LBrack Caret ranges ● RBrack | Ques
-      // reg_exp -> LBrack Caret ranges ● RBrack | Plus
-      // reg_exp -> LBrack Caret ranges ● RBrack | Star
-      // reg_exp -> LBrack Caret ranges ● RBrack | EscNo
-      // reg_exp -> LBrack Caret ranges ● RBrack | Esc
-      // reg_exp -> LBrack Caret ranges ● RBrack | LBrack
-      // reg_exp -> LBrack Caret ranges ● RBrack | Dot
-      // reg_exp -> LBrack Caret ranges ● RBrack | Or
-      // reg_exp -> LBrack Caret ranges ● RBrack | Percent
-      // reg_exp -> LBrack Caret ranges ● RBrack | TokenName
-      // reg_exp -> LBrack Caret ranges ● RBrack | SortName
-      // reg_exp -> LBrack Caret ranges ● RBrack | LAURUS
-      // ranges -> ranges ● range | RBrack
-      // ranges -> ranges ● range | EscNo
-      // ranges -> ranges ● range | Esc
-      // range -> ● char | Esc
-      // range -> ● char Dash char | Esc
-      // char -> ● EscNo | Dash
-      // char -> ● Esc EscOrigin | Dash
-      // char -> ● Esc EscSpace | Dash
-      // char -> ● Esc EscU EscUnicode | Dash
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // range -> ● char | EscNo
-      // range -> ● char Dash char | EscNo
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // range -> ● char | RBrack
-      // range -> ● char Dash char | RBrack
-      // char -> ● EscNo | RBrack
-      // char -> ● Esc EscOrigin | RBrack
-      // char -> ● Esc EscSpace | RBrack
-      // char -> ● Esc EscU EscUnicode | RBrack
       continue match lexeme.token {
           RBrack => { // shift
             // ignore the old lexeme
@@ -5876,19 +4678,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     74 => {
       self.enter_state(74)
-      // reg_exp -> LBrack Caret ranges RBrack ● | CommentHead
-      // reg_exp -> LBrack Caret ranges RBrack ● | Ques
-      // reg_exp -> LBrack Caret ranges RBrack ● | Plus
-      // reg_exp -> LBrack Caret ranges RBrack ● | Star
-      // reg_exp -> LBrack Caret ranges RBrack ● | EscNo
-      // reg_exp -> LBrack Caret ranges RBrack ● | Esc
-      // reg_exp -> LBrack Caret ranges RBrack ● | LBrack
-      // reg_exp -> LBrack Caret ranges RBrack ● | Dot
-      // reg_exp -> LBrack Caret ranges RBrack ● | Or
-      // reg_exp -> LBrack Caret ranges RBrack ● | Percent
-      // reg_exp -> LBrack Caret ranges RBrack ● | TokenName
-      // reg_exp -> LBrack Caret ranges RBrack ● | SortName
-      // reg_exp -> LBrack Caret ranges RBrack ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -6166,7 +4955,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -6194,9 +4983,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     75 => {
       self.enter_state(75)
-      // ranges -> ranges range ● | RBrack
-      // ranges -> ranges range ● | EscNo
-      // ranges -> ranges range ● | Esc
       continue match lexeme.token {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -6245,19 +5031,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     76 => {
       self.enter_state(76)
-      // reg_exp -> LBrack ranges RBrack ● | CommentHead
-      // reg_exp -> LBrack ranges RBrack ● | Ques
-      // reg_exp -> LBrack ranges RBrack ● | Plus
-      // reg_exp -> LBrack ranges RBrack ● | Star
-      // reg_exp -> LBrack ranges RBrack ● | EscNo
-      // reg_exp -> LBrack ranges RBrack ● | Esc
-      // reg_exp -> LBrack ranges RBrack ● | LBrack
-      // reg_exp -> LBrack ranges RBrack ● | Dot
-      // reg_exp -> LBrack ranges RBrack ● | Or
-      // reg_exp -> LBrack ranges RBrack ● | Percent
-      // reg_exp -> LBrack ranges RBrack ● | TokenName
-      // reg_exp -> LBrack ranges RBrack ● | SortName
-      // reg_exp -> LBrack ranges RBrack ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -6511,7 +5284,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -6537,214 +5310,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     77 => {
       self.enter_state(77)
-      // reg_exp -> reg_exp Or ● reg_exp | CommentHead
-      // reg_exp -> reg_exp Or ● reg_exp | Ques
-      // reg_exp -> reg_exp Or ● reg_exp | Plus
-      // reg_exp -> reg_exp Or ● reg_exp | Star
-      // reg_exp -> reg_exp Or ● reg_exp | EscNo
-      // reg_exp -> reg_exp Or ● reg_exp | Esc
-      // reg_exp -> reg_exp Or ● reg_exp | LBrack
-      // reg_exp -> reg_exp Or ● reg_exp | Dot
-      // reg_exp -> reg_exp Or ● reg_exp | Or
-      // reg_exp -> reg_exp Or ● reg_exp | Percent
-      // reg_exp -> reg_exp Or ● reg_exp | TokenName
-      // reg_exp -> reg_exp Or ● reg_exp | SortName
-      // reg_exp -> reg_exp Or ● reg_exp | LAURUS
-      // reg_exp -> ● reg_exp | LAURUS
-      // reg_exp -> ● LBrack ranges RBrack | LAURUS
-      // reg_exp -> ● LBrack Caret ranges RBrack | LAURUS
-      // reg_exp -> ● Dot | LAURUS
-      // reg_exp -> ● | LAURUS
-      // reg_exp -> ● reg_exp Or reg_exp | LAURUS
-      // reg_exp -> ● reg_exp reg_exp | LAURUS
-      // reg_exp -> ● reg_exp Star | LAURUS
-      // reg_exp -> ● reg_exp Plus | LAURUS
-      // reg_exp -> ● reg_exp Ques | LAURUS
-      // reg_exp -> ● char | LAURUS
-      // char -> ● EscNo | LAURUS
-      // char -> ● Esc EscOrigin | LAURUS
-      // char -> ● Esc EscSpace | LAURUS
-      // char -> ● Esc EscU EscUnicode | LAURUS
-      // reg_exp -> ● reg_exp | Ques
-      // reg_exp -> ● LBrack ranges RBrack | Ques
-      // reg_exp -> ● LBrack Caret ranges RBrack | Ques
-      // reg_exp -> ● Dot | Ques
-      // reg_exp -> ● | Ques
-      // reg_exp -> ● reg_exp Or reg_exp | Ques
-      // reg_exp -> ● reg_exp reg_exp | Ques
-      // reg_exp -> ● reg_exp Star | Ques
-      // reg_exp -> ● reg_exp Plus | Ques
-      // reg_exp -> ● reg_exp Ques | Ques
-      // reg_exp -> ● char | Ques
-      // char -> ● EscNo | Ques
-      // char -> ● Esc EscOrigin | Ques
-      // char -> ● Esc EscSpace | Ques
-      // char -> ● Esc EscU EscUnicode | Ques
-      // reg_exp -> ● reg_exp | Plus
-      // reg_exp -> ● LBrack ranges RBrack | Plus
-      // reg_exp -> ● LBrack Caret ranges RBrack | Plus
-      // reg_exp -> ● Dot | Plus
-      // reg_exp -> ● | Plus
-      // reg_exp -> ● reg_exp Or reg_exp | Plus
-      // reg_exp -> ● reg_exp reg_exp | Plus
-      // reg_exp -> ● reg_exp Star | Plus
-      // reg_exp -> ● reg_exp Plus | Plus
-      // reg_exp -> ● reg_exp Ques | Plus
-      // reg_exp -> ● char | Plus
-      // char -> ● EscNo | Plus
-      // char -> ● Esc EscOrigin | Plus
-      // char -> ● Esc EscSpace | Plus
-      // char -> ● Esc EscU EscUnicode | Plus
-      // reg_exp -> ● reg_exp | Star
-      // reg_exp -> ● LBrack ranges RBrack | Star
-      // reg_exp -> ● LBrack Caret ranges RBrack | Star
-      // reg_exp -> ● Dot | Star
-      // reg_exp -> ● | Star
-      // reg_exp -> ● reg_exp Or reg_exp | Star
-      // reg_exp -> ● reg_exp reg_exp | Star
-      // reg_exp -> ● reg_exp Star | Star
-      // reg_exp -> ● reg_exp Plus | Star
-      // reg_exp -> ● reg_exp Ques | Star
-      // reg_exp -> ● char | Star
-      // char -> ● EscNo | Star
-      // char -> ● Esc EscOrigin | Star
-      // char -> ● Esc EscSpace | Star
-      // char -> ● Esc EscU EscUnicode | Star
-      // reg_exp -> ● reg_exp | EscNo
-      // reg_exp -> ● reg_exp | Esc
-      // reg_exp -> ● reg_exp | LBrack
-      // reg_exp -> ● reg_exp | Dot
-      // reg_exp -> ● reg_exp | Or
-      // reg_exp -> ● LBrack ranges RBrack | EscNo
-      // reg_exp -> ● LBrack ranges RBrack | Esc
-      // reg_exp -> ● LBrack ranges RBrack | LBrack
-      // reg_exp -> ● LBrack ranges RBrack | Dot
-      // reg_exp -> ● LBrack ranges RBrack | Or
-      // reg_exp -> ● LBrack Caret ranges RBrack | EscNo
-      // reg_exp -> ● LBrack Caret ranges RBrack | Esc
-      // reg_exp -> ● LBrack Caret ranges RBrack | LBrack
-      // reg_exp -> ● LBrack Caret ranges RBrack | Dot
-      // reg_exp -> ● LBrack Caret ranges RBrack | Or
-      // reg_exp -> ● Dot | EscNo
-      // reg_exp -> ● Dot | Esc
-      // reg_exp -> ● Dot | LBrack
-      // reg_exp -> ● Dot | Dot
-      // reg_exp -> ● Dot | Or
-      // reg_exp -> ● | EscNo
-      // reg_exp -> ● | Esc
-      // reg_exp -> ● | LBrack
-      // reg_exp -> ● | Dot
-      // reg_exp -> ● | Or
-      // reg_exp -> ● reg_exp Or reg_exp | EscNo
-      // reg_exp -> ● reg_exp Or reg_exp | Esc
-      // reg_exp -> ● reg_exp Or reg_exp | LBrack
-      // reg_exp -> ● reg_exp Or reg_exp | Dot
-      // reg_exp -> ● reg_exp Or reg_exp | Or
-      // reg_exp -> ● reg_exp reg_exp | EscNo
-      // reg_exp -> ● reg_exp reg_exp | Esc
-      // reg_exp -> ● reg_exp reg_exp | LBrack
-      // reg_exp -> ● reg_exp reg_exp | Dot
-      // reg_exp -> ● reg_exp reg_exp | Or
-      // reg_exp -> ● reg_exp Star | EscNo
-      // reg_exp -> ● reg_exp Star | Esc
-      // reg_exp -> ● reg_exp Star | LBrack
-      // reg_exp -> ● reg_exp Star | Dot
-      // reg_exp -> ● reg_exp Star | Or
-      // reg_exp -> ● reg_exp Plus | EscNo
-      // reg_exp -> ● reg_exp Plus | Esc
-      // reg_exp -> ● reg_exp Plus | LBrack
-      // reg_exp -> ● reg_exp Plus | Dot
-      // reg_exp -> ● reg_exp Plus | Or
-      // reg_exp -> ● reg_exp Ques | EscNo
-      // reg_exp -> ● reg_exp Ques | Esc
-      // reg_exp -> ● reg_exp Ques | LBrack
-      // reg_exp -> ● reg_exp Ques | Dot
-      // reg_exp -> ● reg_exp Ques | Or
-      // reg_exp -> ● char | EscNo
-      // reg_exp -> ● char | Esc
-      // reg_exp -> ● char | LBrack
-      // reg_exp -> ● char | Dot
-      // reg_exp -> ● char | Or
-      // char -> ● EscNo | Or
-      // char -> ● Esc EscOrigin | Or
-      // char -> ● Esc EscSpace | Or
-      // char -> ● Esc EscU EscUnicode | Or
-      // char -> ● EscNo | Dot
-      // char -> ● Esc EscOrigin | Dot
-      // char -> ● Esc EscSpace | Dot
-      // char -> ● Esc EscU EscUnicode | Dot
-      // char -> ● EscNo | LBrack
-      // char -> ● Esc EscOrigin | LBrack
-      // char -> ● Esc EscSpace | LBrack
-      // char -> ● Esc EscU EscUnicode | LBrack
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // reg_exp -> ● reg_exp | SortName
-      // reg_exp -> ● LBrack ranges RBrack | SortName
-      // reg_exp -> ● LBrack Caret ranges RBrack | SortName
-      // reg_exp -> ● Dot | SortName
-      // reg_exp -> ● | SortName
-      // reg_exp -> ● reg_exp Or reg_exp | SortName
-      // reg_exp -> ● reg_exp reg_exp | SortName
-      // reg_exp -> ● reg_exp Star | SortName
-      // reg_exp -> ● reg_exp Plus | SortName
-      // reg_exp -> ● reg_exp Ques | SortName
-      // reg_exp -> ● char | SortName
-      // char -> ● EscNo | SortName
-      // char -> ● Esc EscOrigin | SortName
-      // char -> ● Esc EscSpace | SortName
-      // char -> ● Esc EscU EscUnicode | SortName
-      // reg_exp -> ● reg_exp | TokenName
-      // reg_exp -> ● LBrack ranges RBrack | TokenName
-      // reg_exp -> ● LBrack Caret ranges RBrack | TokenName
-      // reg_exp -> ● Dot | TokenName
-      // reg_exp -> ● | TokenName
-      // reg_exp -> ● reg_exp Or reg_exp | TokenName
-      // reg_exp -> ● reg_exp reg_exp | TokenName
-      // reg_exp -> ● reg_exp Star | TokenName
-      // reg_exp -> ● reg_exp Plus | TokenName
-      // reg_exp -> ● reg_exp Ques | TokenName
-      // reg_exp -> ● char | TokenName
-      // char -> ● EscNo | TokenName
-      // char -> ● Esc EscOrigin | TokenName
-      // char -> ● Esc EscSpace | TokenName
-      // char -> ● Esc EscU EscUnicode | TokenName
-      // reg_exp -> ● reg_exp | Percent
-      // reg_exp -> ● LBrack ranges RBrack | Percent
-      // reg_exp -> ● LBrack Caret ranges RBrack | Percent
-      // reg_exp -> ● Dot | Percent
-      // reg_exp -> ● | Percent
-      // reg_exp -> ● reg_exp Or reg_exp | Percent
-      // reg_exp -> ● reg_exp reg_exp | Percent
-      // reg_exp -> ● reg_exp Star | Percent
-      // reg_exp -> ● reg_exp Plus | Percent
-      // reg_exp -> ● reg_exp Ques | Percent
-      // reg_exp -> ● char | Percent
-      // char -> ● EscNo | Percent
-      // char -> ● Esc EscOrigin | Percent
-      // char -> ● Esc EscSpace | Percent
-      // char -> ● Esc EscU EscUnicode | Percent
-      // reg_exp -> ● reg_exp | CommentHead
-      // reg_exp -> ● LBrack ranges RBrack | CommentHead
-      // reg_exp -> ● LBrack Caret ranges RBrack | CommentHead
-      // reg_exp -> ● Dot | CommentHead
-      // reg_exp -> ● | CommentHead
-      // reg_exp -> ● reg_exp Or reg_exp | CommentHead
-      // reg_exp -> ● reg_exp reg_exp | CommentHead
-      // reg_exp -> ● reg_exp Star | CommentHead
-      // reg_exp -> ● reg_exp Plus | CommentHead
-      // reg_exp -> ● reg_exp Ques | CommentHead
-      // reg_exp -> ● char | CommentHead
-      // char -> ● EscNo | CommentHead
-      // char -> ● Esc EscOrigin | CommentHead
-      // char -> ● Esc EscSpace | CommentHead
-      // char -> ● Esc EscU EscUnicode | CommentHead
       continue match lexeme.token {
           LBrack => { // shift
             // ignore the old lexeme
@@ -6767,7 +5332,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             lexeme = self.lexer.scan21()
             50
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
@@ -6967,292 +5532,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     78 => {
       self.enter_state(78)
-      // reg_exp -> reg_exp reg_exp ● | CommentHead
-      // reg_exp -> reg_exp reg_exp ● | Ques
-      // reg_exp -> reg_exp reg_exp ● | Plus
-      // reg_exp -> reg_exp reg_exp ● | Star
-      // reg_exp -> reg_exp reg_exp ● | EscNo
-      // reg_exp -> reg_exp reg_exp ● | Esc
-      // reg_exp -> reg_exp reg_exp ● | LBrack
-      // reg_exp -> reg_exp reg_exp ● | Dot
-      // reg_exp -> reg_exp reg_exp ● | Or
-      // reg_exp -> reg_exp reg_exp ● | Percent
-      // reg_exp -> reg_exp reg_exp ● | TokenName
-      // reg_exp -> reg_exp reg_exp ● | SortName
-      // reg_exp -> reg_exp reg_exp ● | LAURUS
-      // reg_exp -> reg_exp ● | LAURUS
-      // reg_exp -> reg_exp ● Or reg_exp | LAURUS
-      // reg_exp -> reg_exp ● reg_exp | LAURUS
-      // reg_exp -> reg_exp ● Star | LAURUS
-      // reg_exp -> reg_exp ● Plus | LAURUS
-      // reg_exp -> reg_exp ● Ques | LAURUS
-      // reg_exp -> reg_exp ● | Ques
-      // reg_exp -> reg_exp ● Or reg_exp | Ques
-      // reg_exp -> reg_exp ● reg_exp | Ques
-      // reg_exp -> reg_exp ● Star | Ques
-      // reg_exp -> reg_exp ● Plus | Ques
-      // reg_exp -> reg_exp ● Ques | Ques
-      // reg_exp -> reg_exp ● | Plus
-      // reg_exp -> reg_exp ● Or reg_exp | Plus
-      // reg_exp -> reg_exp ● reg_exp | Plus
-      // reg_exp -> reg_exp ● Star | Plus
-      // reg_exp -> reg_exp ● Plus | Plus
-      // reg_exp -> reg_exp ● Ques | Plus
-      // reg_exp -> reg_exp ● | Star
-      // reg_exp -> reg_exp ● Or reg_exp | Star
-      // reg_exp -> reg_exp ● reg_exp | Star
-      // reg_exp -> reg_exp ● Star | Star
-      // reg_exp -> reg_exp ● Plus | Star
-      // reg_exp -> reg_exp ● Ques | Star
-      // reg_exp -> reg_exp ● | EscNo
-      // reg_exp -> reg_exp ● | Esc
-      // reg_exp -> reg_exp ● | LBrack
-      // reg_exp -> reg_exp ● | Dot
-      // reg_exp -> reg_exp ● | Or
-      // reg_exp -> reg_exp ● Or reg_exp | EscNo
-      // reg_exp -> reg_exp ● Or reg_exp | Esc
-      // reg_exp -> reg_exp ● Or reg_exp | LBrack
-      // reg_exp -> reg_exp ● Or reg_exp | Dot
-      // reg_exp -> reg_exp ● Or reg_exp | Or
-      // reg_exp -> reg_exp ● reg_exp | EscNo
-      // reg_exp -> reg_exp ● reg_exp | Esc
-      // reg_exp -> reg_exp ● reg_exp | LBrack
-      // reg_exp -> reg_exp ● reg_exp | Dot
-      // reg_exp -> reg_exp ● reg_exp | Or
-      // reg_exp -> reg_exp ● Star | EscNo
-      // reg_exp -> reg_exp ● Star | Esc
-      // reg_exp -> reg_exp ● Star | LBrack
-      // reg_exp -> reg_exp ● Star | Dot
-      // reg_exp -> reg_exp ● Star | Or
-      // reg_exp -> reg_exp ● Plus | EscNo
-      // reg_exp -> reg_exp ● Plus | Esc
-      // reg_exp -> reg_exp ● Plus | LBrack
-      // reg_exp -> reg_exp ● Plus | Dot
-      // reg_exp -> reg_exp ● Plus | Or
-      // reg_exp -> reg_exp ● Ques | EscNo
-      // reg_exp -> reg_exp ● Ques | Esc
-      // reg_exp -> reg_exp ● Ques | LBrack
-      // reg_exp -> reg_exp ● Ques | Dot
-      // reg_exp -> reg_exp ● Ques | Or
-      // reg_exp -> reg_exp ● | SortName
-      // reg_exp -> reg_exp ● Or reg_exp | SortName
-      // reg_exp -> reg_exp ● reg_exp | SortName
-      // reg_exp -> reg_exp ● Star | SortName
-      // reg_exp -> reg_exp ● Plus | SortName
-      // reg_exp -> reg_exp ● Ques | SortName
-      // reg_exp -> reg_exp ● | TokenName
-      // reg_exp -> reg_exp ● Or reg_exp | TokenName
-      // reg_exp -> reg_exp ● reg_exp | TokenName
-      // reg_exp -> reg_exp ● Star | TokenName
-      // reg_exp -> reg_exp ● Plus | TokenName
-      // reg_exp -> reg_exp ● Ques | TokenName
-      // reg_exp -> reg_exp ● | Percent
-      // reg_exp -> reg_exp ● Or reg_exp | Percent
-      // reg_exp -> reg_exp ● reg_exp | Percent
-      // reg_exp -> reg_exp ● Star | Percent
-      // reg_exp -> reg_exp ● Plus | Percent
-      // reg_exp -> reg_exp ● Ques | Percent
-      // reg_exp -> reg_exp ● | CommentHead
-      // reg_exp -> reg_exp ● Or reg_exp | CommentHead
-      // reg_exp -> reg_exp ● reg_exp | CommentHead
-      // reg_exp -> reg_exp ● Star | CommentHead
-      // reg_exp -> reg_exp ● Plus | CommentHead
-      // reg_exp -> reg_exp ● Ques | CommentHead
-      // reg_exp -> ● reg_exp | CommentHead
-      // reg_exp -> ● LBrack ranges RBrack | CommentHead
-      // reg_exp -> ● LBrack Caret ranges RBrack | CommentHead
-      // reg_exp -> ● Dot | CommentHead
-      // reg_exp -> ● | CommentHead
-      // reg_exp -> ● reg_exp Or reg_exp | CommentHead
-      // reg_exp -> ● reg_exp reg_exp | CommentHead
-      // reg_exp -> ● reg_exp Star | CommentHead
-      // reg_exp -> ● reg_exp Plus | CommentHead
-      // reg_exp -> ● reg_exp Ques | CommentHead
-      // reg_exp -> ● char | CommentHead
-      // char -> ● EscNo | CommentHead
-      // char -> ● Esc EscOrigin | CommentHead
-      // char -> ● Esc EscSpace | CommentHead
-      // char -> ● Esc EscU EscUnicode | CommentHead
-      // reg_exp -> ● reg_exp | Ques
-      // reg_exp -> ● LBrack ranges RBrack | Ques
-      // reg_exp -> ● LBrack Caret ranges RBrack | Ques
-      // reg_exp -> ● Dot | Ques
-      // reg_exp -> ● | Ques
-      // reg_exp -> ● reg_exp Or reg_exp | Ques
-      // reg_exp -> ● reg_exp reg_exp | Ques
-      // reg_exp -> ● reg_exp Star | Ques
-      // reg_exp -> ● reg_exp Plus | Ques
-      // reg_exp -> ● reg_exp Ques | Ques
-      // reg_exp -> ● char | Ques
-      // char -> ● EscNo | Ques
-      // char -> ● Esc EscOrigin | Ques
-      // char -> ● Esc EscSpace | Ques
-      // char -> ● Esc EscU EscUnicode | Ques
-      // reg_exp -> ● reg_exp | Plus
-      // reg_exp -> ● LBrack ranges RBrack | Plus
-      // reg_exp -> ● LBrack Caret ranges RBrack | Plus
-      // reg_exp -> ● Dot | Plus
-      // reg_exp -> ● | Plus
-      // reg_exp -> ● reg_exp Or reg_exp | Plus
-      // reg_exp -> ● reg_exp reg_exp | Plus
-      // reg_exp -> ● reg_exp Star | Plus
-      // reg_exp -> ● reg_exp Plus | Plus
-      // reg_exp -> ● reg_exp Ques | Plus
-      // reg_exp -> ● char | Plus
-      // char -> ● EscNo | Plus
-      // char -> ● Esc EscOrigin | Plus
-      // char -> ● Esc EscSpace | Plus
-      // char -> ● Esc EscU EscUnicode | Plus
-      // reg_exp -> ● reg_exp | Star
-      // reg_exp -> ● LBrack ranges RBrack | Star
-      // reg_exp -> ● LBrack Caret ranges RBrack | Star
-      // reg_exp -> ● Dot | Star
-      // reg_exp -> ● | Star
-      // reg_exp -> ● reg_exp Or reg_exp | Star
-      // reg_exp -> ● reg_exp reg_exp | Star
-      // reg_exp -> ● reg_exp Star | Star
-      // reg_exp -> ● reg_exp Plus | Star
-      // reg_exp -> ● reg_exp Ques | Star
-      // reg_exp -> ● char | Star
-      // char -> ● EscNo | Star
-      // char -> ● Esc EscOrigin | Star
-      // char -> ● Esc EscSpace | Star
-      // char -> ● Esc EscU EscUnicode | Star
-      // reg_exp -> ● reg_exp | EscNo
-      // reg_exp -> ● reg_exp | Esc
-      // reg_exp -> ● reg_exp | LBrack
-      // reg_exp -> ● reg_exp | Dot
-      // reg_exp -> ● reg_exp | Or
-      // reg_exp -> ● LBrack ranges RBrack | EscNo
-      // reg_exp -> ● LBrack ranges RBrack | Esc
-      // reg_exp -> ● LBrack ranges RBrack | LBrack
-      // reg_exp -> ● LBrack ranges RBrack | Dot
-      // reg_exp -> ● LBrack ranges RBrack | Or
-      // reg_exp -> ● LBrack Caret ranges RBrack | EscNo
-      // reg_exp -> ● LBrack Caret ranges RBrack | Esc
-      // reg_exp -> ● LBrack Caret ranges RBrack | LBrack
-      // reg_exp -> ● LBrack Caret ranges RBrack | Dot
-      // reg_exp -> ● LBrack Caret ranges RBrack | Or
-      // reg_exp -> ● Dot | EscNo
-      // reg_exp -> ● Dot | Esc
-      // reg_exp -> ● Dot | LBrack
-      // reg_exp -> ● Dot | Dot
-      // reg_exp -> ● Dot | Or
-      // reg_exp -> ● | EscNo
-      // reg_exp -> ● | Esc
-      // reg_exp -> ● | LBrack
-      // reg_exp -> ● | Dot
-      // reg_exp -> ● | Or
-      // reg_exp -> ● reg_exp Or reg_exp | EscNo
-      // reg_exp -> ● reg_exp Or reg_exp | Esc
-      // reg_exp -> ● reg_exp Or reg_exp | LBrack
-      // reg_exp -> ● reg_exp Or reg_exp | Dot
-      // reg_exp -> ● reg_exp Or reg_exp | Or
-      // reg_exp -> ● reg_exp reg_exp | EscNo
-      // reg_exp -> ● reg_exp reg_exp | Esc
-      // reg_exp -> ● reg_exp reg_exp | LBrack
-      // reg_exp -> ● reg_exp reg_exp | Dot
-      // reg_exp -> ● reg_exp reg_exp | Or
-      // reg_exp -> ● reg_exp Star | EscNo
-      // reg_exp -> ● reg_exp Star | Esc
-      // reg_exp -> ● reg_exp Star | LBrack
-      // reg_exp -> ● reg_exp Star | Dot
-      // reg_exp -> ● reg_exp Star | Or
-      // reg_exp -> ● reg_exp Plus | EscNo
-      // reg_exp -> ● reg_exp Plus | Esc
-      // reg_exp -> ● reg_exp Plus | LBrack
-      // reg_exp -> ● reg_exp Plus | Dot
-      // reg_exp -> ● reg_exp Plus | Or
-      // reg_exp -> ● reg_exp Ques | EscNo
-      // reg_exp -> ● reg_exp Ques | Esc
-      // reg_exp -> ● reg_exp Ques | LBrack
-      // reg_exp -> ● reg_exp Ques | Dot
-      // reg_exp -> ● reg_exp Ques | Or
-      // reg_exp -> ● char | EscNo
-      // reg_exp -> ● char | Esc
-      // reg_exp -> ● char | LBrack
-      // reg_exp -> ● char | Dot
-      // reg_exp -> ● char | Or
-      // char -> ● EscNo | Or
-      // char -> ● Esc EscOrigin | Or
-      // char -> ● Esc EscSpace | Or
-      // char -> ● Esc EscU EscUnicode | Or
-      // char -> ● EscNo | Dot
-      // char -> ● Esc EscOrigin | Dot
-      // char -> ● Esc EscSpace | Dot
-      // char -> ● Esc EscU EscUnicode | Dot
-      // char -> ● EscNo | LBrack
-      // char -> ● Esc EscOrigin | LBrack
-      // char -> ● Esc EscSpace | LBrack
-      // char -> ● Esc EscU EscUnicode | LBrack
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // reg_exp -> ● reg_exp | Percent
-      // reg_exp -> ● LBrack ranges RBrack | Percent
-      // reg_exp -> ● LBrack Caret ranges RBrack | Percent
-      // reg_exp -> ● Dot | Percent
-      // reg_exp -> ● | Percent
-      // reg_exp -> ● reg_exp Or reg_exp | Percent
-      // reg_exp -> ● reg_exp reg_exp | Percent
-      // reg_exp -> ● reg_exp Star | Percent
-      // reg_exp -> ● reg_exp Plus | Percent
-      // reg_exp -> ● reg_exp Ques | Percent
-      // reg_exp -> ● char | Percent
-      // char -> ● EscNo | Percent
-      // char -> ● Esc EscOrigin | Percent
-      // char -> ● Esc EscSpace | Percent
-      // char -> ● Esc EscU EscUnicode | Percent
-      // reg_exp -> ● reg_exp | TokenName
-      // reg_exp -> ● LBrack ranges RBrack | TokenName
-      // reg_exp -> ● LBrack Caret ranges RBrack | TokenName
-      // reg_exp -> ● Dot | TokenName
-      // reg_exp -> ● | TokenName
-      // reg_exp -> ● reg_exp Or reg_exp | TokenName
-      // reg_exp -> ● reg_exp reg_exp | TokenName
-      // reg_exp -> ● reg_exp Star | TokenName
-      // reg_exp -> ● reg_exp Plus | TokenName
-      // reg_exp -> ● reg_exp Ques | TokenName
-      // reg_exp -> ● char | TokenName
-      // char -> ● EscNo | TokenName
-      // char -> ● Esc EscOrigin | TokenName
-      // char -> ● Esc EscSpace | TokenName
-      // char -> ● Esc EscU EscUnicode | TokenName
-      // reg_exp -> ● reg_exp | SortName
-      // reg_exp -> ● LBrack ranges RBrack | SortName
-      // reg_exp -> ● LBrack Caret ranges RBrack | SortName
-      // reg_exp -> ● Dot | SortName
-      // reg_exp -> ● | SortName
-      // reg_exp -> ● reg_exp Or reg_exp | SortName
-      // reg_exp -> ● reg_exp reg_exp | SortName
-      // reg_exp -> ● reg_exp Star | SortName
-      // reg_exp -> ● reg_exp Plus | SortName
-      // reg_exp -> ● reg_exp Ques | SortName
-      // reg_exp -> ● char | SortName
-      // char -> ● EscNo | SortName
-      // char -> ● Esc EscOrigin | SortName
-      // char -> ● Esc EscSpace | SortName
-      // char -> ● Esc EscU EscUnicode | SortName
-      // reg_exp -> ● reg_exp | LAURUS
-      // reg_exp -> ● LBrack ranges RBrack | LAURUS
-      // reg_exp -> ● LBrack Caret ranges RBrack | LAURUS
-      // reg_exp -> ● Dot | LAURUS
-      // reg_exp -> ● | LAURUS
-      // reg_exp -> ● reg_exp Or reg_exp | LAURUS
-      // reg_exp -> ● reg_exp reg_exp | LAURUS
-      // reg_exp -> ● reg_exp Star | LAURUS
-      // reg_exp -> ● reg_exp Plus | LAURUS
-      // reg_exp -> ● reg_exp Ques | LAURUS
-      // reg_exp -> ● char | LAURUS
-      // char -> ● EscNo | LAURUS
-      // char -> ● Esc EscOrigin | LAURUS
-      // char -> ● Esc EscSpace | LAURUS
-      // char -> ● Esc EscU EscUnicode | LAURUS
       continue match lexeme.token {
           Or => { // shift
             // ignore the old lexeme
@@ -7523,7 +5802,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
@@ -7547,19 +5826,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     79 => {
       self.enter_state(79)
-      // reg_exp -> reg_exp Star ● | CommentHead
-      // reg_exp -> reg_exp Star ● | Ques
-      // reg_exp -> reg_exp Star ● | Plus
-      // reg_exp -> reg_exp Star ● | Star
-      // reg_exp -> reg_exp Star ● | EscNo
-      // reg_exp -> reg_exp Star ● | Esc
-      // reg_exp -> reg_exp Star ● | LBrack
-      // reg_exp -> reg_exp Star ● | Dot
-      // reg_exp -> reg_exp Star ● | Or
-      // reg_exp -> reg_exp Star ● | Percent
-      // reg_exp -> reg_exp Star ● | TokenName
-      // reg_exp -> reg_exp Star ● | SortName
-      // reg_exp -> reg_exp Star ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -7789,7 +6055,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
@@ -7813,19 +6079,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     80 => {
       self.enter_state(80)
-      // reg_exp -> reg_exp Plus ● | CommentHead
-      // reg_exp -> reg_exp Plus ● | Ques
-      // reg_exp -> reg_exp Plus ● | Plus
-      // reg_exp -> reg_exp Plus ● | Star
-      // reg_exp -> reg_exp Plus ● | EscNo
-      // reg_exp -> reg_exp Plus ● | Esc
-      // reg_exp -> reg_exp Plus ● | LBrack
-      // reg_exp -> reg_exp Plus ● | Dot
-      // reg_exp -> reg_exp Plus ● | Or
-      // reg_exp -> reg_exp Plus ● | Percent
-      // reg_exp -> reg_exp Plus ● | TokenName
-      // reg_exp -> reg_exp Plus ● | SortName
-      // reg_exp -> reg_exp Plus ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -8055,7 +6308,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
@@ -8079,19 +6332,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     81 => {
       self.enter_state(81)
-      // reg_exp -> reg_exp Ques ● | CommentHead
-      // reg_exp -> reg_exp Ques ● | Ques
-      // reg_exp -> reg_exp Ques ● | Plus
-      // reg_exp -> reg_exp Ques ● | Star
-      // reg_exp -> reg_exp Ques ● | EscNo
-      // reg_exp -> reg_exp Ques ● | Esc
-      // reg_exp -> reg_exp Ques ● | LBrack
-      // reg_exp -> reg_exp Ques ● | Dot
-      // reg_exp -> reg_exp Ques ● | Or
-      // reg_exp -> reg_exp Ques ● | Percent
-      // reg_exp -> reg_exp Ques ● | TokenName
-      // reg_exp -> reg_exp Ques ● | SortName
-      // reg_exp -> reg_exp Ques ● | LAURUS
       continue match lexeme.token {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -8321,7 +6561,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
@@ -8345,292 +6585,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     82 => {
       self.enter_state(82)
-      // reg_exp -> reg_exp Or reg_exp ● | CommentHead
-      // reg_exp -> reg_exp Or reg_exp ● | Ques
-      // reg_exp -> reg_exp Or reg_exp ● | Plus
-      // reg_exp -> reg_exp Or reg_exp ● | Star
-      // reg_exp -> reg_exp Or reg_exp ● | EscNo
-      // reg_exp -> reg_exp Or reg_exp ● | Esc
-      // reg_exp -> reg_exp Or reg_exp ● | LBrack
-      // reg_exp -> reg_exp Or reg_exp ● | Dot
-      // reg_exp -> reg_exp Or reg_exp ● | Or
-      // reg_exp -> reg_exp Or reg_exp ● | Percent
-      // reg_exp -> reg_exp Or reg_exp ● | TokenName
-      // reg_exp -> reg_exp Or reg_exp ● | SortName
-      // reg_exp -> reg_exp Or reg_exp ● | LAURUS
-      // reg_exp -> reg_exp ● | LAURUS
-      // reg_exp -> reg_exp ● Or reg_exp | LAURUS
-      // reg_exp -> reg_exp ● reg_exp | LAURUS
-      // reg_exp -> reg_exp ● Star | LAURUS
-      // reg_exp -> reg_exp ● Plus | LAURUS
-      // reg_exp -> reg_exp ● Ques | LAURUS
-      // reg_exp -> reg_exp ● | Ques
-      // reg_exp -> reg_exp ● Or reg_exp | Ques
-      // reg_exp -> reg_exp ● reg_exp | Ques
-      // reg_exp -> reg_exp ● Star | Ques
-      // reg_exp -> reg_exp ● Plus | Ques
-      // reg_exp -> reg_exp ● Ques | Ques
-      // reg_exp -> reg_exp ● | Plus
-      // reg_exp -> reg_exp ● Or reg_exp | Plus
-      // reg_exp -> reg_exp ● reg_exp | Plus
-      // reg_exp -> reg_exp ● Star | Plus
-      // reg_exp -> reg_exp ● Plus | Plus
-      // reg_exp -> reg_exp ● Ques | Plus
-      // reg_exp -> reg_exp ● | Star
-      // reg_exp -> reg_exp ● Or reg_exp | Star
-      // reg_exp -> reg_exp ● reg_exp | Star
-      // reg_exp -> reg_exp ● Star | Star
-      // reg_exp -> reg_exp ● Plus | Star
-      // reg_exp -> reg_exp ● Ques | Star
-      // reg_exp -> reg_exp ● | EscNo
-      // reg_exp -> reg_exp ● | Esc
-      // reg_exp -> reg_exp ● | LBrack
-      // reg_exp -> reg_exp ● | Dot
-      // reg_exp -> reg_exp ● | Or
-      // reg_exp -> reg_exp ● Or reg_exp | EscNo
-      // reg_exp -> reg_exp ● Or reg_exp | Esc
-      // reg_exp -> reg_exp ● Or reg_exp | LBrack
-      // reg_exp -> reg_exp ● Or reg_exp | Dot
-      // reg_exp -> reg_exp ● Or reg_exp | Or
-      // reg_exp -> reg_exp ● reg_exp | EscNo
-      // reg_exp -> reg_exp ● reg_exp | Esc
-      // reg_exp -> reg_exp ● reg_exp | LBrack
-      // reg_exp -> reg_exp ● reg_exp | Dot
-      // reg_exp -> reg_exp ● reg_exp | Or
-      // reg_exp -> reg_exp ● Star | EscNo
-      // reg_exp -> reg_exp ● Star | Esc
-      // reg_exp -> reg_exp ● Star | LBrack
-      // reg_exp -> reg_exp ● Star | Dot
-      // reg_exp -> reg_exp ● Star | Or
-      // reg_exp -> reg_exp ● Plus | EscNo
-      // reg_exp -> reg_exp ● Plus | Esc
-      // reg_exp -> reg_exp ● Plus | LBrack
-      // reg_exp -> reg_exp ● Plus | Dot
-      // reg_exp -> reg_exp ● Plus | Or
-      // reg_exp -> reg_exp ● Ques | EscNo
-      // reg_exp -> reg_exp ● Ques | Esc
-      // reg_exp -> reg_exp ● Ques | LBrack
-      // reg_exp -> reg_exp ● Ques | Dot
-      // reg_exp -> reg_exp ● Ques | Or
-      // reg_exp -> reg_exp ● | SortName
-      // reg_exp -> reg_exp ● Or reg_exp | SortName
-      // reg_exp -> reg_exp ● reg_exp | SortName
-      // reg_exp -> reg_exp ● Star | SortName
-      // reg_exp -> reg_exp ● Plus | SortName
-      // reg_exp -> reg_exp ● Ques | SortName
-      // reg_exp -> reg_exp ● | TokenName
-      // reg_exp -> reg_exp ● Or reg_exp | TokenName
-      // reg_exp -> reg_exp ● reg_exp | TokenName
-      // reg_exp -> reg_exp ● Star | TokenName
-      // reg_exp -> reg_exp ● Plus | TokenName
-      // reg_exp -> reg_exp ● Ques | TokenName
-      // reg_exp -> reg_exp ● | Percent
-      // reg_exp -> reg_exp ● Or reg_exp | Percent
-      // reg_exp -> reg_exp ● reg_exp | Percent
-      // reg_exp -> reg_exp ● Star | Percent
-      // reg_exp -> reg_exp ● Plus | Percent
-      // reg_exp -> reg_exp ● Ques | Percent
-      // reg_exp -> reg_exp ● | CommentHead
-      // reg_exp -> reg_exp ● Or reg_exp | CommentHead
-      // reg_exp -> reg_exp ● reg_exp | CommentHead
-      // reg_exp -> reg_exp ● Star | CommentHead
-      // reg_exp -> reg_exp ● Plus | CommentHead
-      // reg_exp -> reg_exp ● Ques | CommentHead
-      // reg_exp -> ● reg_exp | CommentHead
-      // reg_exp -> ● LBrack ranges RBrack | CommentHead
-      // reg_exp -> ● LBrack Caret ranges RBrack | CommentHead
-      // reg_exp -> ● Dot | CommentHead
-      // reg_exp -> ● | CommentHead
-      // reg_exp -> ● reg_exp Or reg_exp | CommentHead
-      // reg_exp -> ● reg_exp reg_exp | CommentHead
-      // reg_exp -> ● reg_exp Star | CommentHead
-      // reg_exp -> ● reg_exp Plus | CommentHead
-      // reg_exp -> ● reg_exp Ques | CommentHead
-      // reg_exp -> ● char | CommentHead
-      // char -> ● EscNo | CommentHead
-      // char -> ● Esc EscOrigin | CommentHead
-      // char -> ● Esc EscSpace | CommentHead
-      // char -> ● Esc EscU EscUnicode | CommentHead
-      // reg_exp -> ● reg_exp | Ques
-      // reg_exp -> ● LBrack ranges RBrack | Ques
-      // reg_exp -> ● LBrack Caret ranges RBrack | Ques
-      // reg_exp -> ● Dot | Ques
-      // reg_exp -> ● | Ques
-      // reg_exp -> ● reg_exp Or reg_exp | Ques
-      // reg_exp -> ● reg_exp reg_exp | Ques
-      // reg_exp -> ● reg_exp Star | Ques
-      // reg_exp -> ● reg_exp Plus | Ques
-      // reg_exp -> ● reg_exp Ques | Ques
-      // reg_exp -> ● char | Ques
-      // char -> ● EscNo | Ques
-      // char -> ● Esc EscOrigin | Ques
-      // char -> ● Esc EscSpace | Ques
-      // char -> ● Esc EscU EscUnicode | Ques
-      // reg_exp -> ● reg_exp | Plus
-      // reg_exp -> ● LBrack ranges RBrack | Plus
-      // reg_exp -> ● LBrack Caret ranges RBrack | Plus
-      // reg_exp -> ● Dot | Plus
-      // reg_exp -> ● | Plus
-      // reg_exp -> ● reg_exp Or reg_exp | Plus
-      // reg_exp -> ● reg_exp reg_exp | Plus
-      // reg_exp -> ● reg_exp Star | Plus
-      // reg_exp -> ● reg_exp Plus | Plus
-      // reg_exp -> ● reg_exp Ques | Plus
-      // reg_exp -> ● char | Plus
-      // char -> ● EscNo | Plus
-      // char -> ● Esc EscOrigin | Plus
-      // char -> ● Esc EscSpace | Plus
-      // char -> ● Esc EscU EscUnicode | Plus
-      // reg_exp -> ● reg_exp | Star
-      // reg_exp -> ● LBrack ranges RBrack | Star
-      // reg_exp -> ● LBrack Caret ranges RBrack | Star
-      // reg_exp -> ● Dot | Star
-      // reg_exp -> ● | Star
-      // reg_exp -> ● reg_exp Or reg_exp | Star
-      // reg_exp -> ● reg_exp reg_exp | Star
-      // reg_exp -> ● reg_exp Star | Star
-      // reg_exp -> ● reg_exp Plus | Star
-      // reg_exp -> ● reg_exp Ques | Star
-      // reg_exp -> ● char | Star
-      // char -> ● EscNo | Star
-      // char -> ● Esc EscOrigin | Star
-      // char -> ● Esc EscSpace | Star
-      // char -> ● Esc EscU EscUnicode | Star
-      // reg_exp -> ● reg_exp | EscNo
-      // reg_exp -> ● reg_exp | Esc
-      // reg_exp -> ● reg_exp | LBrack
-      // reg_exp -> ● reg_exp | Dot
-      // reg_exp -> ● reg_exp | Or
-      // reg_exp -> ● LBrack ranges RBrack | EscNo
-      // reg_exp -> ● LBrack ranges RBrack | Esc
-      // reg_exp -> ● LBrack ranges RBrack | LBrack
-      // reg_exp -> ● LBrack ranges RBrack | Dot
-      // reg_exp -> ● LBrack ranges RBrack | Or
-      // reg_exp -> ● LBrack Caret ranges RBrack | EscNo
-      // reg_exp -> ● LBrack Caret ranges RBrack | Esc
-      // reg_exp -> ● LBrack Caret ranges RBrack | LBrack
-      // reg_exp -> ● LBrack Caret ranges RBrack | Dot
-      // reg_exp -> ● LBrack Caret ranges RBrack | Or
-      // reg_exp -> ● Dot | EscNo
-      // reg_exp -> ● Dot | Esc
-      // reg_exp -> ● Dot | LBrack
-      // reg_exp -> ● Dot | Dot
-      // reg_exp -> ● Dot | Or
-      // reg_exp -> ● | EscNo
-      // reg_exp -> ● | Esc
-      // reg_exp -> ● | LBrack
-      // reg_exp -> ● | Dot
-      // reg_exp -> ● | Or
-      // reg_exp -> ● reg_exp Or reg_exp | EscNo
-      // reg_exp -> ● reg_exp Or reg_exp | Esc
-      // reg_exp -> ● reg_exp Or reg_exp | LBrack
-      // reg_exp -> ● reg_exp Or reg_exp | Dot
-      // reg_exp -> ● reg_exp Or reg_exp | Or
-      // reg_exp -> ● reg_exp reg_exp | EscNo
-      // reg_exp -> ● reg_exp reg_exp | Esc
-      // reg_exp -> ● reg_exp reg_exp | LBrack
-      // reg_exp -> ● reg_exp reg_exp | Dot
-      // reg_exp -> ● reg_exp reg_exp | Or
-      // reg_exp -> ● reg_exp Star | EscNo
-      // reg_exp -> ● reg_exp Star | Esc
-      // reg_exp -> ● reg_exp Star | LBrack
-      // reg_exp -> ● reg_exp Star | Dot
-      // reg_exp -> ● reg_exp Star | Or
-      // reg_exp -> ● reg_exp Plus | EscNo
-      // reg_exp -> ● reg_exp Plus | Esc
-      // reg_exp -> ● reg_exp Plus | LBrack
-      // reg_exp -> ● reg_exp Plus | Dot
-      // reg_exp -> ● reg_exp Plus | Or
-      // reg_exp -> ● reg_exp Ques | EscNo
-      // reg_exp -> ● reg_exp Ques | Esc
-      // reg_exp -> ● reg_exp Ques | LBrack
-      // reg_exp -> ● reg_exp Ques | Dot
-      // reg_exp -> ● reg_exp Ques | Or
-      // reg_exp -> ● char | EscNo
-      // reg_exp -> ● char | Esc
-      // reg_exp -> ● char | LBrack
-      // reg_exp -> ● char | Dot
-      // reg_exp -> ● char | Or
-      // char -> ● EscNo | Or
-      // char -> ● Esc EscOrigin | Or
-      // char -> ● Esc EscSpace | Or
-      // char -> ● Esc EscU EscUnicode | Or
-      // char -> ● EscNo | Dot
-      // char -> ● Esc EscOrigin | Dot
-      // char -> ● Esc EscSpace | Dot
-      // char -> ● Esc EscU EscUnicode | Dot
-      // char -> ● EscNo | LBrack
-      // char -> ● Esc EscOrigin | LBrack
-      // char -> ● Esc EscSpace | LBrack
-      // char -> ● Esc EscU EscUnicode | LBrack
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // reg_exp -> ● reg_exp | Percent
-      // reg_exp -> ● LBrack ranges RBrack | Percent
-      // reg_exp -> ● LBrack Caret ranges RBrack | Percent
-      // reg_exp -> ● Dot | Percent
-      // reg_exp -> ● | Percent
-      // reg_exp -> ● reg_exp Or reg_exp | Percent
-      // reg_exp -> ● reg_exp reg_exp | Percent
-      // reg_exp -> ● reg_exp Star | Percent
-      // reg_exp -> ● reg_exp Plus | Percent
-      // reg_exp -> ● reg_exp Ques | Percent
-      // reg_exp -> ● char | Percent
-      // char -> ● EscNo | Percent
-      // char -> ● Esc EscOrigin | Percent
-      // char -> ● Esc EscSpace | Percent
-      // char -> ● Esc EscU EscUnicode | Percent
-      // reg_exp -> ● reg_exp | TokenName
-      // reg_exp -> ● LBrack ranges RBrack | TokenName
-      // reg_exp -> ● LBrack Caret ranges RBrack | TokenName
-      // reg_exp -> ● Dot | TokenName
-      // reg_exp -> ● | TokenName
-      // reg_exp -> ● reg_exp Or reg_exp | TokenName
-      // reg_exp -> ● reg_exp reg_exp | TokenName
-      // reg_exp -> ● reg_exp Star | TokenName
-      // reg_exp -> ● reg_exp Plus | TokenName
-      // reg_exp -> ● reg_exp Ques | TokenName
-      // reg_exp -> ● char | TokenName
-      // char -> ● EscNo | TokenName
-      // char -> ● Esc EscOrigin | TokenName
-      // char -> ● Esc EscSpace | TokenName
-      // char -> ● Esc EscU EscUnicode | TokenName
-      // reg_exp -> ● reg_exp | SortName
-      // reg_exp -> ● LBrack ranges RBrack | SortName
-      // reg_exp -> ● LBrack Caret ranges RBrack | SortName
-      // reg_exp -> ● Dot | SortName
-      // reg_exp -> ● | SortName
-      // reg_exp -> ● reg_exp Or reg_exp | SortName
-      // reg_exp -> ● reg_exp reg_exp | SortName
-      // reg_exp -> ● reg_exp Star | SortName
-      // reg_exp -> ● reg_exp Plus | SortName
-      // reg_exp -> ● reg_exp Ques | SortName
-      // reg_exp -> ● char | SortName
-      // char -> ● EscNo | SortName
-      // char -> ● Esc EscOrigin | SortName
-      // char -> ● Esc EscSpace | SortName
-      // char -> ● Esc EscU EscUnicode | SortName
-      // reg_exp -> ● reg_exp | LAURUS
-      // reg_exp -> ● LBrack ranges RBrack | LAURUS
-      // reg_exp -> ● LBrack Caret ranges RBrack | LAURUS
-      // reg_exp -> ● Dot | LAURUS
-      // reg_exp -> ● | LAURUS
-      // reg_exp -> ● reg_exp Or reg_exp | LAURUS
-      // reg_exp -> ● reg_exp reg_exp | LAURUS
-      // reg_exp -> ● reg_exp Star | LAURUS
-      // reg_exp -> ● reg_exp Plus | LAURUS
-      // reg_exp -> ● reg_exp Ques | LAURUS
-      // reg_exp -> ● char | LAURUS
-      // char -> ● EscNo | LAURUS
-      // char -> ● Esc EscOrigin | LAURUS
-      // char -> ● Esc EscSpace | LAURUS
-      // char -> ● Esc EscU EscUnicode | LAURUS
       continue match lexeme.token {
           Or => { // shift
             // ignore the old lexeme
@@ -8925,7 +6879,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -8951,206 +6905,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     83 => {
       self.enter_state(83)
-      // laurus -> laurus Percent Space ● reg_exp | LAURUS
-      // laurus -> laurus Percent Space ● reg_exp | SortName
-      // laurus -> laurus Percent Space ● reg_exp | TokenName
-      // laurus -> laurus Percent Space ● reg_exp | Percent
-      // laurus -> laurus Percent Space ● reg_exp | CommentHead
-      // reg_exp -> ● reg_exp | CommentHead
-      // reg_exp -> ● LBrack ranges RBrack | CommentHead
-      // reg_exp -> ● LBrack Caret ranges RBrack | CommentHead
-      // reg_exp -> ● Dot | CommentHead
-      // reg_exp -> ● | CommentHead
-      // reg_exp -> ● reg_exp Or reg_exp | CommentHead
-      // reg_exp -> ● reg_exp reg_exp | CommentHead
-      // reg_exp -> ● reg_exp Star | CommentHead
-      // reg_exp -> ● reg_exp Plus | CommentHead
-      // reg_exp -> ● reg_exp Ques | CommentHead
-      // reg_exp -> ● char | CommentHead
-      // char -> ● EscNo | CommentHead
-      // char -> ● Esc EscOrigin | CommentHead
-      // char -> ● Esc EscSpace | CommentHead
-      // char -> ● Esc EscU EscUnicode | CommentHead
-      // reg_exp -> ● reg_exp | Ques
-      // reg_exp -> ● LBrack ranges RBrack | Ques
-      // reg_exp -> ● LBrack Caret ranges RBrack | Ques
-      // reg_exp -> ● Dot | Ques
-      // reg_exp -> ● | Ques
-      // reg_exp -> ● reg_exp Or reg_exp | Ques
-      // reg_exp -> ● reg_exp reg_exp | Ques
-      // reg_exp -> ● reg_exp Star | Ques
-      // reg_exp -> ● reg_exp Plus | Ques
-      // reg_exp -> ● reg_exp Ques | Ques
-      // reg_exp -> ● char | Ques
-      // char -> ● EscNo | Ques
-      // char -> ● Esc EscOrigin | Ques
-      // char -> ● Esc EscSpace | Ques
-      // char -> ● Esc EscU EscUnicode | Ques
-      // reg_exp -> ● reg_exp | Plus
-      // reg_exp -> ● LBrack ranges RBrack | Plus
-      // reg_exp -> ● LBrack Caret ranges RBrack | Plus
-      // reg_exp -> ● Dot | Plus
-      // reg_exp -> ● | Plus
-      // reg_exp -> ● reg_exp Or reg_exp | Plus
-      // reg_exp -> ● reg_exp reg_exp | Plus
-      // reg_exp -> ● reg_exp Star | Plus
-      // reg_exp -> ● reg_exp Plus | Plus
-      // reg_exp -> ● reg_exp Ques | Plus
-      // reg_exp -> ● char | Plus
-      // char -> ● EscNo | Plus
-      // char -> ● Esc EscOrigin | Plus
-      // char -> ● Esc EscSpace | Plus
-      // char -> ● Esc EscU EscUnicode | Plus
-      // reg_exp -> ● reg_exp | Star
-      // reg_exp -> ● LBrack ranges RBrack | Star
-      // reg_exp -> ● LBrack Caret ranges RBrack | Star
-      // reg_exp -> ● Dot | Star
-      // reg_exp -> ● | Star
-      // reg_exp -> ● reg_exp Or reg_exp | Star
-      // reg_exp -> ● reg_exp reg_exp | Star
-      // reg_exp -> ● reg_exp Star | Star
-      // reg_exp -> ● reg_exp Plus | Star
-      // reg_exp -> ● reg_exp Ques | Star
-      // reg_exp -> ● char | Star
-      // char -> ● EscNo | Star
-      // char -> ● Esc EscOrigin | Star
-      // char -> ● Esc EscSpace | Star
-      // char -> ● Esc EscU EscUnicode | Star
-      // reg_exp -> ● reg_exp | EscNo
-      // reg_exp -> ● reg_exp | Esc
-      // reg_exp -> ● reg_exp | LBrack
-      // reg_exp -> ● reg_exp | Dot
-      // reg_exp -> ● reg_exp | Or
-      // reg_exp -> ● LBrack ranges RBrack | EscNo
-      // reg_exp -> ● LBrack ranges RBrack | Esc
-      // reg_exp -> ● LBrack ranges RBrack | LBrack
-      // reg_exp -> ● LBrack ranges RBrack | Dot
-      // reg_exp -> ● LBrack ranges RBrack | Or
-      // reg_exp -> ● LBrack Caret ranges RBrack | EscNo
-      // reg_exp -> ● LBrack Caret ranges RBrack | Esc
-      // reg_exp -> ● LBrack Caret ranges RBrack | LBrack
-      // reg_exp -> ● LBrack Caret ranges RBrack | Dot
-      // reg_exp -> ● LBrack Caret ranges RBrack | Or
-      // reg_exp -> ● Dot | EscNo
-      // reg_exp -> ● Dot | Esc
-      // reg_exp -> ● Dot | LBrack
-      // reg_exp -> ● Dot | Dot
-      // reg_exp -> ● Dot | Or
-      // reg_exp -> ● | EscNo
-      // reg_exp -> ● | Esc
-      // reg_exp -> ● | LBrack
-      // reg_exp -> ● | Dot
-      // reg_exp -> ● | Or
-      // reg_exp -> ● reg_exp Or reg_exp | EscNo
-      // reg_exp -> ● reg_exp Or reg_exp | Esc
-      // reg_exp -> ● reg_exp Or reg_exp | LBrack
-      // reg_exp -> ● reg_exp Or reg_exp | Dot
-      // reg_exp -> ● reg_exp Or reg_exp | Or
-      // reg_exp -> ● reg_exp reg_exp | EscNo
-      // reg_exp -> ● reg_exp reg_exp | Esc
-      // reg_exp -> ● reg_exp reg_exp | LBrack
-      // reg_exp -> ● reg_exp reg_exp | Dot
-      // reg_exp -> ● reg_exp reg_exp | Or
-      // reg_exp -> ● reg_exp Star | EscNo
-      // reg_exp -> ● reg_exp Star | Esc
-      // reg_exp -> ● reg_exp Star | LBrack
-      // reg_exp -> ● reg_exp Star | Dot
-      // reg_exp -> ● reg_exp Star | Or
-      // reg_exp -> ● reg_exp Plus | EscNo
-      // reg_exp -> ● reg_exp Plus | Esc
-      // reg_exp -> ● reg_exp Plus | LBrack
-      // reg_exp -> ● reg_exp Plus | Dot
-      // reg_exp -> ● reg_exp Plus | Or
-      // reg_exp -> ● reg_exp Ques | EscNo
-      // reg_exp -> ● reg_exp Ques | Esc
-      // reg_exp -> ● reg_exp Ques | LBrack
-      // reg_exp -> ● reg_exp Ques | Dot
-      // reg_exp -> ● reg_exp Ques | Or
-      // reg_exp -> ● char | EscNo
-      // reg_exp -> ● char | Esc
-      // reg_exp -> ● char | LBrack
-      // reg_exp -> ● char | Dot
-      // reg_exp -> ● char | Or
-      // char -> ● EscNo | Or
-      // char -> ● Esc EscOrigin | Or
-      // char -> ● Esc EscSpace | Or
-      // char -> ● Esc EscU EscUnicode | Or
-      // char -> ● EscNo | Dot
-      // char -> ● Esc EscOrigin | Dot
-      // char -> ● Esc EscSpace | Dot
-      // char -> ● Esc EscU EscUnicode | Dot
-      // char -> ● EscNo | LBrack
-      // char -> ● Esc EscOrigin | LBrack
-      // char -> ● Esc EscSpace | LBrack
-      // char -> ● Esc EscU EscUnicode | LBrack
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // reg_exp -> ● reg_exp | Percent
-      // reg_exp -> ● LBrack ranges RBrack | Percent
-      // reg_exp -> ● LBrack Caret ranges RBrack | Percent
-      // reg_exp -> ● Dot | Percent
-      // reg_exp -> ● | Percent
-      // reg_exp -> ● reg_exp Or reg_exp | Percent
-      // reg_exp -> ● reg_exp reg_exp | Percent
-      // reg_exp -> ● reg_exp Star | Percent
-      // reg_exp -> ● reg_exp Plus | Percent
-      // reg_exp -> ● reg_exp Ques | Percent
-      // reg_exp -> ● char | Percent
-      // char -> ● EscNo | Percent
-      // char -> ● Esc EscOrigin | Percent
-      // char -> ● Esc EscSpace | Percent
-      // char -> ● Esc EscU EscUnicode | Percent
-      // reg_exp -> ● reg_exp | TokenName
-      // reg_exp -> ● LBrack ranges RBrack | TokenName
-      // reg_exp -> ● LBrack Caret ranges RBrack | TokenName
-      // reg_exp -> ● Dot | TokenName
-      // reg_exp -> ● | TokenName
-      // reg_exp -> ● reg_exp Or reg_exp | TokenName
-      // reg_exp -> ● reg_exp reg_exp | TokenName
-      // reg_exp -> ● reg_exp Star | TokenName
-      // reg_exp -> ● reg_exp Plus | TokenName
-      // reg_exp -> ● reg_exp Ques | TokenName
-      // reg_exp -> ● char | TokenName
-      // char -> ● EscNo | TokenName
-      // char -> ● Esc EscOrigin | TokenName
-      // char -> ● Esc EscSpace | TokenName
-      // char -> ● Esc EscU EscUnicode | TokenName
-      // reg_exp -> ● reg_exp | SortName
-      // reg_exp -> ● LBrack ranges RBrack | SortName
-      // reg_exp -> ● LBrack Caret ranges RBrack | SortName
-      // reg_exp -> ● Dot | SortName
-      // reg_exp -> ● | SortName
-      // reg_exp -> ● reg_exp Or reg_exp | SortName
-      // reg_exp -> ● reg_exp reg_exp | SortName
-      // reg_exp -> ● reg_exp Star | SortName
-      // reg_exp -> ● reg_exp Plus | SortName
-      // reg_exp -> ● reg_exp Ques | SortName
-      // reg_exp -> ● char | SortName
-      // char -> ● EscNo | SortName
-      // char -> ● Esc EscOrigin | SortName
-      // char -> ● Esc EscSpace | SortName
-      // char -> ● Esc EscU EscUnicode | SortName
-      // reg_exp -> ● reg_exp | LAURUS
-      // reg_exp -> ● LBrack ranges RBrack | LAURUS
-      // reg_exp -> ● LBrack Caret ranges RBrack | LAURUS
-      // reg_exp -> ● Dot | LAURUS
-      // reg_exp -> ● | LAURUS
-      // reg_exp -> ● reg_exp Or reg_exp | LAURUS
-      // reg_exp -> ● reg_exp reg_exp | LAURUS
-      // reg_exp -> ● reg_exp Star | LAURUS
-      // reg_exp -> ● reg_exp Plus | LAURUS
-      // reg_exp -> ● reg_exp Ques | LAURUS
-      // reg_exp -> ● char | LAURUS
-      // char -> ● EscNo | LAURUS
-      // char -> ● Esc EscOrigin | LAURUS
-      // char -> ● Esc EscSpace | LAURUS
-      // char -> ● Esc EscU EscUnicode | LAURUS
       continue match lexeme.token {
           LBrack => { // shift
             // ignore the old lexeme
@@ -9353,7 +7107,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
               _ => break
             }
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
@@ -9373,11 +7127,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     84 => {
       self.enter_state(84)
-      // laurus -> laurus Percent Start ● SortName | LAURUS
-      // laurus -> laurus Percent Start ● SortName | SortName
-      // laurus -> laurus Percent Start ● SortName | TokenName
-      // laurus -> laurus Percent Start ● SortName | Percent
-      // laurus -> laurus Percent Start ● SortName | CommentHead
       continue match lexeme.token {
           SortName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
@@ -9390,13 +7139,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     85 => {
       self.enter_state(85)
-      // laurus -> laurus Percent Start SortName ● | LAURUS
-      // laurus -> laurus Percent Start SortName ● | SortName
-      // laurus -> laurus Percent Start SortName ● | TokenName
-      // laurus -> laurus Percent Start SortName ● | Percent
-      // laurus -> laurus Percent Start SortName ● | CommentHead
       continue match lexeme.token {
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -9466,284 +7210,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     86 => {
       self.enter_state(86)
-      // laurus -> laurus Percent Space reg_exp ● | LAURUS
-      // laurus -> laurus Percent Space reg_exp ● | SortName
-      // laurus -> laurus Percent Space reg_exp ● | TokenName
-      // laurus -> laurus Percent Space reg_exp ● | Percent
-      // laurus -> laurus Percent Space reg_exp ● | CommentHead
-      // reg_exp -> reg_exp ● | CommentHead
-      // reg_exp -> reg_exp ● Or reg_exp | CommentHead
-      // reg_exp -> reg_exp ● reg_exp | CommentHead
-      // reg_exp -> reg_exp ● Star | CommentHead
-      // reg_exp -> reg_exp ● Plus | CommentHead
-      // reg_exp -> reg_exp ● Ques | CommentHead
-      // reg_exp -> reg_exp ● | Ques
-      // reg_exp -> reg_exp ● Or reg_exp | Ques
-      // reg_exp -> reg_exp ● reg_exp | Ques
-      // reg_exp -> reg_exp ● Star | Ques
-      // reg_exp -> reg_exp ● Plus | Ques
-      // reg_exp -> reg_exp ● Ques | Ques
-      // reg_exp -> reg_exp ● | Plus
-      // reg_exp -> reg_exp ● Or reg_exp | Plus
-      // reg_exp -> reg_exp ● reg_exp | Plus
-      // reg_exp -> reg_exp ● Star | Plus
-      // reg_exp -> reg_exp ● Plus | Plus
-      // reg_exp -> reg_exp ● Ques | Plus
-      // reg_exp -> reg_exp ● | Star
-      // reg_exp -> reg_exp ● Or reg_exp | Star
-      // reg_exp -> reg_exp ● reg_exp | Star
-      // reg_exp -> reg_exp ● Star | Star
-      // reg_exp -> reg_exp ● Plus | Star
-      // reg_exp -> reg_exp ● Ques | Star
-      // reg_exp -> reg_exp ● | EscNo
-      // reg_exp -> reg_exp ● | Esc
-      // reg_exp -> reg_exp ● | LBrack
-      // reg_exp -> reg_exp ● | Dot
-      // reg_exp -> reg_exp ● | Or
-      // reg_exp -> reg_exp ● Or reg_exp | EscNo
-      // reg_exp -> reg_exp ● Or reg_exp | Esc
-      // reg_exp -> reg_exp ● Or reg_exp | LBrack
-      // reg_exp -> reg_exp ● Or reg_exp | Dot
-      // reg_exp -> reg_exp ● Or reg_exp | Or
-      // reg_exp -> reg_exp ● reg_exp | EscNo
-      // reg_exp -> reg_exp ● reg_exp | Esc
-      // reg_exp -> reg_exp ● reg_exp | LBrack
-      // reg_exp -> reg_exp ● reg_exp | Dot
-      // reg_exp -> reg_exp ● reg_exp | Or
-      // reg_exp -> reg_exp ● Star | EscNo
-      // reg_exp -> reg_exp ● Star | Esc
-      // reg_exp -> reg_exp ● Star | LBrack
-      // reg_exp -> reg_exp ● Star | Dot
-      // reg_exp -> reg_exp ● Star | Or
-      // reg_exp -> reg_exp ● Plus | EscNo
-      // reg_exp -> reg_exp ● Plus | Esc
-      // reg_exp -> reg_exp ● Plus | LBrack
-      // reg_exp -> reg_exp ● Plus | Dot
-      // reg_exp -> reg_exp ● Plus | Or
-      // reg_exp -> reg_exp ● Ques | EscNo
-      // reg_exp -> reg_exp ● Ques | Esc
-      // reg_exp -> reg_exp ● Ques | LBrack
-      // reg_exp -> reg_exp ● Ques | Dot
-      // reg_exp -> reg_exp ● Ques | Or
-      // reg_exp -> reg_exp ● | Percent
-      // reg_exp -> reg_exp ● Or reg_exp | Percent
-      // reg_exp -> reg_exp ● reg_exp | Percent
-      // reg_exp -> reg_exp ● Star | Percent
-      // reg_exp -> reg_exp ● Plus | Percent
-      // reg_exp -> reg_exp ● Ques | Percent
-      // reg_exp -> reg_exp ● | TokenName
-      // reg_exp -> reg_exp ● Or reg_exp | TokenName
-      // reg_exp -> reg_exp ● reg_exp | TokenName
-      // reg_exp -> reg_exp ● Star | TokenName
-      // reg_exp -> reg_exp ● Plus | TokenName
-      // reg_exp -> reg_exp ● Ques | TokenName
-      // reg_exp -> reg_exp ● | SortName
-      // reg_exp -> reg_exp ● Or reg_exp | SortName
-      // reg_exp -> reg_exp ● reg_exp | SortName
-      // reg_exp -> reg_exp ● Star | SortName
-      // reg_exp -> reg_exp ● Plus | SortName
-      // reg_exp -> reg_exp ● Ques | SortName
-      // reg_exp -> reg_exp ● | LAURUS
-      // reg_exp -> reg_exp ● Or reg_exp | LAURUS
-      // reg_exp -> reg_exp ● reg_exp | LAURUS
-      // reg_exp -> reg_exp ● Star | LAURUS
-      // reg_exp -> reg_exp ● Plus | LAURUS
-      // reg_exp -> reg_exp ● Ques | LAURUS
-      // reg_exp -> ● reg_exp | LAURUS
-      // reg_exp -> ● LBrack ranges RBrack | LAURUS
-      // reg_exp -> ● LBrack Caret ranges RBrack | LAURUS
-      // reg_exp -> ● Dot | LAURUS
-      // reg_exp -> ● | LAURUS
-      // reg_exp -> ● reg_exp Or reg_exp | LAURUS
-      // reg_exp -> ● reg_exp reg_exp | LAURUS
-      // reg_exp -> ● reg_exp Star | LAURUS
-      // reg_exp -> ● reg_exp Plus | LAURUS
-      // reg_exp -> ● reg_exp Ques | LAURUS
-      // reg_exp -> ● char | LAURUS
-      // char -> ● EscNo | LAURUS
-      // char -> ● Esc EscOrigin | LAURUS
-      // char -> ● Esc EscSpace | LAURUS
-      // char -> ● Esc EscU EscUnicode | LAURUS
-      // reg_exp -> ● reg_exp | Ques
-      // reg_exp -> ● LBrack ranges RBrack | Ques
-      // reg_exp -> ● LBrack Caret ranges RBrack | Ques
-      // reg_exp -> ● Dot | Ques
-      // reg_exp -> ● | Ques
-      // reg_exp -> ● reg_exp Or reg_exp | Ques
-      // reg_exp -> ● reg_exp reg_exp | Ques
-      // reg_exp -> ● reg_exp Star | Ques
-      // reg_exp -> ● reg_exp Plus | Ques
-      // reg_exp -> ● reg_exp Ques | Ques
-      // reg_exp -> ● char | Ques
-      // char -> ● EscNo | Ques
-      // char -> ● Esc EscOrigin | Ques
-      // char -> ● Esc EscSpace | Ques
-      // char -> ● Esc EscU EscUnicode | Ques
-      // reg_exp -> ● reg_exp | Plus
-      // reg_exp -> ● LBrack ranges RBrack | Plus
-      // reg_exp -> ● LBrack Caret ranges RBrack | Plus
-      // reg_exp -> ● Dot | Plus
-      // reg_exp -> ● | Plus
-      // reg_exp -> ● reg_exp Or reg_exp | Plus
-      // reg_exp -> ● reg_exp reg_exp | Plus
-      // reg_exp -> ● reg_exp Star | Plus
-      // reg_exp -> ● reg_exp Plus | Plus
-      // reg_exp -> ● reg_exp Ques | Plus
-      // reg_exp -> ● char | Plus
-      // char -> ● EscNo | Plus
-      // char -> ● Esc EscOrigin | Plus
-      // char -> ● Esc EscSpace | Plus
-      // char -> ● Esc EscU EscUnicode | Plus
-      // reg_exp -> ● reg_exp | Star
-      // reg_exp -> ● LBrack ranges RBrack | Star
-      // reg_exp -> ● LBrack Caret ranges RBrack | Star
-      // reg_exp -> ● Dot | Star
-      // reg_exp -> ● | Star
-      // reg_exp -> ● reg_exp Or reg_exp | Star
-      // reg_exp -> ● reg_exp reg_exp | Star
-      // reg_exp -> ● reg_exp Star | Star
-      // reg_exp -> ● reg_exp Plus | Star
-      // reg_exp -> ● reg_exp Ques | Star
-      // reg_exp -> ● char | Star
-      // char -> ● EscNo | Star
-      // char -> ● Esc EscOrigin | Star
-      // char -> ● Esc EscSpace | Star
-      // char -> ● Esc EscU EscUnicode | Star
-      // reg_exp -> ● reg_exp | EscNo
-      // reg_exp -> ● reg_exp | Esc
-      // reg_exp -> ● reg_exp | LBrack
-      // reg_exp -> ● reg_exp | Dot
-      // reg_exp -> ● reg_exp | Or
-      // reg_exp -> ● LBrack ranges RBrack | EscNo
-      // reg_exp -> ● LBrack ranges RBrack | Esc
-      // reg_exp -> ● LBrack ranges RBrack | LBrack
-      // reg_exp -> ● LBrack ranges RBrack | Dot
-      // reg_exp -> ● LBrack ranges RBrack | Or
-      // reg_exp -> ● LBrack Caret ranges RBrack | EscNo
-      // reg_exp -> ● LBrack Caret ranges RBrack | Esc
-      // reg_exp -> ● LBrack Caret ranges RBrack | LBrack
-      // reg_exp -> ● LBrack Caret ranges RBrack | Dot
-      // reg_exp -> ● LBrack Caret ranges RBrack | Or
-      // reg_exp -> ● Dot | EscNo
-      // reg_exp -> ● Dot | Esc
-      // reg_exp -> ● Dot | LBrack
-      // reg_exp -> ● Dot | Dot
-      // reg_exp -> ● Dot | Or
-      // reg_exp -> ● | EscNo
-      // reg_exp -> ● | Esc
-      // reg_exp -> ● | LBrack
-      // reg_exp -> ● | Dot
-      // reg_exp -> ● | Or
-      // reg_exp -> ● reg_exp Or reg_exp | EscNo
-      // reg_exp -> ● reg_exp Or reg_exp | Esc
-      // reg_exp -> ● reg_exp Or reg_exp | LBrack
-      // reg_exp -> ● reg_exp Or reg_exp | Dot
-      // reg_exp -> ● reg_exp Or reg_exp | Or
-      // reg_exp -> ● reg_exp reg_exp | EscNo
-      // reg_exp -> ● reg_exp reg_exp | Esc
-      // reg_exp -> ● reg_exp reg_exp | LBrack
-      // reg_exp -> ● reg_exp reg_exp | Dot
-      // reg_exp -> ● reg_exp reg_exp | Or
-      // reg_exp -> ● reg_exp Star | EscNo
-      // reg_exp -> ● reg_exp Star | Esc
-      // reg_exp -> ● reg_exp Star | LBrack
-      // reg_exp -> ● reg_exp Star | Dot
-      // reg_exp -> ● reg_exp Star | Or
-      // reg_exp -> ● reg_exp Plus | EscNo
-      // reg_exp -> ● reg_exp Plus | Esc
-      // reg_exp -> ● reg_exp Plus | LBrack
-      // reg_exp -> ● reg_exp Plus | Dot
-      // reg_exp -> ● reg_exp Plus | Or
-      // reg_exp -> ● reg_exp Ques | EscNo
-      // reg_exp -> ● reg_exp Ques | Esc
-      // reg_exp -> ● reg_exp Ques | LBrack
-      // reg_exp -> ● reg_exp Ques | Dot
-      // reg_exp -> ● reg_exp Ques | Or
-      // reg_exp -> ● char | EscNo
-      // reg_exp -> ● char | Esc
-      // reg_exp -> ● char | LBrack
-      // reg_exp -> ● char | Dot
-      // reg_exp -> ● char | Or
-      // char -> ● EscNo | Or
-      // char -> ● Esc EscOrigin | Or
-      // char -> ● Esc EscSpace | Or
-      // char -> ● Esc EscU EscUnicode | Or
-      // char -> ● EscNo | Dot
-      // char -> ● Esc EscOrigin | Dot
-      // char -> ● Esc EscSpace | Dot
-      // char -> ● Esc EscU EscUnicode | Dot
-      // char -> ● EscNo | LBrack
-      // char -> ● Esc EscOrigin | LBrack
-      // char -> ● Esc EscSpace | LBrack
-      // char -> ● Esc EscU EscUnicode | LBrack
-      // char -> ● EscNo | Esc
-      // char -> ● Esc EscOrigin | Esc
-      // char -> ● Esc EscSpace | Esc
-      // char -> ● Esc EscU EscUnicode | Esc
-      // char -> ● EscNo | EscNo
-      // char -> ● Esc EscOrigin | EscNo
-      // char -> ● Esc EscSpace | EscNo
-      // char -> ● Esc EscU EscUnicode | EscNo
-      // reg_exp -> ● reg_exp | SortName
-      // reg_exp -> ● LBrack ranges RBrack | SortName
-      // reg_exp -> ● LBrack Caret ranges RBrack | SortName
-      // reg_exp -> ● Dot | SortName
-      // reg_exp -> ● | SortName
-      // reg_exp -> ● reg_exp Or reg_exp | SortName
-      // reg_exp -> ● reg_exp reg_exp | SortName
-      // reg_exp -> ● reg_exp Star | SortName
-      // reg_exp -> ● reg_exp Plus | SortName
-      // reg_exp -> ● reg_exp Ques | SortName
-      // reg_exp -> ● char | SortName
-      // char -> ● EscNo | SortName
-      // char -> ● Esc EscOrigin | SortName
-      // char -> ● Esc EscSpace | SortName
-      // char -> ● Esc EscU EscUnicode | SortName
-      // reg_exp -> ● reg_exp | TokenName
-      // reg_exp -> ● LBrack ranges RBrack | TokenName
-      // reg_exp -> ● LBrack Caret ranges RBrack | TokenName
-      // reg_exp -> ● Dot | TokenName
-      // reg_exp -> ● | TokenName
-      // reg_exp -> ● reg_exp Or reg_exp | TokenName
-      // reg_exp -> ● reg_exp reg_exp | TokenName
-      // reg_exp -> ● reg_exp Star | TokenName
-      // reg_exp -> ● reg_exp Plus | TokenName
-      // reg_exp -> ● reg_exp Ques | TokenName
-      // reg_exp -> ● char | TokenName
-      // char -> ● EscNo | TokenName
-      // char -> ● Esc EscOrigin | TokenName
-      // char -> ● Esc EscSpace | TokenName
-      // char -> ● Esc EscU EscUnicode | TokenName
-      // reg_exp -> ● reg_exp | Percent
-      // reg_exp -> ● LBrack ranges RBrack | Percent
-      // reg_exp -> ● LBrack Caret ranges RBrack | Percent
-      // reg_exp -> ● Dot | Percent
-      // reg_exp -> ● | Percent
-      // reg_exp -> ● reg_exp Or reg_exp | Percent
-      // reg_exp -> ● reg_exp reg_exp | Percent
-      // reg_exp -> ● reg_exp Star | Percent
-      // reg_exp -> ● reg_exp Plus | Percent
-      // reg_exp -> ● reg_exp Ques | Percent
-      // reg_exp -> ● char | Percent
-      // char -> ● EscNo | Percent
-      // char -> ● Esc EscOrigin | Percent
-      // char -> ● Esc EscSpace | Percent
-      // char -> ● Esc EscU EscUnicode | Percent
-      // reg_exp -> ● reg_exp | CommentHead
-      // reg_exp -> ● LBrack ranges RBrack | CommentHead
-      // reg_exp -> ● LBrack Caret ranges RBrack | CommentHead
-      // reg_exp -> ● Dot | CommentHead
-      // reg_exp -> ● | CommentHead
-      // reg_exp -> ● reg_exp Or reg_exp | CommentHead
-      // reg_exp -> ● reg_exp reg_exp | CommentHead
-      // reg_exp -> ● reg_exp Star | CommentHead
-      // reg_exp -> ● reg_exp Plus | CommentHead
-      // reg_exp -> ● reg_exp Ques | CommentHead
-      // reg_exp -> ● char | CommentHead
-      // char -> ● EscNo | CommentHead
-      // char -> ● Esc EscOrigin | CommentHead
-      // char -> ● Esc EscSpace | CommentHead
-      // char -> ● Esc EscU EscUnicode | CommentHead
       continue match lexeme.token {
           Or => { // shift
             // ignore the old lexeme
@@ -9786,7 +7252,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             lexeme = self.lexer.scan21()
             50
           }
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -9992,13 +7458,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     87 => {
       self.enter_state(87)
-      // laurus -> laurus CommentHead CommentBody ● | LAURUS
-      // laurus -> laurus CommentHead CommentBody ● | SortName
-      // laurus -> laurus CommentHead CommentBody ● | TokenName
-      // laurus -> laurus CommentHead CommentBody ● | Percent
-      // laurus -> laurus CommentHead CommentBody ● | CommentHead
       continue match lexeme.token {
-          LAURUS => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore

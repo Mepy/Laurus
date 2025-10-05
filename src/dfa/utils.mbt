@@ -1,5 +1,8 @@
 ///|
-pub const LAURUS_RESERVED_TOKEN_NAME : String = "LAURUS"
+pub const LAURUS_RESERVED_EOF : String = "LAURUS_EOF"
+
+///|
+pub const LAURUS_RESERVED_SPACE : String = "LAURUS_SPACE"
 
 ///|
 pub typealias Char as CodePoint

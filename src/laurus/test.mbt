@@ -17,7 +17,7 @@ test "codegen::laurus" {
   laurus
   // space token
   .set_space(
-    Star(Bor([Range::single(' '), Range::single('\t'), Range::single('\t')])),
+    Star(Bor([Range::single(' '), Range::single('\t'), Range::single('\n')])),
   )
   // name tokens
   .add_token("Symbol", BuiltIn("String"), ident)
