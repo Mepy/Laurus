@@ -3,7 +3,7 @@ test "codegen::laurus" {
   let laurus = Laurus::new()
   let re_az = Bor([Range('a', 'z')])
   let re_AZ = Bor([Range('A', 'Z')])
-  let re_azAZ = Bor([Range('A', 'Z')])
+  let re_azAZ = Bor([Range('a', 'z'), Range('A', 'Z')])
   let re_azAZ09_ = Bor([
     Range('a', 'z'),
     Range('A', 'Z'),
@@ -84,7 +84,7 @@ test "codegen::laurus" {
   .add_token("Percent", Ignore, Single('%'))
   .add_token("Eq", Ignore, Single('='))
   .add_token("Colon", Ignore, Single(':'))
-  .add_token("ColonColon", Ignore, Seq(Single('%'), Single('%')))
+  .add_token("ColonColon", Ignore, Seq(Single(':'), Single(':')))
   .add_token("Dot", Ignore, Single('.'))
   .add_token("Star", Ignore, Single('*'))
   .add_token("Plus", Ignore, Single('+'))
@@ -199,6 +199,7 @@ test "codegen::laurus" {
     Rule::eq_meth("add_token", [
       Unnamed("laurus"),
       Named(field_name="token_name", "TokenName"),
+      Unnamed("Eq"),
       NamedAbbrev(field_name="token_conv"),
       NamedAbbrev(field_name="reg_exp"),
     ]),
@@ -331,8 +332,7 @@ test "codegen::laurus" {
     ]),
   ])
   |> ignore
-  laurus.workbench() |> ignore
-  // .save("./src/laurus")
+  laurus.workbench().save("./src/laurus")
 }
 
 ///|

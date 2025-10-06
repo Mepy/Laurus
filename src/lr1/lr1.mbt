@@ -43,6 +43,7 @@ pub(all) struct LR1Maker {
   first : FixedArray[Set[Token]]
   worklist : Array[(State, StateIndex)] // state and its index
   state_indices : Map[State, StateIndex]
+  mut states : Array[Set[Item]]
 
   // goto_table[state_i][sort] = state_j
   goto_table : Array[Map[Sort, StateIndex]]
@@ -87,6 +88,7 @@ pub fn LR1Maker::new(grammar : Grammar) -> LR1Maker {
     first,
     worklist: Array::new(),
     state_indices: Map::new(),
+    states: Array::new(),
     goto_table: Array::new(),
     shift_table: Array::new(),
     reduce_table: Array::new(),
@@ -361,19 +363,20 @@ pub fn LR1Maker::construct_states(self : Self) -> Unit {
       }
     }
   }
+  let states : Array[Set[Item]] = Array::make(
+    self.state_indices.size(),
+    Set::new(capacity=0),
+  )
+  for state_index in self.state_indices {
+    let (state, index) = state_index
+    states[index] = state.items.0
+  }
+  self.states = states
 }
 
 ///|
 pub fn LR1Maker::to_lr1(self : Self) -> LR1 {
-  let { grammar, sort_len, state_indices, .. } = self
-  let states : Array[Set[Item]] = Array::make(
-    state_indices.size(),
-    Set::new(capacity=0),
-  )
-  for state_index in state_indices {
-    let (state, index) = state_index
-    states[index] = state.items.0
-  }
+  let { grammar, sort_len, states, .. } = self
   let state_len = states.length()
   let goto_table = Array::makei(self.sort_len, _ => Map::new(capacity=state_len))
   for state_i in 0..<state_len {

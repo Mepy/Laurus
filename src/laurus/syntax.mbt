@@ -20,8 +20,8 @@ enum TokenConv {
 enum RegExp {
   Bor(Array[Range])
   Bnot(Array[Range])
-  Any
   Emp
+  Any
   Union(RegExp, RegExp)
   Seq(RegExp, RegExp)
   Star(RegExp)

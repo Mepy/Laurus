@@ -72,7 +72,53 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
   let grammar = @lr1.Grammar::{ rules, }
   let maker = @lr1.LR1Maker::new(grammar)
   maker.construct_states()
-  let lr1 = maker.to_lr1()
+  let conflicts = maker.conflicts()
+  let res : @lr1.Resolution = {
+    let priority : Array[Array[@lr1.Priority]] = Array::new(capacity=sort_len)
+    let reduce_first : Array[Array[Bool]] = Array::new(capacity=sort_len)
+    priority.push([0]) // %start
+    reduce_first.push([true]) // %start
+    for sort_rules in self.sort_rules {
+      let mut cur_prio : @lr1.Priority = 0
+      let prios = Array::new(capacity=sort_rules.length())
+      let reduces = Array::new(capacity=sort_rules.length())
+      for sort_rule in sort_rules {
+        match sort_rule.priority {
+          Higher => cur_prio += 1
+          Equal => ()
+        }
+        prios.push(cur_prio)
+        match sort_rule.shift_reduce {
+          Shift => reduces.push(false)
+          Reduce => reduces.push(true)
+        }
+      }
+      priority.push(prios)
+      reduce_first.push(reduces)
+    }
+    @lr1.Resolution::{ priority, reduce_first }
+  }
+  maker.shallow_resolve(conflicts, res)
+  maker.deep_resolve(conflicts, res)
+  for token_conflicts in conflicts.0.values() {
+    for token_conflicts in token_conflicts {
+      let (token, conflicts) = token_conflicts
+      println(names[token])
+      println(
+        conflicts
+        .iter()
+        .map(act_rule => {
+          let { act, sort, rule_i } = act_rule
+          let sentence = self.sort_rules[sort - 1][rule_i].symbols
+            .map(Symbol::name)
+            .join(" ")
+          "\t\{act} \{names[sort]}.\{rule_i} = \{sentence}"
+        })
+        .join("\n"),
+      )
+    }
+  }
+  let lr1 = maker.to_lr1() // TODO : please first resolve conflicts 
   let lex_gen = self.lex_gen()
   let generator = @lr1.Generator::new(lex_gen)
   generator.codegen_lexer(lr1)
@@ -224,51 +270,6 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
     names, rule_semantics, tokens, type_namespaces, type_names, type_constr_names,
     tuple_types, struct_types, enum_types, interpret_funcs,
   )
-  let res : @lr1.Resolution = {
-    let priority : Array[Array[@lr1.Priority]] = Array::new(capacity=sort_len)
-    let reduce_first : Array[Array[Bool]] = Array::new(capacity=sort_len)
-    priority.push([0]) // %start
-    reduce_first.push([true]) // %start
-    for sort_rules in self.sort_rules {
-      let mut cur_prio : @lr1.Priority = 0
-      let prios = Array::new(capacity=sort_rules.length())
-      let reduces = Array::new(capacity=sort_rules.length())
-      for sort_rule in sort_rules {
-        match sort_rule.priority {
-          Higher => cur_prio += 1
-          Equal => ()
-        }
-        prios.push(cur_prio)
-        match sort_rule.shift_reduce {
-          Shift => reduces.push(false)
-          Reduce => reduces.push(true)
-        }
-      }
-      priority.push(prios)
-      reduce_first.push(reduces)
-    }
-    @lr1.Resolution::{ priority, reduce_first }
-  }
-  let conflicts = maker.conflicts()
-  maker.simple_resolve(conflicts, res)
-  for token_conflicts in conflicts.0.values() {
-    for token_conflicts in token_conflicts {
-      let (token, conflicts) = token_conflicts
-      println(names[token])
-      println(
-        conflicts
-        .iter()
-        .map(act_rule => {
-          let { act, sort, rule_i } = act_rule
-          let sentence = self.sort_rules[sort - 1][rule_i].symbols
-            .map(Symbol::name)
-            .join(" ")
-          "\t\{act} \{names[sort]}.\{rule_i} = \{sentence}"
-        })
-        .join("\n"),
-      )
-    }
-  }
   generator.codegen_syntax_type(sem)
   generator.codegen_node_type(sem)
   generator.codegen_interpret(sem)

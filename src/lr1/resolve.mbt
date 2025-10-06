@@ -136,7 +136,7 @@ pub fn LR1Maker::conflicts(self : Self) -> Conflicts {
 
 ///|
 /// simply resolve conflicts with resolution, this function will mutate the paramter (conf : Conflicts)
-pub fn LR1Maker::simple_resolve(
+pub fn LR1Maker::shallow_resolve(
   self : Self,
   conf : Conflicts,
   res : Resolution,
@@ -219,6 +219,162 @@ pub fn LR1Maker::simple_resolve(
         Reduce => {
           self.shift_table[state_i].remove(token)
           self.reduce_table[state_i][token] = [(sort, rules[0])]
+        }
+      }
+    }
+    if conflicts.size() == 0 {
+      conf.0.remove(state_i)
+    }
+  }
+}
+
+///|
+pub fn LR1Maker::deep_resolve(
+  self : Self,
+  conf : Conflicts,
+  res : Resolution,
+) -> Unit {
+  for state_conflicts in conf.0 {
+    let (state_i, conflicts) : (StateIndex, Map[Token, Array[ActRule]]) = state_conflicts
+    let sort_prevs : Map[Sort, Map[Sort, RuleIndex]] = Map::new() // find the maximal prev < item.cur
+    for item in self.states[state_i] {
+      guard item.cur < item.sentence.length() else { continue }
+      let cur : Sort = item.sentence[item.cur]
+      if self.is_token(cur) {
+        continue
+      }
+      // assert sort is a Sort
+      guard cur != item.sort else { continue }
+      // we do not add circle
+      sort_prevs.update(cur, prevs => match prevs {
+        None => {
+          let prevs = Map::new()
+          prevs[item.sort] = item.rule_i
+          Some(prevs)
+        }
+        Some(prevs) => {
+          prevs.update(item.sort, rule_i => match rule_i {
+            None => Some(item.rule_i)
+            Some(rule_i) => {
+              let prios = res.priority[item.sort]
+              let new_rule_i = item.rule_i
+              let prio = prios[rule_i]
+              let new_prio = prios[new_rule_i]
+              if prio < new_prio {
+                Some(new_rule_i)
+              } else if prio > new_prio {
+                Some(rule_i)
+              } else {
+                Some(Int::max(rule_i, new_rule_i))
+              }
+            }
+          })
+          Some(prevs)
+        }
+      })
+    }
+    let rule_indices : Map[(Sort, RuleIndex), Index] = Map::new()
+    fn add_rule(rule : (Sort, RuleIndex)) -> Index {
+      match rule_indices.get(rule) {
+        None => {
+          let index = rule_indices.size()
+          rule_indices[rule] = index
+          index
+        }
+        Some(index) => index
+      }
+    }
+
+    let edges : Set[(Index, Index)] = Set::new() // we will add rule_k <= prev < cur < rule_{k+1}  < ...
+    fn add_edge(prev : (Sort, RuleIndex), next : (Sort, RuleIndex)) -> Unit {
+      let prev_index = add_rule(prev)
+      let next_index = add_rule(next)
+      edges.add((prev_index, next_index))
+    }
+
+    for sort_prevs in sort_prevs {
+      let (sort, prevs) : (Sort, Map[Sort, RuleIndex]) = sort_prevs
+      for prev in prevs {
+        for rule_j in 0..<res.priority[sort].length() {
+          let cur = (sort, rule_j)
+          let (prev_sort, prev_rule_i) = prev
+          let prios = res.priority[prev_sort]
+          let prio = prios[prev_rule_i]
+          let prio_len = prios.length()
+          let mut rule_k = 0
+          while rule_k < prio_len && prios[rule_k] <= prio {
+            add_edge((prev_sort, rule_k), cur)
+            rule_k += 1
+          }
+          while rule_k < prio_len {
+            add_edge(cur, (prev_sort, rule_k))
+            rule_k += 1
+          }
+        }
+      }
+    }
+    let n = rule_indices.size()
+    let adj_matrix = FixedArray::makei(n, _ => FixedArray::make(n, false))
+    for edge in edges {
+      let (i, j) = edge
+      adj_matrix[i][j] = true
+    }
+    // Floyd 
+    for k in 0..<n {
+      for i in 0..<n {
+        for j in 0..<n {
+          adj_matrix[i][j] = adj_matrix[i][j] ||
+            (adj_matrix[i][k] && adj_matrix[k][j])
+        }
+      }
+    }
+    fn compare(actrule1 : ActRule, actrule2 : ActRule) -> Int {
+      let rule1 = (actrule1.sort, actrule1.rule_i)
+      let rule2 = (actrule2.sort, actrule2.rule_i)
+      let i1 = rule_indices[rule1]
+      let i2 = rule_indices[rule2]
+      let le = adj_matrix[i1][i2]
+      let ge = adj_matrix[i2][i1]
+      match (le, ge) {
+        (true, false) => -1
+        (false, true) => 1
+        (true, true) => 0
+        (false, false) => 0
+      }
+    }
+
+    for token_conflicts in conflicts {
+      let (token, actrules) : (Token, Array[ActRule]) = token_conflicts
+      // assert actrules.length() > 1 
+      let mut max_actrule = actrules[0]
+      let mut max_actrules = [max_actrule]
+      for actrule in actrules.iter().drop(1) {
+        match compare(max_actrule, actrule) {
+          -1 => {
+            max_actrule = actrule
+            max_actrules = [actrule]
+          }
+          1 => ()
+          _ => max_actrules.push(actrule)
+        }
+      }
+      guard max_actrules.length() == 1 else {
+        // if all shift
+        if max_actrules.iter().all(actrule => actrule.act is Shift) {
+          self.reduce_table[state_i].remove(token)
+          conflicts.remove(token)
+        } else {
+          conflicts[token] = max_actrules
+        }
+      }
+      conflicts.remove(token)
+      match max_actrule.act {
+        Shift => self.reduce_table[state_i].remove(token)
+        Reduce => {
+          self.shift_table[state_i].remove(token)
+          self.reduce_table[state_i][token] = [
+            (max_actrule.sort, max_actrule.rule_i),
+          ]
         }
       }
     }

@@ -7,8 +7,8 @@ ConstructorName = String([A-Z][a-zA-Z0-9_]*)
 FieldName = String([a-z][a-zA-Z0-9_]*)
 
 
-Space = space
-Start = start
+Space = (space)
+Start = (start)
 Shift = (@(shift|right))
 Reduce = (@(reduce|left))
 Percent = (%)
@@ -64,7 +64,7 @@ laurus : Laurus {
 
 // tokens
 // Builtin = { String, Lexeme }
-token_conv : TokenConv {
+token_conv : TokenConv {   
 = Ignore()
 = Builtin(TypeName)
 = Interpret([type_name : TypeName] ColonColon [parse_func_name : MethodName])
