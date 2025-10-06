@@ -11,6 +11,9 @@ typealias Index as RuleIndex
 typealias Int as RuleSize
 
 ///|
+pub typealias Int as Priority
+
+///|
 typealias Int as Token
 
 ///|

@@ -222,7 +222,7 @@ test "codegen::laurus" {
     ]),
   ])
   .add_sort("reg_exp", Atom("RegExp"), [
-    Rule::eq_wrap([Unnamed("reg_exp")]),
+    Rule::eq_wrap([Unnamed("LParen"), Unnamed("reg_exp"), Unnamed("RParen")]),
     Rule::eq_Cons("Bor", [
       Unnamed("LBrack"),
       Unnamed("ranges"),
@@ -234,8 +234,8 @@ test "codegen::laurus" {
       Unnamed("ranges"),
       Unnamed("RBrack"),
     ]),
+    Rule::eq_Cons("Emp", [Unnamed("LBrack"), Unnamed("RBrack")]),
     Rule::eq_Cons("Any", [Unnamed("Dot")]),
-    Rule::eq_Cons("Emp", []),
     Rule::hi_Cons("Union", [
       Unnamed("reg_exp"),
       Unnamed("Or"),
@@ -331,7 +331,8 @@ test "codegen::laurus" {
     ]),
   ])
   |> ignore
-  laurus.workbench().save("./src/laurus")
+  laurus.workbench() |> ignore
+  // .save("./src/laurus")
 }
 
 ///|

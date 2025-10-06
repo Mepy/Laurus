@@ -5,6 +5,7 @@
       "alias": "dfa"
     },
     "moonbitlang/x/fs",
-    "Kaida-Amethyst/path"
+    "Kaida-Amethyst/path",
+    "Kaida-Amethyst/either"
   ]
 }

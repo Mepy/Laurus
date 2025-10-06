@@ -47,7 +47,7 @@ EscUnicode = Char::esc_unicode
 CommentHead = (\/\/)
 CommentBody = String([^\n]*)
 
-%space ([\s\t\n])
+%space ([\s\t\n]*)
 %start laurus
 
 // @self 
@@ -74,8 +74,8 @@ reg_exp : RegExp {
 = (LParen reg_exp RParen)
 = Bor(LBrack ranges RBrack)
 = Bnot(LBrack Caret ranges RBrack)
+= Emp(LBrack RBrack)
 = Any(Dot)
-= Emp()
 | Union(reg_exp Or reg_exp) 
 | Seq(reg_exp reg_exp) 
 | Star(reg_exp Star)

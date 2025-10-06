@@ -35,7 +35,7 @@ struct State {
 } derive(Show, Hash, Eq)
 
 ///|
-struct LR1Maker {
+pub(all) struct LR1Maker {
   grammar : Grammar
   sort_len : Symbol // sort < sort_len <= token, we reserve sort_len as the first token, the EOF
   empty : FixedArray[Bool]
@@ -281,14 +281,22 @@ fn LR1Maker::add_state(self : Self, new_state : State) -> StateIndex {
       } else { // item.cur == item.sentence.length()
         let lookahead = item.lookahead
         if false == reduce_map.contains(lookahead) {
-          reduce_map[lookahead] = Array::new()
+          reduce_map[lookahead] = Set::new()
         }
-        reduce_map[lookahead].push((item.sort, item.rule_i))
+        reduce_map[lookahead].add((item.sort, item.rule_i))
         first_set.add(lookahead)
       }
     }
     // assert reduce_map[lookahead].length() > 0 when lookahead \in reduce_map
-    self.reduce_table.push(reduce_map)
+    self.reduce_table.push(
+      reduce_map
+      .iter()
+      .map(token_reduce_rules => {
+        let (token, reduce_rules) = token_reduce_rules
+        (token, reduce_rules.to_array())
+      })
+      |> Map::from_iter,
+    )
     self.first_table.push(first_set)
   }
   actual_index
@@ -314,17 +322,17 @@ pub fn LR1Maker::construct_states(self : Self) -> Unit {
     let (state, state_i) = self.worklist.unsafe_pop()
     let items = state.items.0
     // next_sort_rules[next] = [(sort, rule_i), ...] when next is a Token
-    let next_sort_rules : Map[Symbol, Array[(Sort, RuleIndex)]] = Map::new()
+    let next_sort_rules : Map[Symbol, Set[(Sort, RuleIndex)]] = Map::new()
     for item in items {
       let sentence : Sentence = item.sentence
       let cur = item.cur
       guard cur < sentence.length() else { continue }
       let next = sentence[cur]
       if false == next_sort_rules.contains(next) {
-        next_sort_rules[next] = []
+        next_sort_rules[next] = Set::new()
       }
       if self.is_token(next) {
-        next_sort_rules[next].push((item.sort, item.rule_i))
+        next_sort_rules[next].add((item.sort, item.rule_i))
       }
     }
     let new_states : Map[Symbol, State] = Map::from_iter(
@@ -343,7 +351,10 @@ pub fn LR1Maker::construct_states(self : Self) -> Unit {
       let (next, new_state) = nn
       let state_j = self.add_state(new_state)
       if self.is_token(next) { // next is a Token
-        self.shift_table[state_i][next] = (state_j, next_sort_rules[next])
+        self.shift_table[state_i][next] = (
+          state_j,
+          next_sort_rules[next].to_array(),
+        )
         // assert shift_table[state_i][next].length() > 0 when next \in shift_table[state_i]
       } else {
         self.goto_table[state_i][next] = state_j
@@ -399,7 +410,7 @@ pub fn LR1Maker::to_lr1(self : Self) -> LR1 {
   let reduce_table = self.reduce_table
     .iter()
     .map(reduce_map => reduce_map.map((_token, sort_rules) => {
-      let (sort, rule_i) = sort_rules[0]
+      let (sort, rule_i) = sort_rules.iter().peek().unwrap()
       let rule_size = self.grammar.rules[sort][rule_i].length()
       (sort, rule_i, rule_size)
     }))
