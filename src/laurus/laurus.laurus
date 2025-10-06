@@ -63,10 +63,10 @@ laurus : Laurus {
 
 
 // tokens
-// Builtin = { String, Lexeme }
+// BuiltIn = { String, Lexeme }
 token_conv : TokenConv {   
 = Ignore()
-= Builtin(TypeName)
+= BuiltIn(TypeName)
 = Interpret([type_name : TypeName] ColonColon [parse_func_name : MethodName])
 }
 

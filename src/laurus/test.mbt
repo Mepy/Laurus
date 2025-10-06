@@ -340,7 +340,8 @@ test "parse::laurus" {
   let parser = Parser::new()
   let laurus_source = @fs.read_file_to_string("./src/laurus/laurus.laurus")
   parser.init(laurus_source)
-  parser.parse() |> println
+  guard parser.parse() is Some(laurus) else {  }
+  laurus.workbench().save("./src/laurus")
 }
 
 ///|
