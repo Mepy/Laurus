@@ -1,0 +1,21 @@
+Lit = Int::from_str([0-9]|[1-9][0-9]*)
+Add = (\+)
+Sub = (\-)
+Mul = (\*)
+Div = (\/)
+Pow = (\^)
+LParen = (\()
+RParen = (\))
+
+%space ([\s\t\n]*)
+%start expr
+
+expr : Expr {
+| Add(expr Add expr)
+| Sub(expr Sub expr)
+< Mul(expr Mul expr)
+| Div(expr Div expr) 
+< @right Pow(expr Pow expr)
+< Lit(Lit)
+| (LParen expr RParen)
+}

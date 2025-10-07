@@ -2,5 +2,6 @@
     "import": [
         "moonbitlang/x/fs",
         "Kaida-Amethyst/path"
-    ]
+    ],
+	"warn-list": "-1-2-4-9"
 }

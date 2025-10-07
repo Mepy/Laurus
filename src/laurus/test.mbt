@@ -92,6 +92,7 @@ test "codegen::laurus" {
   .add_token("Dash", Ignore, Single('-'))
   .add_token("Caret", Ignore, Single('^'))
   .add_token("Or", Ignore, Single('|'))
+  .add_token("Lt", Ignore, Single('<'))
   .add_token("Tilde", Ignore, Single('~'))
   .add_token("LParen", Ignore, Single('('))
   .add_token("RParen", Ignore, Single(')'))
@@ -298,8 +299,8 @@ test "codegen::laurus" {
     ]),
   ])
   .add_sort("priority", Atom("Priority"), [
-    Rule::eq_Cons("Equal", [Unnamed("Eq")]),
-    Rule::eq_Cons("Higher", [Unnamed("Or")]),
+    Rule::eq_Cons("Equal", [Unnamed("Or")]),
+    Rule::eq_Cons("Higher", [Unnamed("Lt")]),
   ])
   .add_sort("shift_reduce", Atom("ShiftReduce"), [
     Rule::eq_Cons("Reduce", []),
@@ -332,7 +333,7 @@ test "codegen::laurus" {
     ]),
   ])
   |> ignore
-  laurus.workbench().save("./src/laurus")
+  laurus.par_gen().save("./src/laurus")
 }
 
 ///|
@@ -341,7 +342,12 @@ test "parse::laurus" {
   let laurus_source = @fs.read_file_to_string("./src/laurus/laurus.laurus")
   parser.init(laurus_source)
   guard parser.parse() is Some(laurus) else {  }
-  laurus.workbench().save("./src/laurus")
+  let par_gen = laurus.par_gen()
+  par_gen.save("./src/laurus")
+}
+
+test "codegen::arith" { 
+	generate("./src/tests/arith/arith.laurus")
 }
 
 ///|

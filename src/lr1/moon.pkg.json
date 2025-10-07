@@ -5,7 +5,7 @@
       "alias": "dfa"
     },
     "moonbitlang/x/fs",
-    "Kaida-Amethyst/path",
-    "Kaida-Amethyst/either"
-  ]
+    "Kaida-Amethyst/path"
+  ],
+  "warn-list": "-1-4-6-9-18"
 }

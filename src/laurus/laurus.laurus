@@ -22,6 +22,7 @@ Ques = (\?)
 Dash = (\-)
 Caret = (\^)
 Or = (\|)
+Lt = (<)
 Tilde =(~)
 LParen = (\()
 RParen = (\))
@@ -53,104 +54,104 @@ CommentBody = String([^\n]*)
 // @self 
 // waiting for @attribute system
 laurus : Laurus {
-= new()
-= add_comment(laurus CommentHead CommentBody)
-= set_space(laurus Percent Space reg_exp)
-= set_start(laurus Percent Start SortName)
-= add_token(laurus [token_name : TokenName] Eq [token_conv~] LParen [reg_exp~] RParen)
-= add_sort(laurus [sort_name : SortName] [sort_type~] LBrace [rules~] RBrace)
+| new()
+| add_comment(laurus CommentHead CommentBody)
+| set_space(laurus Percent Space reg_exp)
+| set_start(laurus Percent Start SortName)
+| add_token(laurus [token_name : TokenName] Eq [token_conv~] LParen [reg_exp~] RParen)
+| add_sort(laurus [sort_name : SortName] [sort_type~] LBrace [rules~] RBrace)
 }
 
 
 // tokens
 // BuiltIn = { String, Lexeme }
 token_conv : TokenConv {   
-= Ignore()
-= BuiltIn(TypeName)
-= Interpret([type_name : TypeName] ColonColon [parse_func_name : MethodName])
+| Ignore()
+| BuiltIn(TypeName)
+| Interpret([type_name : TypeName] ColonColon [parse_func_name : MethodName])
 }
 
 reg_exp : RegExp {
-= (LParen reg_exp RParen)
-= Bor(LBrack ranges RBrack)
-= Bnot(LBrack Caret ranges RBrack)
-= Emp(LBrack RBrack)
-= Any(Dot)
-| Union(reg_exp Or reg_exp) 
-| Seq(reg_exp reg_exp) 
-| Star(reg_exp Star)
-= Plus(reg_exp Plus)
-= Ques(reg_exp Ques)
-| Single(char)
+| (LParen reg_exp RParen)
+| Bor(LBrack ranges RBrack)
+| Bnot(LBrack Caret ranges RBrack)
+| Emp(LBrack RBrack)
+| Any(Dot)
+< Union(reg_exp Or reg_exp) 
+< Seq(reg_exp reg_exp) 
+< Star(reg_exp Star)
+| Plus(reg_exp Plus)
+| Ques(reg_exp Ques)
+< Single(char)
 }
 
 // @self 
 ranges : Array[Range] {
-= singleton(range)
-= snoc(ranges range)
+| singleton(range)
+| snoc(ranges range)
 }
 
 range : Range {
-= single(char)
-= (char Dash char)
+| single(char)
+| (char Dash char)
 }
 
 char : Char {
-= (EscNo)
-= (Esc EscOrigin)
-= (Esc EscSpace)
-= (Esc EscU EscUnicode)
+| (EscNo)
+| (Esc EscOrigin)
+| (Esc EscSpace)
+| (Esc EscU EscUnicode)
 }
 
 // sorts
 sort_type : SortType {
-= Ignore()
-= Atom(Colon TypeName)
-= Gen(Colon TypeName LBrack generics RBrack)
+| Ignore()
+| Atom(Colon TypeName)
+| Gen(Colon TypeName LBrack generics RBrack)
 }
 
 generics : Generics {
-= Atom(TypeName)
-= Gen(TypeName LBrack generics RBrack)
+| Atom(TypeName)
+| Gen(TypeName LBrack generics RBrack)
 }
 
 // @self 
 rules : Array[Rule] {
-= empty()
-= snoc(rules rule)
+| empty()
+| snoc(rules rule)
 }
 
 rule : Rule {
-= ([priority~] [shift_reduce~] [action~] LParen [symbols~] RParen)
+| ([priority~] [shift_reduce~] [action~] LParen [symbols~] RParen)
 }
 
 priority : Priority {
-= Equal(Eq)
-= Higher(Or)
+| Equal(Or)
+| Higher(Lt)
 }
 
 shift_reduce : ShiftReduce {
-= Reduce()
-= Reduce(Reduce)
-= Shift(Shift)
+| Reduce()
+| Reduce(Reduce)
+| Shift(Shift)
 }
 
 // semantic action for reduce
 action : Action {
-= Wrapper()
-= Constructor(ConstructorName)
-= Method(MethodName)
+| Wrapper()
+| Constructor(ConstructorName)
+| Method(MethodName)
 }
 
 // @self 
 symbols : Array[Symbol] {
-= empty()
-= snoc(symbols symbol)
+| empty()
+| snoc(symbols symbol)
 }
 
 
 symbol : Symbol {
-= Unnamed(Symbol)
-= Named(LBrack [field_name : FieldName] Colon Symbol RBrack)
-= NamedAbbrev(LBrack [field_name : FieldName] Tilde RBrack) 
+| Unnamed(Symbol)
+| Named(LBrack [field_name : FieldName] Colon Symbol RBrack)
+| NamedAbbrev(LBrack [field_name : FieldName] Tilde RBrack) 
 }

@@ -1,9 +1,7 @@
 {
   "is-main": true,
   "import": [
-    {
-      "path": "Mepy/Laurus/lib",
-      "alias": "lib"
-    }
+	"Mepy/Laurus/laurus",
+	"moonbitlang/x/sys"
   ]
 }

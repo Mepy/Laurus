@@ -35,7 +35,7 @@ fn Laurus::lex_gen(self : Self) -> @dfa.Generator {
 }
 
 ///|
-fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
+fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   // we assert sort_names.length() > 0, we will soon add a checker towards Laurus (TODO)
 
   let sort_len = self.sort_names.length() + 1 // + %start
@@ -99,25 +99,28 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
     @lr1.Resolution::{ priority, reduce_first }
   }
   maker.shallow_resolve(conflicts, res)
-  maker.deep_resolve(conflicts, res)
-  for token_conflicts in conflicts.0.values() {
-    for token_conflicts in token_conflicts {
-      let (token, conflicts) = token_conflicts
-      println(names[token])
-      println(
-        conflicts
-        .iter()
-        .map(act_rule => {
-          let { act, sort, rule_i } = act_rule
-          let sentence = self.sort_rules[sort - 1][rule_i].symbols
-            .map(Symbol::name)
-            .join(" ")
-          "\t\{act} \{names[sort]}.\{rule_i} = \{sentence}"
-        })
-        .join("\n"),
-      )
-    }
+  if conflicts.0.size() > 0 {
+		// todo : check the logic
+    maker.deep_resolve(conflicts, res)
   }
+  // for token_conflicts in conflicts.0.values() {
+  //   for token_conflicts in token_conflicts {
+  //     let (token, conflicts) = token_conflicts
+  //     println(names[token])
+  //     println(
+  //       conflicts
+  //       .iter()
+  //       .map(act_rule => {
+  //         let { act, sort, rule_i } = act_rule
+  //         let sentence = self.sort_rules[sort - 1][rule_i].symbols
+  //           .map(Symbol::name)
+  //           .join(" ")
+  //         "\t\{act} \{names[sort]}.\{rule_i} = \{sentence}"
+  //       })
+  //       .join("\n"),
+  //     )
+  //   }
+  // }
   let lr1 = maker.to_lr1() // TODO : please first resolve conflicts 
   let lex_gen = self.lex_gen()
   let generator = @lr1.Generator::new(lex_gen)
@@ -127,11 +130,11 @@ fn Laurus::workbench(self : Laurus) -> @lr1.Generator {
   let type_constr_names = Array::new(capacity=len)
   // type_name(space)s of sorts
   let start_sort_type = self.sort_types[0]
-  type_namespaces.push(start_sort_type.namespace()) // %start
+  type_namespaces.push(start_sort_type.name_space()) // %start
   type_names.push(start_sort_type.name()) // %start
   type_constr_names.push(start_sort_type.constr_name()) // %start
   for sort_type in self.sort_types {
-    type_namespaces.push(sort_type.namespace())
+    type_namespaces.push(sort_type.name_space())
     type_names.push(sort_type.name())
     type_constr_names.push(sort_type.constr_name())
   }
@@ -305,7 +308,7 @@ fn RegExp::to_token_nfa(self : RegExp, token : @dfa.Token) -> @dfa.NFA {
 }
 
 ///|
-fn SortType::namespace(self : Self) -> String? {
+fn SortType::name_space(self : Self) -> String? {
   match self {
     Ignore => None
     Atom(type_name) => Some(type_name)

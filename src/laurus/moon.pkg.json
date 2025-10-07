@@ -2,6 +2,8 @@
   "import": [
     "Mepy/Laurus/dfa",
     "Mepy/Laurus/lr1",
-    "moonbitlang/x/fs"
-  ]
+    "Kaida-Amethyst/path",
+	"moonbitlang/x/fs"
+  ],
+  "warn-list": "-1-2-4-9"
 }
