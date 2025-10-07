@@ -11,6 +11,7 @@ pub enum TOKEN {
   LParen
   RParen
 } derive(Show)
+
 ///|
 pub struct Lexeme {
   mut token : TOKEN
@@ -52,14 +53,14 @@ pub fn Lexer::init(self : Self, src : String, cur? : Int = 0) -> Unit {
 pub fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
   let beg = lexeme.beg
   let end = lexeme.end
-  self.src.unsafe_substring(start=beg, end=end)
+  self.src.unsafe_substring(start=beg, end~)
 }
 
 ///|
 fn Lexer::next(self : Self) -> Int {
   if self.cur < self.src.length() {
     let c = self.src[self.cur]
-    self.cur += 1 
+    self.cur += 1
     c
   } else {
     -1
@@ -93,18 +94,19 @@ pub fn Lexer::skip_space(self : Self) -> Lexeme {
   self.cur = lexeme.end
   self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
-}///|
+} ///|
+
+///|
 pub fn Lexer::scan0(self : Self) -> Lexeme {
   // [Lit, LParen]
   self.skip_space() |> ignore
   loop 0 {
-    0 => {
+    0 =>
       continue match self.next() {
           '(' => 1
           '0'..='9' => 2
           _ => break
         }
-    }
     1 => {
       self.lexeme.end = self.cur
       self.lexeme.token = LParen
@@ -124,7 +126,9 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
   self.cur = lexeme.end
   self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
-}///|
+} ///|
+
+///|
 pub fn Lexer::scan1(self : Self) -> Lexeme {
   // [LAURUS_EOF, Add, Sub, Mul, Div, Pow]
   self.skip_space() |> ignore
@@ -172,12 +176,14 @@ pub fn Lexer::scan1(self : Self) -> Lexeme {
   self.cur = lexeme.end
   self.lexeme = Lexeme::new(beg=lexeme.end)
   lexeme
-}///|
+} ///|
+
+///|
 pub fn Lexer::scan2(self : Self) -> Lexeme {
   // [Add, Sub, Mul, Div, Pow, RParen]
   self.skip_space() |> ignore
   loop 0 {
-    0 => {
+    0 =>
       continue match self.next() {
           ')' => 1
           '*' => 2
@@ -187,7 +193,6 @@ pub fn Lexer::scan2(self : Self) -> Lexeme {
           '^' => 6
           _ => break
         }
-    }
     1 => {
       self.lexeme.end = self.cur
       self.lexeme.token = RParen

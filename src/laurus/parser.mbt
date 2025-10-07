@@ -26,6 +26,7 @@ pub fn Parser::init(self : Self, src : String, cur? : Int = 0) -> Unit {
 fn Parser::enter_state(self : Self, state_i : Int) -> Unit {
   self.state_stack.push(state_i)
 }
+
 ///|
 enum Node {
   Laurus(Laurus)
@@ -45,6 +46,7 @@ enum Node {
   Symbol(Symbol)
   String(String)
 } derive(Show)
+
 ///|
 pub fn Parser::parse(self : Self) -> Laurus? {
   let mut lexeme = self.lexer.scan0()
@@ -108,7 +110,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = (x0, ) |> Node::Laurus
+            let node = x0 |> Node::Laurus
             self.node_stack.push(node)
             break
           }
@@ -206,7 +208,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             // ignore Node [x0 : Colon]
-            let node = SortType::Atom(x1, ) |> Node::SortType
+            let node = SortType::Atom(x1) |> Node::SortType
             self.node_stack.push(node)
             6
           }
@@ -247,9 +249,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = Generics::Atom(x0, ) |> Node::Generics
+            let node = Generics::Atom(x0) |> Node::Generics
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               9 => 10
               12 => 13
@@ -294,9 +296,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Generics(x2)
             // ignore Node [x1 : LBrack]
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = Generics::Gen(x0, x2, ) |> Node::Generics
+            let node = Generics::Gen(x0, x2) |> Node::Generics
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               9 => 10
               12 => 13
@@ -320,7 +322,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : LBrack]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             // ignore Node [x0 : Colon]
-            let node = SortType::Gen(x1, x3, ) |> Node::SortType
+            let node = SortType::Gen(x1, x3) |> Node::SortType
             self.node_stack.push(node)
             6
           }
@@ -385,7 +387,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::SortType(x2)
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_sort(x0, x1, x2, x4, ) |> Node::Laurus
+            let node = Laurus::add_sort(x0, x1, x2, x4) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -402,7 +404,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::SortType(x2)
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_sort(x0, x1, x2, x4, ) |> Node::Laurus
+            let node = Laurus::add_sort(x0, x1, x2, x4) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -419,7 +421,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::SortType(x2)
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_sort(x0, x1, x2, x4, ) |> Node::Laurus
+            let node = Laurus::add_sort(x0, x1, x2, x4) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -436,7 +438,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::SortType(x2)
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_sort(x0, x1, x2, x4, ) |> Node::Laurus
+            let node = Laurus::add_sort(x0, x1, x2, x4) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -453,7 +455,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::SortType(x2)
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_sort(x0, x1, x2, x4, ) |> Node::Laurus
+            let node = Laurus::add_sort(x0, x1, x2, x4) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -468,7 +470,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Rule(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Rule_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Rule_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Rule_RB_
             self.node_stack.push(node)
             17
           }
@@ -477,7 +479,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Rule(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Rule_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Rule_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Rule_RB_
             self.node_stack.push(node)
             17
           }
@@ -486,7 +488,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Rule(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Rule_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Rule_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Rule_RB_
             self.node_stack.push(node)
             17
           }
@@ -700,7 +702,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = Action::Constructor(x0, ) |> Node::Action
+            let node = Action::Constructor(x0) |> Node::Action
             self.node_stack.push(node)
             26
           }
@@ -713,7 +715,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = Action::Method(x0, ) |> Node::Action
+            let node = Action::Method(x0) |> Node::Action
             self.node_stack.push(node)
             26
           }
@@ -779,7 +781,13 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Action(x2)
             guard self.node_stack.unsafe_pop() is Node::ShiftReduce(x1)
             guard self.node_stack.unsafe_pop() is Node::Priority(x0)
-            let node = Rule::{priority : x0, shift_reduce : x1, action : x2, symbols : x4, } |> Node::Rule
+            let node = Rule::{
+                priority: x0,
+                shift_reduce: x1,
+                action: x2,
+                symbols: x4,
+              }
+              |> Node::Rule
             self.node_stack.push(node)
             19
           }
@@ -796,7 +804,13 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Action(x2)
             guard self.node_stack.unsafe_pop() is Node::ShiftReduce(x1)
             guard self.node_stack.unsafe_pop() is Node::Priority(x0)
-            let node = Rule::{priority : x0, shift_reduce : x1, action : x2, symbols : x4, } |> Node::Rule
+            let node = Rule::{
+                priority: x0,
+                shift_reduce: x1,
+                action: x2,
+                symbols: x4,
+              }
+              |> Node::Rule
             self.node_stack.push(node)
             19
           }
@@ -813,7 +827,13 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Action(x2)
             guard self.node_stack.unsafe_pop() is Node::ShiftReduce(x1)
             guard self.node_stack.unsafe_pop() is Node::Priority(x0)
-            let node = Rule::{priority : x0, shift_reduce : x1, action : x2, symbols : x4, } |> Node::Rule
+            let node = Rule::{
+                priority: x0,
+                shift_reduce: x1,
+                action: x2,
+                symbols: x4,
+              }
+              |> Node::Rule
             self.node_stack.push(node)
             19
           }
@@ -828,7 +848,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Symbol(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Symbol_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Symbol_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Symbol_RB_
             self.node_stack.push(node)
             30
           }
@@ -837,7 +857,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Symbol(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Symbol_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Symbol_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Symbol_RB_
             self.node_stack.push(node)
             30
           }
@@ -846,7 +866,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Symbol(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Symbol_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Symbol_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Symbol_RB_
             self.node_stack.push(node)
             30
           }
@@ -859,21 +879,21 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = Symbol::Unnamed(x0, ) |> Node::Symbol
+            let node = Symbol::Unnamed(x0) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
           Symbol => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = Symbol::Unnamed(x0, ) |> Node::Symbol
+            let node = Symbol::Unnamed(x0) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = Symbol::Unnamed(x0, ) |> Node::Symbol
+            let node = Symbol::Unnamed(x0) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
@@ -943,7 +963,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Tilde]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             // ignore Node [x0 : LBrack]
-            let node = Symbol::NamedAbbrev(field_name = x1, ) |> Node::Symbol
+            let node = Symbol::NamedAbbrev(field_name=x1) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
@@ -956,7 +976,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Tilde]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             // ignore Node [x0 : LBrack]
-            let node = Symbol::NamedAbbrev(field_name = x1, ) |> Node::Symbol
+            let node = Symbol::NamedAbbrev(field_name=x1) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
@@ -969,7 +989,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Tilde]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             // ignore Node [x0 : LBrack]
-            let node = Symbol::NamedAbbrev(field_name = x1, ) |> Node::Symbol
+            let node = Symbol::NamedAbbrev(field_name=x1) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
@@ -1001,7 +1021,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Colon]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             // ignore Node [x0 : LBrack]
-            let node = Symbol::Named(field_name = x1, x3, ) |> Node::Symbol
+            let node = Symbol::Named(field_name=x1, x3) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
@@ -1016,7 +1036,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Colon]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             // ignore Node [x0 : LBrack]
-            let node = Symbol::Named(field_name = x1, x3, ) |> Node::Symbol
+            let node = Symbol::Named(field_name=x1, x3) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
@@ -1031,7 +1051,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Colon]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             // ignore Node [x0 : LBrack]
-            let node = Symbol::Named(field_name = x1, x3, ) |> Node::Symbol
+            let node = Symbol::Named(field_name=x1, x3) |> Node::Symbol
             self.node_stack.push(node)
             32
           }
@@ -1077,7 +1097,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::BuiltIn(x0, ) |> Node::TokenConv
+            let node = TokenConv::BuiltIn(x0) |> Node::TokenConv
             self.node_stack.push(node)
             42
           }
@@ -1106,7 +1126,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::String(x2)
             // ignore Node [x1 : ColonColon]
             guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::Interpret(type_name = x0, parse_func_name = x2, ) |> Node::TokenConv
+            let node = TokenConv::Interpret(type_name=x0, parse_func_name=x2)
+              |> Node::TokenConv
             self.node_stack.push(node)
             42
           }
@@ -1269,7 +1290,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1293,7 +1314,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1317,7 +1338,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1341,7 +1362,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1365,7 +1386,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1389,7 +1410,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1413,7 +1434,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1437,7 +1458,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1461,7 +1482,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1485,7 +1506,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1513,9 +1534,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1537,9 +1558,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1561,9 +1582,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1585,9 +1606,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1609,9 +1630,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1633,9 +1654,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1657,9 +1678,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1681,9 +1702,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1705,9 +1726,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1729,9 +1750,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -1759,9 +1780,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -1792,9 +1813,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -1825,9 +1846,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -1858,9 +1879,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -1891,9 +1912,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -1924,9 +1945,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -1957,9 +1978,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -1990,9 +2011,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2023,9 +2044,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2056,9 +2077,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2120,9 +2141,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2155,9 +2176,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2190,9 +2211,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2225,9 +2246,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2260,9 +2281,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2295,9 +2316,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2330,9 +2351,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2365,9 +2386,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2400,9 +2421,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2435,9 +2456,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2476,9 +2497,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2511,9 +2532,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2546,9 +2567,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2581,9 +2602,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2616,9 +2637,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2651,9 +2672,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2686,9 +2707,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2721,9 +2742,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2756,9 +2777,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2791,9 +2812,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2846,9 +2867,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2883,9 +2904,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2920,9 +2941,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2957,9 +2978,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -2994,9 +3015,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3031,9 +3052,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3068,9 +3089,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3105,9 +3126,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3142,9 +3163,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3179,9 +3200,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3261,7 +3282,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3287,7 +3308,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3313,7 +3334,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3339,7 +3360,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3365,7 +3386,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3391,7 +3412,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3417,7 +3438,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3443,7 +3464,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3469,7 +3490,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3495,7 +3516,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -3523,9 +3544,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Range(x0)
-            let node = Array::singleton(x0, ) |> Node::Array_LB_Range_RB_
+            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 58
               59 => 77
@@ -3537,9 +3558,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Range(x0)
-            let node = Array::singleton(x0, ) |> Node::Array_LB_Range_RB_
+            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 58
               59 => 77
@@ -3551,9 +3572,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Range(x0)
-            let node = Array::singleton(x0, ) |> Node::Array_LB_Range_RB_
+            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 58
               59 => 77
@@ -3576,9 +3597,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range::single(x0, ) |> Node::Range
+            let node = Range::single(x0) |> Node::Range
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 61
               58 => 79
@@ -3594,9 +3615,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range::single(x0, ) |> Node::Range
+            let node = Range::single(x0) |> Node::Range
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 61
               58 => 79
@@ -3612,9 +3633,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range::single(x0, ) |> Node::Range
+            let node = Range::single(x0) |> Node::Range
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 61
               58 => 79
@@ -3636,9 +3657,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Dash => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3669,9 +3690,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3702,9 +3723,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3735,9 +3756,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3799,9 +3820,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3834,9 +3855,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3869,9 +3890,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3904,9 +3925,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3945,9 +3966,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -3980,9 +4001,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4015,9 +4036,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4050,9 +4071,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4105,9 +4126,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4142,9 +4163,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4179,9 +4200,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4216,9 +4237,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4276,9 +4297,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : Dash]
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range(x0, x2, ) |> Node::Range
+            let node = Range(x0, x2) |> Node::Range
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 61
               58 => 79
@@ -4298,9 +4319,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : Dash]
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range(x0, x2, ) |> Node::Range
+            let node = Range(x0, x2) |> Node::Range
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 61
               58 => 79
@@ -4320,9 +4341,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : Dash]
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range(x0, x2, ) |> Node::Range
+            let node = Range(x0, x2) |> Node::Range
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 61
               58 => 79
@@ -4344,9 +4365,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4377,9 +4398,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4410,9 +4431,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4474,9 +4495,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4509,9 +4530,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4544,9 +4565,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4585,9 +4606,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4620,9 +4641,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4655,9 +4676,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4710,9 +4731,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4747,9 +4768,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4784,9 +4805,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -4851,9 +4872,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -4881,9 +4902,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -4911,9 +4932,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -4941,9 +4962,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -4971,9 +4992,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5001,9 +5022,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5031,9 +5052,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5061,9 +5082,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5091,9 +5112,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5121,9 +5142,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5153,9 +5174,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Range(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Range_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 58
               59 => 77
@@ -5169,9 +5190,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Range(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Range_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 58
               59 => 77
@@ -5185,9 +5206,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Range(x1)
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
-            let node = Array::snoc(x0, x1, ) |> Node::Array_LB_Range_RB_
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               49 => 58
               59 => 77
@@ -5209,9 +5230,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5237,9 +5258,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5265,9 +5286,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5293,9 +5314,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5321,9 +5342,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5349,9 +5370,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5377,9 +5398,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5405,9 +5426,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5433,9 +5454,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5461,9 +5482,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5552,9 +5573,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5580,9 +5601,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5608,9 +5629,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5636,9 +5657,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5664,9 +5685,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5692,9 +5713,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5720,9 +5741,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5748,9 +5769,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5776,9 +5797,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5804,9 +5825,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5894,9 +5915,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5920,9 +5941,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5946,9 +5967,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5972,9 +5993,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -5998,9 +6019,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6030,9 +6051,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6056,9 +6077,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6082,9 +6103,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6108,9 +6129,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6134,9 +6155,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6160,9 +6181,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6186,9 +6207,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6212,9 +6233,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6238,9 +6259,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6264,9 +6285,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6296,9 +6317,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6322,9 +6343,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6348,9 +6369,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6374,9 +6395,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6400,9 +6421,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6426,9 +6447,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6452,9 +6473,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6478,9 +6499,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6504,9 +6525,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6530,9 +6551,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6562,9 +6583,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6588,9 +6609,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6614,9 +6635,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6640,9 +6661,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6666,9 +6687,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6692,9 +6713,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6718,9 +6739,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6744,9 +6765,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6770,9 +6791,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6796,9 +6817,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6856,9 +6877,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6884,9 +6905,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6912,9 +6933,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6940,9 +6961,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -6968,9 +6989,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7010,7 +7031,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Eq]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x5, ) |> Node::Laurus
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7029,7 +7050,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Eq]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x5, ) |> Node::Laurus
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7048,7 +7069,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Eq]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x5, ) |> Node::Laurus
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7067,7 +7088,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Eq]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x5, ) |> Node::Laurus
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7086,7 +7107,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Eq]
             guard self.node_stack.unsafe_pop() is Node::String(x1)
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x5, ) |> Node::Laurus
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7149,7 +7170,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Start]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7162,7 +7183,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Start]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7175,7 +7196,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Start]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7188,7 +7209,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Start]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7201,7 +7222,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Start]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7266,7 +7287,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Space]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7279,7 +7300,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Space]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7292,7 +7313,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Space]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7305,7 +7326,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Space]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7318,7 +7339,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : Space]
             // ignore Node [x1 : Percent]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3, ) |> Node::Laurus
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -7392,7 +7413,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7416,7 +7437,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7440,7 +7461,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7464,7 +7485,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7488,7 +7509,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7512,7 +7533,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7536,7 +7557,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7560,7 +7581,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7584,7 +7605,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7608,7 +7629,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7632,7 +7653,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7656,7 +7677,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7680,7 +7701,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7704,7 +7725,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : Dot]
             let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7732,9 +7753,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7756,9 +7777,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7780,9 +7801,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7804,9 +7825,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7828,9 +7849,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7852,9 +7873,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7876,9 +7897,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7900,9 +7921,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7924,9 +7945,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7948,9 +7969,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7972,9 +7993,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Percent => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -7996,9 +8017,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           TokenName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -8020,9 +8041,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           SortName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -8044,9 +8065,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0, ) |> Node::RegExp
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -8074,9 +8095,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8107,9 +8128,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8140,9 +8161,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8173,9 +8194,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8206,9 +8227,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8239,9 +8260,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8272,9 +8293,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8305,9 +8326,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8338,9 +8359,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8371,9 +8392,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8404,9 +8425,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Percent => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8437,9 +8458,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           TokenName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8470,9 +8491,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           SortName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8503,9 +8524,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = (x0, ) |> Node::Char
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8567,9 +8588,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8602,9 +8623,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8637,9 +8658,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8672,9 +8693,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8707,9 +8728,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8742,9 +8763,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8777,9 +8798,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8812,9 +8833,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8847,9 +8868,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8882,9 +8903,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8917,9 +8938,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8952,9 +8973,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -8987,9 +9008,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9022,9 +9043,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9063,9 +9084,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9098,9 +9119,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9133,9 +9154,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9168,9 +9189,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9203,9 +9224,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9238,9 +9259,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9273,9 +9294,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9308,9 +9329,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9343,9 +9364,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9378,9 +9399,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9413,9 +9434,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9448,9 +9469,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9483,9 +9504,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9518,9 +9539,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
             // ignore Node [x0 : Esc]
-            let node = (x1, ) |> Node::Char
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9573,9 +9594,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9610,9 +9631,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9647,9 +9668,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9684,9 +9705,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9721,9 +9742,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9758,9 +9779,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9795,9 +9816,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9832,9 +9853,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9869,9 +9890,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9906,9 +9927,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9943,9 +9964,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -9980,9 +10001,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -10017,9 +10038,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -10054,9 +10075,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Char(x2)
             // ignore Node [x1 : EscU]
             // ignore Node [x0 : Esc]
-            let node = (x2, ) |> Node::Char
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 51
               47 => 51
@@ -10136,7 +10157,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10162,7 +10183,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10188,7 +10209,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10214,7 +10235,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10240,7 +10261,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10266,7 +10287,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10292,7 +10313,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10318,7 +10339,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10344,7 +10365,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10370,7 +10391,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10396,7 +10417,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10422,7 +10443,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10448,7 +10469,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10474,7 +10495,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x0 : LBrack]
             let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10530,9 +10551,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10560,9 +10581,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10590,9 +10611,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10620,9 +10641,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10650,9 +10671,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10680,9 +10701,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10710,9 +10731,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10740,9 +10761,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10770,9 +10791,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10800,9 +10821,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10830,9 +10851,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10860,9 +10881,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10890,9 +10911,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10920,9 +10941,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
             // ignore Node [x1 : Caret]
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2, ) |> Node::RegExp
+            let node = RegExp::Bnot(x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10954,9 +10975,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -10982,9 +11003,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11010,9 +11031,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11038,9 +11059,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11066,9 +11087,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11094,9 +11115,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11122,9 +11143,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11150,9 +11171,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11178,9 +11199,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11206,9 +11227,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11234,9 +11255,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11262,9 +11283,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11290,9 +11311,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11318,9 +11339,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RBrack]
             guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
             // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1, ) |> Node::RegExp
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11409,9 +11430,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11437,9 +11458,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11465,9 +11486,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11493,9 +11514,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11521,9 +11542,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11549,9 +11570,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11577,9 +11598,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11605,9 +11626,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11633,9 +11654,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11661,9 +11682,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11689,9 +11710,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11717,9 +11738,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11745,9 +11766,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11773,9 +11794,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::RegExp
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11863,9 +11884,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11889,9 +11910,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11915,9 +11936,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11941,9 +11962,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11967,9 +11988,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -11993,9 +12014,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12019,9 +12040,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12045,9 +12066,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12071,9 +12092,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1, ) |> Node::RegExp
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12103,9 +12124,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12129,9 +12150,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12155,9 +12176,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12181,9 +12202,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12207,9 +12228,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12233,9 +12254,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12259,9 +12280,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12285,9 +12306,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12311,9 +12332,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12337,9 +12358,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12363,9 +12384,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12389,9 +12410,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12415,9 +12436,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12441,9 +12462,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0, ) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12473,9 +12494,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12499,9 +12520,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12525,9 +12546,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12551,9 +12572,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12577,9 +12598,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12603,9 +12624,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12629,9 +12650,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12655,9 +12676,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12681,9 +12702,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12707,9 +12728,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12733,9 +12754,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12759,9 +12780,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12785,9 +12806,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12811,9 +12832,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0, ) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12843,9 +12864,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12869,9 +12890,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12895,9 +12916,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12921,9 +12942,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12947,9 +12968,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12973,9 +12994,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -12999,9 +13020,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13025,9 +13046,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13051,9 +13072,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13077,9 +13098,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13103,9 +13124,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13129,9 +13150,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13155,9 +13176,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13181,9 +13202,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0, ) |> Node::RegExp
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13241,9 +13262,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13269,9 +13290,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13297,9 +13318,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13325,9 +13346,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13353,9 +13374,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13381,9 +13402,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13409,9 +13430,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13437,9 +13458,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13465,9 +13486,9 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
             // ignore Node [x1 : Or]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2, ) |> Node::RegExp
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
               47 => 84
@@ -13499,7 +13520,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::String(x2)
             // ignore Node [x1 : CommentHead]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_comment(x0, x2, ) |> Node::Laurus
+            let node = Laurus::add_comment(x0, x2) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -13510,7 +13531,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::String(x2)
             // ignore Node [x1 : CommentHead]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_comment(x0, x2, ) |> Node::Laurus
+            let node = Laurus::add_comment(x0, x2) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -13521,7 +13542,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::String(x2)
             // ignore Node [x1 : CommentHead]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_comment(x0, x2, ) |> Node::Laurus
+            let node = Laurus::add_comment(x0, x2) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -13532,7 +13553,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::String(x2)
             // ignore Node [x1 : CommentHead]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_comment(x0, x2, ) |> Node::Laurus
+            let node = Laurus::add_comment(x0, x2) |> Node::Laurus
             self.node_stack.push(node)
             1
           }
@@ -13543,7 +13564,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             guard self.node_stack.unsafe_pop() is Node::String(x2)
             // ignore Node [x1 : CommentHead]
             guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_comment(x0, x2, ) |> Node::Laurus
+            let node = Laurus::add_comment(x0, x2) |> Node::Laurus
             self.node_stack.push(node)
             1
           }

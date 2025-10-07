@@ -12,15 +12,13 @@ pub fn generate(path : String) -> Unit {
   }
   try {
     let source = @fs.read_file_to_string(path.to_string())
-    
-		parser.init(source)
+    parser.init(source)
     guard parser.parse() is Some(laurus) else {  }
     let par_gen = laurus.par_gen()
-		// println(laurus)
+    // println(laurus)
     path.pop() |> ignore
     // println(path.to_string())
     par_gen.save(path.to_string())
-
   } catch {
     _ => println("unknown error")
   }

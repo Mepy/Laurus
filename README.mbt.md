@@ -2,7 +2,20 @@
 
 **Laurus​**​ is a lexer and LR(1) parser generator written in MoonBit.
 
-NOTICE: **​​Laurus​​** is still under early active development. 
+See [arith.laurus](./src/tests/arith/arith.laurus) for an example of grammar.
+
+
+
+## Features
+Please refer to the example [arith](./src/tests/arith/).
+- **Implicit priorities** of grammar rules for LR(1) conflicts resolution
+- **Syntax types** auto generation
+
+
+## Status
+
+NOTICE: **​​Laurus​​** is still under active development. 
+We do not (but will soon) provide a human-readable report when the parser or generator meets errors.
 Please refer to `./src/**/test.mbt` if you are interested in the project.
 
 ```sh

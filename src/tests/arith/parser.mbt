@@ -26,11 +26,13 @@ pub fn Parser::init(self : Self, src : String, cur? : Int = 0) -> Unit {
 fn Parser::enter_state(self : Self, state_i : Int) -> Unit {
   self.state_stack.push(state_i)
 }
+
 ///|
 enum Node {
   Expr(Expr)
   Int(Int)
 } derive(Show)
+
 ///|
 pub fn Parser::parse(self : Self) -> Expr? {
   let mut lexeme = self.lexer.scan0()
@@ -83,7 +85,7 @@ pub fn Parser::parse(self : Self) -> Expr? {
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = (x0, ) |> Node::Expr
+            let node = x0 |> Node::Expr
             self.node_stack.push(node)
             break
           }
@@ -96,9 +98,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -119,9 +121,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Pow => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -142,9 +144,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Div => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -165,9 +167,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Mul => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -188,9 +190,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Sub => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -211,9 +213,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Add => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -293,9 +295,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -316,9 +318,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Pow => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -339,9 +341,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Div => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -362,9 +364,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Mul => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -385,9 +387,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Sub => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -408,9 +410,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
           Add => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Int(x0)
-            let node = Expr::Lit(x0, ) |> Node::Expr
+            let node = Expr::Lit(x0) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -494,9 +496,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -521,9 +523,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -548,9 +550,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -575,9 +577,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -602,9 +604,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -629,9 +631,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -752,9 +754,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -779,9 +781,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -806,9 +808,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -833,9 +835,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -860,9 +862,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -898,9 +900,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -925,9 +927,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -952,9 +954,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -979,9 +981,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1006,9 +1008,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1044,9 +1046,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1071,9 +1073,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1098,9 +1100,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1125,9 +1127,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1152,9 +1154,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1200,9 +1202,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Sub]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Sub(x0, x2, ) |> Node::Expr
+            let node = Expr::Sub(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1227,9 +1229,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Sub]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Sub(x0, x2, ) |> Node::Expr
+            let node = Expr::Sub(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1254,9 +1256,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Sub]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Sub(x0, x2, ) |> Node::Expr
+            let node = Expr::Sub(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1302,9 +1304,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Add]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Add(x0, x2, ) |> Node::Expr
+            let node = Expr::Add(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1329,9 +1331,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Add]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Add(x0, x2, ) |> Node::Expr
+            let node = Expr::Add(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1356,9 +1358,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Add]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Add(x0, x2, ) |> Node::Expr
+            let node = Expr::Add(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1389,9 +1391,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1416,9 +1418,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1443,9 +1445,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1470,9 +1472,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1497,9 +1499,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1524,9 +1526,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             // ignore Node [x2 : RParen]
             guard self.node_stack.unsafe_pop() is Node::Expr(x1)
             // ignore Node [x0 : LParen]
-            let node = (x1, ) |> Node::Expr
+            let node = x1 |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1647,9 +1649,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1674,9 +1676,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1701,9 +1703,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1728,9 +1730,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1755,9 +1757,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Pow]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Pow(x0, x2, ) |> Node::Expr
+            let node = Expr::Pow(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1793,9 +1795,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1820,9 +1822,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1847,9 +1849,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1874,9 +1876,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1901,9 +1903,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Div]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Div(x0, x2, ) |> Node::Expr
+            let node = Expr::Div(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1939,9 +1941,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1966,9 +1968,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -1993,9 +1995,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -2020,9 +2022,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -2047,9 +2049,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Mul]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Mul(x0, x2, ) |> Node::Expr
+            let node = Expr::Mul(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -2095,9 +2097,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Sub]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Sub(x0, x2, ) |> Node::Expr
+            let node = Expr::Sub(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -2122,9 +2124,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Sub]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Sub(x0, x2, ) |> Node::Expr
+            let node = Expr::Sub(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -2149,9 +2151,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Sub]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Sub(x0, x2, ) |> Node::Expr
+            let node = Expr::Sub(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -2197,9 +2199,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Add]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Add(x0, x2, ) |> Node::Expr
+            let node = Expr::Add(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -2224,9 +2226,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Add]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Add(x0, x2, ) |> Node::Expr
+            let node = Expr::Add(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4
@@ -2251,9 +2253,9 @@ pub fn Parser::parse(self : Self) -> Expr? {
             guard self.node_stack.unsafe_pop() is Node::Expr(x2)
             // ignore Node [x1 : Add]
             guard self.node_stack.unsafe_pop() is Node::Expr(x0)
-            let node = Expr::Add(x0, x2, ) |> Node::Expr
+            let node = Expr::Add(x0, x2) |> Node::Expr
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length()-1]
+            let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               0 => 1
               3 => 4

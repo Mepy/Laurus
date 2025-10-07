@@ -346,8 +346,9 @@ test "parse::laurus" {
   par_gen.save("./src/laurus")
 }
 
-test "codegen::arith" { 
-	generate("./src/tests/arith/arith.laurus")
+///|
+test "codegen::arith" {
+  generate("./src/tests/arith/arith.laurus")
 }
 
 ///|

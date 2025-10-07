@@ -100,7 +100,7 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   }
   maker.shallow_resolve(conflicts, res)
   if conflicts.0.size() > 0 {
-		// todo : check the logic
+    // todo : check the logic
     maker.deep_resolve(conflicts, res)
   }
   // for token_conflicts in conflicts.0.values() {
