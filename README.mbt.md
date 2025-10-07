@@ -2,7 +2,10 @@
 
 **Laurus​**​ is a lexer and LR(1) parser generator written in MoonBit.
 
-See [arith.laurus](./src/tests/arith/arith.laurus) for an example of grammar.
+
+## How to use?
+See the demo repo [arith.laurus](https://github.com/Mepy/arith.laurus/).
+It contains a [file](https://github.com/Mepy/arith.laurus/blob/main/src/arith.laurus) for an example of **Laurus**' grammar.
 
 
 
