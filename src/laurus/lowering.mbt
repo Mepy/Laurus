@@ -39,7 +39,7 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   // we assert sort_names.length() > 0, we will soon add a checker towards Laurus (TODO)
 
   let sort_len = self.sort_names.length() + 1 // + %start
-  let token_len = self.token_names.length() + 2 // + EOF
+  let token_len = self.token_names.length() + 2 // + EOF + SPACE
   let len = sort_len + token_len
   let name_indices : Map[String, @lr1.Symbol] = Map::new(capacity=len)
   let start = if self.start != "" { self.start } else { self.sort_names[0] }
@@ -202,7 +202,7 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
           )
         }
         Method(method_name) => {
-          // constructors should belong to one type_namespace
+          // method_name should belong to one type_namespace
           guard type_namespace is Some(type_namespace) else { continue }
           guard type_name is Some(type_name) else { continue }
           interpret_funcs[@lr1.InterpretFuncName::new(
@@ -264,8 +264,13 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
       BuiltIn("String") => @lr1.TokenSemantics::String
       BuiltIn("Lexeme") => @lr1.TokenSemantics::Lexeme
       BuiltIn(_) => @lr1.TokenSemantics::Ignore
-      Interpret(type_name~, parse_func_name~) =>
+      Interpret(type_name~, parse_func_name~) => {
+        interpret_funcs[@lr1.InterpretFuncName::new(type_name, parse_func_name)] = @lr1.InterpretFuncType::new(
+          [(Some("src"), "String")],
+          type_name,
+        )
         @lr1.TokenSemantics::Interpret(type_name~, parse_func_name~)
+      }
     }
     tokens.push(token_sem)
   }
