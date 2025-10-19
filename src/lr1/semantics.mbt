@@ -46,6 +46,7 @@ struct InterpretFuncName {
 
 ///|
 struct InterpretFuncType {
+  generic_param : String // if it is a generic function, please fill "[T]" otherwisw ""
   param_and_type_names : Array[(String?, String)]
   retype_name : String
 } derive(Show, Hash, Eq)
@@ -60,10 +61,11 @@ pub fn InterpretFuncName::new(
 
 ///|
 pub fn InterpretFuncType::new(
+  generic_param : String,
   param_and_type_names : Array[(String?, String)],
   retype_name : String,
 ) -> Self {
-  { param_and_type_names, retype_name }
+  { generic_param, param_and_type_names, retype_name }
 }
 
 ///|

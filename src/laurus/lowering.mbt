@@ -35,9 +35,10 @@ fn Laurus::lex_gen(self : Self) -> @dfa.Generator {
 }
 
 ///|
-fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
+fn Laurus::named_grammar(
+  self : Laurus,
+) -> (Map[String, @lr1.Symbol], @lr1.Grammar) {
   // we assert sort_names.length() > 0, we will soon add a checker towards Laurus (TODO)
-
   let sort_len = self.sort_names.length() + 1 // + %start
   let token_len = self.token_names.length() + 2 // + EOF + SPACE
   let len = sort_len + token_len
@@ -52,7 +53,6 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   for name in self.token_names {
     name_indices[name] = name_indices.size()
   }
-  let names = name_indices.keys().to_array()
   let rules : Array[Array[@lr1.Sentence]] = Array::new(capacity=sort_len)
   rules.push([[name_indices[start]]]) // %start -> start
   for sort_rules in self.sort_rules {
@@ -70,8 +70,15 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
     rules.push(sort_rules)
   }
   let grammar = @lr1.Grammar::{ rules, }
-  let maker = @lr1.LR1Maker::new(grammar)
-  maker.construct_states()
+  (name_indices, grammar)
+}
+
+///|
+fn Laurus::conflict_resolve(
+  self : Laurus,
+  maker : @lr1.LR1Maker,
+  sort_len : Int,
+) -> Unit {
   let conflicts = maker.conflicts()
   let res : @lr1.Resolution = {
     let priority : Array[Array[@lr1.Priority]] = Array::new(capacity=sort_len)
@@ -121,27 +128,39 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   //     )
   //   }
   // }
-  let lr1 = maker.to_lr1() // TODO : please first resolve conflicts 
-  let lex_gen = self.lex_gen()
-  let generator = @lr1.Generator::new(lex_gen)
-  generator.codegen_lexer(lr1)
+}
+
+///|
+fn Laurus::semantics(
+  self : Laurus,
+  name_indices : Map[String, @lr1.Symbol],
+  grammar : @lr1.Grammar,
+) -> @lr1.Semantics {
+  let names = name_indices.keys().to_array()
+  let sort_len = grammar.rules.length()
+  let len = name_indices.size()
+  let generic_types = Array::new(capacity=len)
   let type_namespaces = Array::new(capacity=len)
   let type_names = Array::new(capacity=len)
   let type_constr_names = Array::new(capacity=len)
   // type_name(space)s of sorts
   let start_sort_type = self.sort_types[0]
+  generic_types.push(start_sort_type.to_generics()) // %start
   type_namespaces.push(start_sort_type.name_space()) // %start
   type_names.push(start_sort_type.name()) // %start
   type_constr_names.push(start_sort_type.constr_name()) // %start
   for sort_type in self.sort_types {
+    generic_types.push(sort_type.to_generics())
     type_namespaces.push(sort_type.name_space())
     type_names.push(sort_type.name())
     type_constr_names.push(sort_type.constr_name())
   }
   // type_name(space)s of tokens
+  generic_types.push(None) // EOF
   type_namespaces.push(None) // EOF
   type_names.push(None) // EOF
   type_constr_names.push(None) // EOF
+  generic_types.push(None) // EOF
   type_namespaces.push(None) // SPACE
   type_names.push(None) // SPACE
   type_constr_names.push(None) // SPACE
@@ -161,17 +180,39 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   let interpret_funcs : Map[@lr1.InterpretFuncName, @lr1.InterpretFuncType] = Map::new()
   for sort_i in 0..<(sort_len - 1) {
     let type_namespace = type_namespaces[sort_i + 1] // %start
-    let type_name = type_names[sort_i + 1] // %start
+    let generic_type = generic_types[sort_i + 1] // %start
+    let (generic_param, generic_arg, type_name) = match generic_type {
+      None | Some(Atom(_)) => ("", None, type_names[sort_i + 1]) // %start
+      Some(Gen(type_name, gen_arg)) =>
+        ("[T]", Some(gen_arg), SortType::Gen(type_name, Atom("T")).name())
+    }
     let rule_semantic = rule_semantics[sort_i + 1] // % start
     for rule in self.sort_rules[sort_i] {
-      let field_and_type_names = rule.symbols.filter_map(symbol => {
-        let (field_name, symbol_name) = symbol.field_and_name()
-        let index = name_indices[symbol_name]
-        match type_names[index] {
-          None => None
-          Some(type_name) => Some((field_name, type_name))
-        }
-      })
+      let field_and_type_names = match generic_arg {
+        None =>
+          rule.symbols.filter_map(symbol => {
+            let (field_name, symbol_name) = symbol.field_and_name()
+            let index = name_indices[symbol_name]
+            match type_names[index] {
+              None => None
+              Some(type_name) => Some((field_name, type_name))
+            }
+          })
+        Some(gen_arg) =>
+          rule.symbols.filter_map(symbol => {
+            let (field_name, symbol_name) = symbol.field_and_name()
+            let index = name_indices[symbol_name]
+            match generic_types[index] {
+              None => None
+              Some(generic_type) => {
+                let type_name = generic_type
+                  .subst(gen_arg, Generics::Atom("T"))
+                  .name()
+                Some((field_name, type_name))
+              }
+            }
+          })
+      }
       match rule.action {
         Constructor(constructor_name) => {
           // constructors should belong to one type_namespace
@@ -207,7 +248,9 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
           guard type_name is Some(type_name) else { continue }
           interpret_funcs[@lr1.InterpretFuncName::new(
             type_namespace, method_name,
-          )] = @lr1.InterpretFuncType::new(field_and_type_names, type_name)
+          )] = @lr1.InterpretFuncType::new(
+            generic_param, field_and_type_names, type_name,
+          )
           rule_semantic.push(
             @lr1.RuleSemantics::Interpret(parse_func_name=method_name),
           )
@@ -266,6 +309,7 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
       BuiltIn(_) => @lr1.TokenSemantics::Ignore
       Interpret(type_name~, parse_func_name~) => {
         interpret_funcs[@lr1.InterpretFuncName::new(type_name, parse_func_name)] = @lr1.InterpretFuncType::new(
+          "",
           [(Some("src"), "String")],
           type_name,
         )
@@ -278,6 +322,21 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
     names, rule_semantics, tokens, type_namespaces, type_names, type_constr_names,
     tuple_types, struct_types, enum_types, interpret_funcs,
   )
+  sem
+}
+
+///|
+fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
+  let (name_indices, grammar) = self.named_grammar()
+  let maker = @lr1.LR1Maker::new(grammar)
+  maker.construct_states()
+  let sort_len = grammar.rules.length()
+  self.conflict_resolve(maker, sort_len)
+  let lr1 = maker.to_lr1()
+  let lex_gen = self.lex_gen()
+  let generator = @lr1.Generator::new(lex_gen)
+  generator.codegen_lexer(lr1)
+  let sem = self.semantics(name_indices, grammar)
   generator.codegen_syntax_type(sem)
   generator.codegen_node_type(sem)
   generator.codegen_interpret(sem)
@@ -313,6 +372,24 @@ fn RegExp::to_token_nfa(self : RegExp, token : @dfa.Token) -> @dfa.NFA {
 }
 
 ///|
+fn SortType::to_generics(self : Self) -> Generics? {
+  match self {
+    Ignore => None
+    Atom(type_name) => Some(Generics::Atom(type_name))
+    Gen(type_name, gen_arg) => Some(Generics::Gen(type_name, gen_arg))
+  }
+}
+
+///|
+fn SortType::subst(self : Self, gen_old : Generics, gen_new : Generics) -> Self {
+  match self {
+    Ignore => Ignore
+    Atom(type_name) => Atom(type_name)
+    Gen(type_name, gen_arg) => Gen(type_name, gen_arg.subst(gen_old, gen_new))
+  }
+}
+
+///|
 fn SortType::name_space(self : Self) -> String? {
   match self {
     Ignore => None
@@ -336,6 +413,18 @@ fn SortType::constr_name(self : Self) -> String? {
     Ignore => None
     Atom(type_name) => Some(type_name)
     Gen(type_name, gen_arg) => Some("\{type_name}_LB_\{gen_arg.name()}_RB_")
+  }
+}
+
+///|
+fn Generics::subst(self : Self, gen_old : Self, gen_new : Self) -> Self {
+  if self == gen_old {
+    gen_new
+  } else {
+    match self {
+      Atom(type_name) => Atom(type_name)
+      Gen(type_name, gen_arg) => Gen(type_name, gen_arg.subst(gen_old, gen_new))
+    }
   }
 }
 

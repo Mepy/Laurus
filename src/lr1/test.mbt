@@ -99,10 +99,12 @@ test "codegen:simple" {
     }
     let interpret_funcs : Map[InterpretFuncName, InterpretFuncType] = {}
     interpret_funcs[InterpretFuncName::new("String", "parseB")] = InterpretFuncType::new(
+      "",
       [(Some("str"), "String")],
       "String",
     )
     interpret_funcs[InterpretFuncName::new("TyS", "parseStart")] = InterpretFuncType::new(
+      "",
       [(None, "TyS")],
       "TyS",
     )

@@ -1,5 +1,5 @@
 ///|
-struct Range(Char, Char) derive(Show)
+struct Range(Char, Char) derive(Show, Eq)
 
 ///|
 struct Rule {
@@ -7,14 +7,14 @@ struct Rule {
   shift_reduce : ShiftReduce
   action : Action
   symbols : Array[Symbol]
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 enum TokenConv {
   Ignore
   BuiltIn(String)
   Interpret(type_name~ : String, parse_func_name~ : String)
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 enum RegExp {
@@ -28,43 +28,43 @@ enum RegExp {
   Plus(RegExp)
   Ques(RegExp)
   Single(Char)
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 enum SortType {
   Ignore
   Atom(String)
   Gen(String, Generics)
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 enum Generics {
   Atom(String)
   Gen(String, Generics)
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 enum Priority {
   Equal
   Higher
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 enum ShiftReduce {
   Reduce
   Shift
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 enum Action {
   Wrapper
   Constructor(String)
   Method(String)
-} derive(Show)
+} derive(Show, Eq)
 
 ///|
 enum Symbol {
   Unnamed(String)
   Named(field_name~ : String, String)
   NamedAbbrev(field_name~ : String)
-} derive(Show)
+} derive(Show, Eq)

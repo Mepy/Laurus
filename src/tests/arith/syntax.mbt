@@ -6,4 +6,4 @@ enum Expr {
   Div(Expr, Expr)
   Pow(Expr, Expr)
   Lit(Int)
-} derive(Show)
+} derive(Show, Eq)
