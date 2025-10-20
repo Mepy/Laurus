@@ -51,6 +51,7 @@ fn Generator::init(self : Self) -> Unit {
     #|  self.beg = 0
     #|}
     #|
+    #|
     #|///|
     #|struct Lexer {
     #|  mut src : String
@@ -79,12 +80,18 @@ fn Generator::init(self : Self) -> Unit {
     #|
     #|///|
     #|fn Lexer::next(self : Self) -> Int {
-    #|  if self.cur < self.src.length() {
-    #|    let c = self.src[self.cur]
-    #|    self.cur += 1 
-    #|    c
-    #|  } else {
-    #|    -1
+    #|  guard self.cur < self.src.length() else { -1 }
+    #|  let c = self.src[self.cur]
+    #|  match c {
+    #|    0xD800..=0xDBFF as lead => {
+    #|      let tail = self.src[self.cur + 1]
+    #|      self.cur += 2
+    #|      (((lead & 0x3FF) << 10) | (tail & 0x3FF)) + 0x10000
+    #|    }
+    #|    _ as c => {
+    #|      self.cur += 1
+    #|      c
+    #|    }
     #|  }
     #|}
     #|

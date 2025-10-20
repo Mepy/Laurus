@@ -1,0 +1,8 @@
+FullMoon = String(🌕)
+
+%space ([\s\t\n]*)
+%start unicode
+
+unicode : Unicode {
+| FullMoon(FullMoon)
+}
