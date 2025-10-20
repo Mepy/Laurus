@@ -28,7 +28,10 @@ pub fn DFA::to_nfa_rev(self : DFA, token? : Token = 1) -> NFA {
     // nfa : 5 4 3 2 1 0
     match dstate.token {
       // dfa 的终止状态, 应当是 nfa 的初始状态，由 initial_nstate 的 empty 指向
-      Some(_) => initial_nstate.empty.add(ni) // ni 相对于 0 还是 ni
+      Some(_) => {
+        initial_nstate.empty.add(ni) // ni 相对于 0 还是 ni
+        nstates[ni].empty.add(-ni)
+      }
       None => ()
     }
     let maplen = dstate.next.length()

@@ -305,6 +305,7 @@ pub fn NFA::union(nfas : Array[NFA]) -> NFA {
   for nfa in nfas {
     let nfa_init_i = states.length() // index of nfa.states[0] in states
     initial_state.empty.add(nfa_init_i)
+    nfa.states[0].empty.add(-nfa_init_i)
     for s in nfa.states {
       states.push(s)
     }
@@ -359,12 +360,15 @@ pub fn NFA::star(nfa : NFA) -> NFA {
   let len = nfa.states.length()
   let states = Array::new(capacity=len + 2)
   let halting_i = len + 1
+  let nfa_init_state = nfa.states[0]
   initial_state.empty.add(1)
+  nfa_init_state.empty.add(-1)
   initial_state.empty.add(halting_i - 0)
   let nfa_halt_i = len - 1
   let nfa_halt_state = nfa.states[nfa_halt_i]
   nfa_halt_state.token = None
   nfa_halt_state.empty.add(1)
+  halting_state.empty.add(-1)
   nfa_halt_state.empty.add(0 - nfa_halt_i)
   states.push(initial_state)
   for s in nfa.states {
@@ -382,12 +386,15 @@ pub fn NFA::plus(nfa : NFA) -> NFA {
   let halting_state = wrapper.states[1]
   let len = nfa.states.length()
   let states = Array::new(capacity=len + 2)
+  let nfa_init_state = nfa.states[0]
   let halting_i = len + 1
   initial_state.empty.add(1)
+  nfa_init_state.empty.add(-1)
   let nfa_halt_i = len - 1
   let nfa_halt_state = nfa.states[nfa_halt_i]
   nfa_halt_state.token = None
   nfa_halt_state.empty.add(1)
+  halting_state.empty.add(-1)
   nfa_halt_state.empty.add(0 - nfa_halt_i)
   states.push(initial_state)
   for s in nfa.states {
@@ -405,13 +412,16 @@ pub fn NFA::ques(nfa : NFA) -> NFA {
   let halting_state = wrapper.states[1]
   let len = nfa.states.length()
   let states = Array::new(capacity=len + 2)
+  let nfa_init_state = nfa.states[0]
   let halting_i = len + 1
   initial_state.empty.add(1)
+  nfa_init_state.empty.add(-1)
   initial_state.empty.add(halting_i - 0)
   let nfa_halt_i = len - 1
   let nfa_halt_state = nfa.states[nfa_halt_i]
   nfa_halt_state.token = None
   nfa_halt_state.empty.add(1)
+  halting_state.empty.add(-1)
   // comment this line compared to NFA::star(), 1 or 0, no repeat
   // nfa_halt_state.empty.add(0 - nfa_halt_i)
   states.push(initial_state)
@@ -453,6 +463,9 @@ fn NFA::token_union(nfas : Iter[NFA]) -> NFA {
   let mut cur : Index = 1
   for nfa in nfas {
     initial_state.empty.add(cur)
+    // please COMMENT the following line, 
+    // otherwise different token will mix with prefix
+    // nfa.states[0].empty.add(-cur)
     let len = nfa.states.length()
     cur += len
     for s in nfa.states {

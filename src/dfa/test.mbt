@@ -9,6 +9,13 @@ test "play|pray" {
 }
 
 ///|
+test "a*" {
+  let regexp_tokens : Array[(RegExp, Token)] = [(RegExp::Star(String("a")), 1)]
+  let dfa = brzozowski(regexp_tokens)
+  println("\{dfa}")
+}
+
+///|
 test "pa|pb" {
   let regexp_tokens : Array[(RegExp, Token)] = [
     (RegExp::Union([RegExp::String("pa"), RegExp::String("pb")]), 1),

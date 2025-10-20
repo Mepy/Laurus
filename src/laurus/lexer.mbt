@@ -110,17 +110,8 @@ pub fn Lexer::skip_space(self : Self) -> Lexeme {
       self.lexeme.end = self.cur
       self.lexeme.token = LAURUS_SPACE
       continue match self.next() {
-          '\t'..='\n' => 1
-          ' ' => 1
-          _ => break
-        }
-    }
-    1 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = LAURUS_SPACE
-      continue match self.next() {
-          '\t'..='\n' => 1
-          ' ' => 1
+          '\t'..='\n' => 0
+          ' ' => 0
           _ => break
         }
     }
@@ -422,28 +413,67 @@ pub fn Lexer::scan6(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan7(self : Self) -> Lexeme {
-  // [TypeName, LParen]
+  // [TypeName, Dot, LParen, LBrack, Esc, EscNo]
   self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
-          '(' => 1
-          'A'..='Z' => 2
+          '\u{0}'..='\'' => 1
+          '(' => 2
+          '.' => 3
+          '0'..='>' => 1
+          '@' => 1
+          'A'..='Z' => 4
+          '[' => 5
+          '\\' => 6
+          '_'..='{' => 1
+          '}'..='\u{10FFFF}' => 1
           _ => break
         }
     1 => {
       self.lexeme.end = self.cur
-      self.lexeme.token = LParen
+      self.lexeme.token = EscNo
       break
     }
     2 => {
       self.lexeme.end = self.cur
+      self.lexeme.token = LParen
+      break
+    }
+    3 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Dot
+      break
+    }
+    4 => {
+      self.lexeme.end = self.cur
       self.lexeme.token = TypeName
       continue match self.next() {
-          '0'..='9' => 2
-          'A'..='Z' => 2
-          '_' => 2
-          'a'..='z' => 2
+          '0'..='9' => 7
+          'A'..='Z' => 7
+          '_' => 7
+          'a'..='z' => 7
+          _ => break
+        }
+    }
+    5 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = LBrack
+      break
+    }
+    6 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Esc
+      break
+    }
+    7 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = TypeName
+      continue match self.next() {
+          '0'..='9' => 7
+          'A'..='Z' => 7
+          '_' => 7
+          'a'..='z' => 7
           _ => break
         }
     }
@@ -961,26 +991,58 @@ pub fn Lexer::scan20(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan21(self : Self) -> Lexeme {
-  // [ColonColon, LParen]
+  // [ColonColon, Dot, LParen, LBrack, Esc, EscNo]
   self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
-          '(' => 1
-          ':' => 2
+          '\u{0}'..='\'' => 1
+          '(' => 2
+          '.' => 3
+          '0'..='9' => 1
+          ':' => 4
+          ';'..='>' => 1
+          '@'..='Z' => 1
+          '[' => 5
+          '\\' => 6
+          '_'..='{' => 1
+          '}'..='\u{10FFFF}' => 1
           _ => break
         }
     1 => {
       self.lexeme.end = self.cur
+      self.lexeme.token = EscNo
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
       self.lexeme.token = LParen
       break
     }
-    2 =>
+    3 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Dot
+      break
+    }
+    4 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = EscNo
       continue match self.next() {
-          ':' => 3
+          ':' => 7
           _ => break
         }
-    3 => {
+    }
+    5 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = LBrack
+      break
+    }
+    6 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Esc
+      break
+    }
+    7 => {
       self.lexeme.end = self.cur
       self.lexeme.token = ColonColon
       break
@@ -995,35 +1057,6 @@ pub fn Lexer::scan21(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan22(self : Self) -> Lexeme {
-  // [MethodName]
-  self.skip_space() |> ignore
-  loop 0 {
-    0 =>
-      continue match self.next() {
-          'a'..='z' => 1
-          _ => break
-        }
-    1 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = MethodName
-      continue match self.next() {
-          '0'..='9' => 1
-          'A'..='Z' => 1
-          '_' => 1
-          'a'..='z' => 1
-          _ => break
-        }
-    }
-    _ => break
-  }
-  let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
-  lexeme
-} ///|
-
-///|
-pub fn Lexer::scan23(self : Self) -> Lexeme {
   // [EscU, EscOrigin, EscSpace]
   self.skip_space() |> ignore
   loop 0 {
@@ -1063,430 +1096,7 @@ pub fn Lexer::scan23(self : Self) -> Lexeme {
 } ///|
 
 ///|
-pub fn Lexer::scan24(self : Self) -> Lexeme {
-  // [Dot, Star, Plus, Ques, Or, LParen, RParen, LBrack, Esc, EscNo]
-  self.skip_space() |> ignore
-  loop 0 {
-    0 =>
-      continue match self.next() {
-          '\u{0}'..='\'' => 1
-          '(' => 2
-          ')' => 3
-          '*' => 4
-          '+' => 5
-          '.' => 6
-          '0'..='>' => 1
-          '?' => 7
-          '@'..='Z' => 1
-          '[' => 8
-          '\\' => 9
-          '_'..='{' => 1
-          '|' => 10
-          '}'..='\u{10FFFF}' => 1
-          _ => break
-        }
-    1 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscNo
-      break
-    }
-    2 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = LParen
-      break
-    }
-    3 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = RParen
-      break
-    }
-    4 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Star
-      break
-    }
-    5 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Plus
-      break
-    }
-    6 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Dot
-      break
-    }
-    7 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Ques
-      break
-    }
-    8 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = LBrack
-      break
-    }
-    9 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Esc
-      break
-    }
-    10 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Or
-      break
-    }
-    _ => break
-  }
-  let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
-  lexeme
-} ///|
-
-///|
-pub fn Lexer::scan25(self : Self) -> Lexeme {
-  // [Caret, RBrack, Esc, EscNo]
-  self.skip_space() |> ignore
-  loop 0 {
-    0 =>
-      continue match self.next() {
-          '\u{0}'..='\'' => 1
-          '0'..='>' => 1
-          '@'..='Z' => 1
-          '\\' => 2
-          ']' => 3
-          '^' => 4
-          '_'..='{' => 1
-          '}'..='\u{10FFFF}' => 1
-          _ => break
-        }
-    1 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscNo
-      break
-    }
-    2 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Esc
-      break
-    }
-    3 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = RBrack
-      break
-    }
-    4 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Caret
-      break
-    }
-    _ => break
-  }
-  let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
-  lexeme
-} ///|
-
-///|
-pub fn Lexer::scan26(self : Self) -> Lexeme {
-  // [Dash, RBrack, Esc, EscNo]
-  self.skip_space() |> ignore
-  loop 0 {
-    0 =>
-      continue match self.next() {
-          '\u{0}'..='\'' => 1
-          '-' => 2
-          '0'..='>' => 1
-          '@'..='Z' => 1
-          '\\' => 3
-          ']' => 4
-          '_'..='{' => 1
-          '}'..='\u{10FFFF}' => 1
-          _ => break
-        }
-    1 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscNo
-      break
-    }
-    2 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Dash
-      break
-    }
-    3 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Esc
-      break
-    }
-    4 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = RBrack
-      break
-    }
-    _ => break
-  }
-  let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
-  lexeme
-} ///|
-
-///|
-pub fn Lexer::scan27(self : Self) -> Lexeme {
-  // [Esc, EscNo]
-  self.skip_space() |> ignore
-  loop 0 {
-    0 =>
-      continue match self.next() {
-          '\u{0}'..='\'' => 1
-          '0'..='>' => 1
-          '@'..='Z' => 1
-          '\\' => 2
-          '_'..='{' => 1
-          '}'..='\u{10FFFF}' => 1
-          _ => break
-        }
-    1 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscNo
-      break
-    }
-    2 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Esc
-      break
-    }
-    _ => break
-  }
-  let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
-  lexeme
-} ///|
-
-///|
-pub fn Lexer::scan28(self : Self) -> Lexeme {
-  // [EscUnicode]
-  self.skip_space() |> ignore
-  loop 0 {
-    0 =>
-      continue match self.next() {
-          '0' => 1
-          '1' => 2
-          '2'..='9' => 1
-          'A'..='F' => 1
-          'a'..='f' => 1
-          _ => break
-        }
-    1 =>
-      continue match self.next() {
-          '0'..='9' => 4
-          'A'..='F' => 4
-          'a'..='f' => 4
-          _ => break
-        }
-    2 =>
-      continue match self.next() {
-          '0' => 3
-          '1'..='9' => 4
-          'A'..='F' => 4
-          'a'..='f' => 4
-          _ => break
-        }
-    3 =>
-      continue match self.next() {
-          '0'..='9' => 18
-          'A'..='F' => 18
-          'a'..='f' => 18
-          _ => break
-        }
-    4 =>
-      continue match self.next() {
-          '0'..='9' => 5
-          'A'..='F' => 5
-          'a'..='f' => 5
-          _ => break
-        }
-    5 =>
-      continue match self.next() {
-          '0'..='9' => 6
-          'A'..='F' => 6
-          'a'..='f' => 6
-          _ => break
-        }
-    6 =>
-      continue match self.next() {
-          '0'..='9' => 7
-          'A'..='F' => 7
-          'a'..='f' => 7
-          _ => break
-        }
-    7 =>
-      continue match self.next() {
-          '0'..='9' => 8
-          'A'..='F' => 8
-          'a'..='f' => 8
-          _ => break
-        }
-    8 =>
-      continue match self.next() {
-          '0'..='9' => 9
-          'A'..='F' => 9
-          'a'..='f' => 9
-          _ => break
-        }
-    9 =>
-      continue match self.next() {
-          '0'..='9' => 10
-          'A'..='F' => 10
-          'a'..='f' => 10
-          _ => break
-        }
-    10 =>
-      continue match self.next() {
-          '0'..='9' => 11
-          'A'..='F' => 11
-          'a'..='f' => 11
-          _ => break
-        }
-    11 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscUnicode
-      continue match self.next() {
-          '0'..='9' => 12
-          'A'..='F' => 12
-          'a'..='f' => 12
-          _ => break
-        }
-    }
-    12 =>
-      continue match self.next() {
-          '0'..='9' => 13
-          'A'..='F' => 13
-          'a'..='f' => 13
-          _ => break
-        }
-    13 =>
-      continue match self.next() {
-          '0'..='9' => 14
-          'A'..='F' => 14
-          'a'..='f' => 14
-          _ => break
-        }
-    14 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscUnicode
-      continue match self.next() {
-          '0'..='9' => 15
-          'A'..='F' => 15
-          'a'..='f' => 15
-          _ => break
-        }
-    }
-    15 =>
-      continue match self.next() {
-          '0'..='9' => 16
-          'A'..='F' => 16
-          'a'..='f' => 16
-          _ => break
-        }
-    16 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscUnicode
-      continue match self.next() {
-          '0'..='9' => 17
-          'A'..='F' => 17
-          'a'..='f' => 17
-          _ => break
-        }
-    }
-    17 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscUnicode
-      break
-    }
-    18 =>
-      continue match self.next() {
-          '0'..='9' => 19
-          'A'..='F' => 19
-          'a'..='f' => 19
-          _ => break
-        }
-    19 =>
-      continue match self.next() {
-          '0'..='9' => 20
-          'A'..='F' => 20
-          'a'..='f' => 20
-          _ => break
-        }
-    20 =>
-      continue match self.next() {
-          '0'..='9' => 21
-          'A'..='F' => 21
-          'a'..='f' => 21
-          _ => break
-        }
-    21 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscUnicode
-      continue match self.next() {
-          '0'..='9' => 9
-          'A'..='F' => 9
-          'a'..='f' => 9
-          _ => break
-        }
-    }
-    _ => break
-  }
-  let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
-  lexeme
-} ///|
-
-///|
-pub fn Lexer::scan29(self : Self) -> Lexeme {
-  // [RBrack, Esc, EscNo]
-  self.skip_space() |> ignore
-  loop 0 {
-    0 =>
-      continue match self.next() {
-          '\u{0}'..='\'' => 1
-          '0'..='>' => 1
-          '@'..='Z' => 1
-          '\\' => 2
-          ']' => 3
-          '_'..='{' => 1
-          '}'..='\u{10FFFF}' => 1
-          _ => break
-        }
-    1 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = EscNo
-      break
-    }
-    2 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = Esc
-      break
-    }
-    3 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = RBrack
-      break
-    }
-    _ => break
-  }
-  let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
-  lexeme
-} ///|
-
-///|
-pub fn Lexer::scan30(self : Self) -> Lexeme {
+pub fn Lexer::scan23(self : Self) -> Lexeme {
   // [LAURUS_EOF, TokenName, SortName, Percent, Dot, Star, Plus, Ques, Or, LParen, LBrack, Esc, EscNo, CommentHead]
   self.skip_space() |> ignore
   loop 0 {
@@ -1618,6 +1228,324 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
     16 => {
       self.lexeme.end = self.cur
       self.lexeme.token = CommentHead
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan24(self : Self) -> Lexeme {
+  // [Caret, RBrack, Esc, EscNo]
+  self.skip_space() |> ignore
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          '\u{0}'..='\'' => 1
+          '0'..='>' => 1
+          '@'..='Z' => 1
+          '\\' => 2
+          ']' => 3
+          '^' => 4
+          '_'..='{' => 1
+          '}'..='\u{10FFFF}' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = EscNo
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Esc
+      break
+    }
+    3 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = RBrack
+      break
+    }
+    4 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Caret
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan25(self : Self) -> Lexeme {
+  // [MethodName]
+  self.skip_space() |> ignore
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          'a'..='z' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = MethodName
+      continue match self.next() {
+          '0'..='9' => 1
+          'A'..='Z' => 1
+          '_' => 1
+          'a'..='z' => 1
+          _ => break
+        }
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan26(self : Self) -> Lexeme {
+  // [Dot, Star, Plus, Ques, Or, LParen, RParen, LBrack, Esc, EscNo]
+  self.skip_space() |> ignore
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          '\u{0}'..='\'' => 1
+          '(' => 2
+          ')' => 3
+          '*' => 4
+          '+' => 5
+          '.' => 6
+          '0'..='>' => 1
+          '?' => 7
+          '@'..='Z' => 1
+          '[' => 8
+          '\\' => 9
+          '_'..='{' => 1
+          '|' => 10
+          '}'..='\u{10FFFF}' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = EscNo
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = LParen
+      break
+    }
+    3 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = RParen
+      break
+    }
+    4 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Star
+      break
+    }
+    5 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Plus
+      break
+    }
+    6 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Dot
+      break
+    }
+    7 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Ques
+      break
+    }
+    8 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = LBrack
+      break
+    }
+    9 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Esc
+      break
+    }
+    10 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Or
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan27(self : Self) -> Lexeme {
+  // [Dash, RBrack, Esc, EscNo]
+  self.skip_space() |> ignore
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          '\u{0}'..='\'' => 1
+          '-' => 2
+          '0'..='>' => 1
+          '@'..='Z' => 1
+          '\\' => 3
+          ']' => 4
+          '_'..='{' => 1
+          '}'..='\u{10FFFF}' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = EscNo
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Dash
+      break
+    }
+    3 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Esc
+      break
+    }
+    4 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = RBrack
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan28(self : Self) -> Lexeme {
+  // [Esc, EscNo]
+  self.skip_space() |> ignore
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          '\u{0}'..='\'' => 1
+          '0'..='>' => 1
+          '@'..='Z' => 1
+          '\\' => 2
+          '_'..='{' => 1
+          '}'..='\u{10FFFF}' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = EscNo
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Esc
+      break
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan29(self : Self) -> Lexeme {
+  // [EscUnicode]
+  self.skip_space() |> ignore
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          '0' => 1
+          '1' => 2
+          '2'..='9' => 1
+          'A'..='F' => 1
+          'a'..='f' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = EscUnicode
+      continue match self.next() {
+          '0' => 1
+          '1' => 2
+          '2'..='9' => 1
+          'A'..='F' => 1
+          'a'..='f' => 1
+          _ => break
+        }
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = EscUnicode
+      continue match self.next() {
+          '0' => 1
+          '1' => 2
+          '2'..='9' => 1
+          'A'..='F' => 1
+          'a'..='f' => 1
+          _ => break
+        }
+    }
+    _ => break
+  }
+  let lexeme = self.lexeme
+  self.cur = lexeme.end
+  self.lexeme = Lexeme::new(beg=lexeme.end)
+  lexeme
+} ///|
+
+///|
+pub fn Lexer::scan30(self : Self) -> Lexeme {
+  // [RBrack, Esc, EscNo]
+  self.skip_space() |> ignore
+  loop 0 {
+    0 =>
+      continue match self.next() {
+          '\u{0}'..='\'' => 1
+          '0'..='>' => 1
+          '@'..='Z' => 1
+          '\\' => 2
+          ']' => 3
+          '_'..='{' => 1
+          '}'..='\u{10FFFF}' => 1
+          _ => break
+        }
+    1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = EscNo
+      break
+    }
+    2 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = Esc
+      break
+    }
+    3 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = RBrack
       break
     }
     _ => break
