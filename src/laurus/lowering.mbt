@@ -78,6 +78,7 @@ fn Laurus::conflict_resolve(
   self : Laurus,
   maker : @lr1.LR1Maker,
   sort_len : Int,
+  names : Array[String],
 ) -> Unit {
   let conflicts = maker.conflicts()
   let res : @lr1.Resolution = {
@@ -331,7 +332,7 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   let maker = @lr1.LR1Maker::new(grammar)
   maker.construct_states()
   let sort_len = grammar.rules.length()
-  self.conflict_resolve(maker, sort_len)
+  self.conflict_resolve(maker, sort_len, name_indices.keys().to_array())
   let lr1 = maker.to_lr1()
   let lex_gen = self.lex_gen()
   let generator = @lr1.Generator::new(lex_gen)

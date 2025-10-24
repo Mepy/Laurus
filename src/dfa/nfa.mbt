@@ -305,7 +305,9 @@ pub fn NFA::union(nfas : Array[NFA]) -> NFA {
   for nfa in nfas {
     let nfa_init_i = states.length() // index of nfa.states[0] in states
     initial_state.empty.add(nfa_init_i)
-    nfa.states[0].empty.add(-nfa_init_i)
+    // please COMMENT the following line, 
+    // otherwise token will mix with prefix
+    // nfa.states[0].empty.add(-nfa_init_i)
     for s in nfa.states {
       states.push(s)
     }
