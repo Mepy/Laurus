@@ -503,10 +503,17 @@ pub fn Generator::codegen_parse(
             #|            }
             #|
           self.builder.write_string(goto_header)
+          let alt_goto_map : Map[StateIndex, Array[StateIndex]] = Map::new()
           for state_jk in goto_map {
             let (state_j, state_k) = state_jk
+            // state_j => state_k
+            alt_goto_map.get_or_init(state_k, fn() { [] }).push(state_j)
+          }
+          for state_k_js in alt_goto_map {
+            let (state_k, state_js) = state_k_js
+            let state_js_code = state_js.map(Show::to_string).join(" | ")
             self.builder.write_string(
-              "              \{state_j} => \{state_k}\n",
+              "              \{state_js_code} => \{state_k}\n",
             )
           }
           self.builder.write_string(goto_footer)
