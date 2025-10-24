@@ -114,7 +114,6 @@ fn Laurus::conflict_resolve(
   guard conflicts.0.size() != 0 else {  }
   for state_token_conflicts in conflicts.0 {
     let (state_i, token_conflicts) = state_token_conflicts
-    guard state_i == 105 else { continue }
     println("state \{state_i}")
     for token_conflicts in token_conflicts {
       let (token, conflicts) = token_conflicts
