@@ -211,6 +211,18 @@ pub fn Generator::codegen_parse(
     let shift_map = lr1.shift_table[state_i]
     let reduce_map = lr1.reduce_table[state_i]
 
+    // let alt_shift_map : Map[StateIndex, (Index, Array[Token])] = Map::new()
+    // for token_state_dfa in shift_map {
+    //   let (token, (state_j, dfa_j)) = token_state_dfa
+    //   alt_shift_map.get_or_init(state_j, fn(){(dfa_j, Array::new())}).1.push(token)
+    // }
+    let alt_reduce_map : Map[(Sort, RuleIndex), (RuleSize, Array[Token])] = Map::new()
+    for token_sort_rule_i_size in reduce_map {
+      let (token, (sort, rule_i, rule_size)) = token_sort_rule_i_size
+      alt_reduce_map.get_or_init((sort, rule_i), fn() {
+        (rule_size, Array::new())
+      }).1.push(token)
+    }
     // codegen shift
     for token_state_dfa in shift_map {
       let (token, (state_j, dfa_j)) = token_state_dfa
@@ -251,11 +263,11 @@ pub fn Generator::codegen_parse(
     }
 
     // codegen reduce
-    for token_sort_rule_i_size in reduce_map {
-      let (token, (sort, rule_i, rule_size)) = token_sort_rule_i_size
-      let token_name = sem.names[token]
+    for sort_rule_i_size_tokens in alt_reduce_map {
+      let ((sort, rule_i), (rule_size, tokens)) = sort_rule_i_size_tokens
+      let tokens_name = tokens.map(token => sem.names[token]).join(" | ")
       let reduce_header =
-        $|          \{token_name} => { // reduce
+        $|          \{tokens_name} => { // reduce
         $|
       let reduce_footer =
         #|          }
