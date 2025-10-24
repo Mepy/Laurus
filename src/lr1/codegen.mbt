@@ -59,7 +59,7 @@ pub fn Generator::codegen_syntax_type(self : Self, sem : Semantics) -> Unit {
       #|///|
       $|struct \{type_name} (
     let type_footer =
-      #|) derive(Show, Eq)
+      #|) derive(Show)
       #|
     self.syntax_builder.write_string(type_header)
     for field_type_name in field_type_names {
@@ -74,7 +74,7 @@ pub fn Generator::codegen_syntax_type(self : Self, sem : Semantics) -> Unit {
       $|struct \{type_name} {
       $|
     let type_footer =
-      #|} derive(Show, Eq)
+      #|} derive(Show)
       #|
     self.syntax_builder.write_string(type_header)
     for field_and_type_name in field_and_type_names {
@@ -90,7 +90,7 @@ pub fn Generator::codegen_syntax_type(self : Self, sem : Semantics) -> Unit {
       $|enum \{type_name} {
       $|
     let type_footer =
-      #|} derive(Show, Eq)
+      #|} derive(Show)
       #|
     self.syntax_builder.write_string(type_header)
     for branch in branches {

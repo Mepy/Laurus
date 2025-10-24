@@ -422,6 +422,15 @@ fn SortType::constr_name(self : Self) -> String? {
 }
 
 ///|
+impl Eq for Generics with equal(lhs, rhs) -> Bool {
+  match (lhs, rhs) {
+    (Atom(lhs), Atom(rhs)) => lhs == rhs
+    (Gen(lhs1, lhs2), Gen(rhs1, rhs2)) => lhs1 == rhs1 && lhs2 == rhs2
+    _ => false
+  }
+}
+
+///|
 fn Generics::subst(self : Self, gen_old : Self, gen_new : Self) -> Self {
   if self == gen_old {
     gen_new
