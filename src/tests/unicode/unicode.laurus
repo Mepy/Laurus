@@ -1,8 +1,11 @@
+// 🌑
+NewMoon = String(\u1F311) 
 FullMoon = String(🌕)
 
 %space ([\s\t\n]*)
 %start unicode
 
 unicode : Unicode {
+| NewMoon(NewMoon)
 | FullMoon(FullMoon)
 }

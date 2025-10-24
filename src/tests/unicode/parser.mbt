@@ -40,11 +40,17 @@ pub fn Parser::parse(self : Self) -> Unicode? {
     0 => {
       self.enter_state(0)
       continue match lexeme.token {
-          FullMoon => { // shift
+          NewMoon => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
             self.node_stack.push(node)
             lexeme = self.lexer.scan1()
             2
+          }
+          FullMoon => { // shift
+            let node = self.lexer.get(lexeme) |> Node::String
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan1()
+            3
           }
           _ => break
         }
@@ -64,6 +70,19 @@ pub fn Parser::parse(self : Self) -> Unicode? {
     }
     2 => {
       self.enter_state(2)
+      continue match lexeme.token {
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::String(x0)
+            let node = Unicode::NewMoon(x0) |> Node::Unicode
+            self.node_stack.push(node)
+            1
+          }
+          _ => break
+        }
+    }
+    3 => {
+      self.enter_state(3)
       continue match lexeme.token {
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore

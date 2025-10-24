@@ -2,6 +2,7 @@
 pub enum TOKEN {
   LAURUS_EOF
   LAURUS_SPACE
+  NewMoon
   FullMoon
 } derive(Show)
 
@@ -88,15 +89,21 @@ pub fn Lexer::skip_space(self : Self) -> Lexeme {
 
 ///|
 pub fn Lexer::scan0(self : Self) -> Lexeme {
-  // [FullMoon]
+  // [NewMoon, FullMoon]
   self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
-          '🌕' => 1
+          '🌑' => 1
+          '🌕' => 2
           _ => break
         }
     1 => {
+      self.lexeme.end = self.cur
+      self.lexeme.token = NewMoon
+      break
+    }
+    2 => {
       self.lexeme.end = self.cur
       self.lexeme.token = FullMoon
       break
