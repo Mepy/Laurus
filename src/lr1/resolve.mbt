@@ -205,6 +205,12 @@ pub fn LR1Maker::shallow_resolve(
 
       // resolve
       let (sort, (_prio, act, rules)) = sort_act_rules.iter().peek().unwrap()
+      guard act is Reduce else {
+        // act is Shift, no shift-shift conflicts
+        conflicts.remove(token)
+        self.reduce_table[state_i].remove(token)
+        continue
+      }
       guard rules.length() == 1 else {
         // reduce-reduce conflicts remained
         conflicts[token] = rules.map(rule_i => ActRule::new(act, sort, rule_i))
@@ -214,13 +220,8 @@ pub fn LR1Maker::shallow_resolve(
 
       // resolve
       conflicts.remove(token)
-      match act {
-        Shift => self.reduce_table[state_i].remove(token)
-        Reduce => {
-          self.shift_table[state_i].remove(token)
-          self.reduce_table[state_i][token] = [(sort, rules[0])]
-        }
-      }
+      self.shift_table[state_i].remove(token)
+      self.reduce_table[state_i][token] = [(sort, rules[0])]
     }
     if conflicts.size() == 0 {
       conf.0.remove(state_i)

@@ -224,6 +224,16 @@ test "codegen::laurus" {
     ]),
   ])
   .add_sort("reg_exp", Atom("RegExp"), [
+    Rule::hi_Cons("Union", [
+      Unnamed("reg_exp"),
+      Unnamed("Or"),
+      Unnamed("reg_exp"),
+    ]),
+    Rule::hi_Cons("Seq", [Unnamed("reg_exp"), Unnamed("reg_exp")]),
+    Rule::hi_Cons("Star", [Unnamed("reg_exp"), Unnamed("Star")]),
+    Rule::eq_Cons("Plus", [Unnamed("reg_exp"), Unnamed("Plus")]),
+    Rule::eq_Cons("Ques", [Unnamed("reg_exp"), Unnamed("Ques")]),
+    Rule::hi_Cons("Single", [Unnamed("char")]),
     Rule::eq_wrap([Unnamed("LParen"), Unnamed("reg_exp"), Unnamed("RParen")]),
     Rule::eq_Cons("Bor", [
       Unnamed("LBrack"),
@@ -238,16 +248,6 @@ test "codegen::laurus" {
     ]),
     Rule::eq_Cons("Emp", [Unnamed("LBrack"), Unnamed("RBrack")]),
     Rule::eq_Cons("Any", [Unnamed("Dot")]),
-    Rule::hi_Cons("Union", [
-      Unnamed("reg_exp"),
-      Unnamed("Or"),
-      Unnamed("reg_exp"),
-    ]),
-    Rule::hi_Cons("Seq", [Unnamed("reg_exp"), Unnamed("reg_exp")]),
-    Rule::hi_Cons("Star", [Unnamed("reg_exp"), Unnamed("Star")]),
-    Rule::eq_Cons("Plus", [Unnamed("reg_exp"), Unnamed("Plus")]),
-    Rule::eq_Cons("Ques", [Unnamed("reg_exp"), Unnamed("Ques")]),
-    Rule::hi_Cons("Single", [Unnamed("char")]),
   ])
   .add_sort("ranges", Gen("Array", Atom("Range")), [
     Rule::eq_meth("singleton", [Unnamed("range")]),

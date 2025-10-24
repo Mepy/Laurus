@@ -74,61 +74,65 @@ fn Laurus::named_grammar(
 }
 
 ///|
+fn Laurus::resolution(self : Laurus, sort_len : Int) -> @lr1.Resolution {
+  let priority : Array[Array[@lr1.Priority]] = Array::new(capacity=sort_len)
+  let reduce_first : Array[Array[Bool]] = Array::new(capacity=sort_len)
+  priority.push([0]) // %start
+  reduce_first.push([true]) // %start
+  for sort_rules in self.sort_rules {
+    let mut cur_prio : @lr1.Priority = 0
+    let prios = Array::new(capacity=sort_rules.length())
+    let reduces = Array::new(capacity=sort_rules.length())
+    for sort_rule in sort_rules {
+      match sort_rule.priority {
+        Higher => cur_prio += 1
+        Equal => ()
+      }
+      prios.push(cur_prio)
+      match sort_rule.shift_reduce {
+        Shift => reduces.push(false)
+        Reduce => reduces.push(true)
+      }
+    }
+    priority.push(prios)
+    reduce_first.push(reduces)
+  }
+  @lr1.Resolution::{ priority, reduce_first }
+}
+
+///|
 fn Laurus::conflict_resolve(
   self : Laurus,
   maker : @lr1.LR1Maker,
-  sort_len : Int,
+  res : @lr1.Resolution,
   names : Array[String],
 ) -> Unit {
   let conflicts = maker.conflicts()
-  let res : @lr1.Resolution = {
-    let priority : Array[Array[@lr1.Priority]] = Array::new(capacity=sort_len)
-    let reduce_first : Array[Array[Bool]] = Array::new(capacity=sort_len)
-    priority.push([0]) // %start
-    reduce_first.push([true]) // %start
-    for sort_rules in self.sort_rules {
-      let mut cur_prio : @lr1.Priority = 0
-      let prios = Array::new(capacity=sort_rules.length())
-      let reduces = Array::new(capacity=sort_rules.length())
-      for sort_rule in sort_rules {
-        match sort_rule.priority {
-          Higher => cur_prio += 1
-          Equal => ()
-        }
-        prios.push(cur_prio)
-        match sort_rule.shift_reduce {
-          Shift => reduces.push(false)
-          Reduce => reduces.push(true)
-        }
-      }
-      priority.push(prios)
-      reduce_first.push(reduces)
-    }
-    @lr1.Resolution::{ priority, reduce_first }
-  }
   maker.shallow_resolve(conflicts, res)
-  if conflicts.0.size() > 0 {
-    // todo : check the logic
-    maker.deep_resolve(conflicts, res)
+  guard conflicts.0.size() != 0 else {  }
+  maker.deep_resolve(conflicts, res) // todo : check the logic, or it is always ok to do shift!!!
+  guard conflicts.0.size() != 0 else {  }
+  for state_token_conflicts in conflicts.0 {
+    let (state_i, token_conflicts) = state_token_conflicts
+    guard state_i == 105 else { continue }
+    println("state \{state_i}")
+    for token_conflicts in token_conflicts {
+      let (token, conflicts) = token_conflicts
+      println("\t\{names[token]}")
+      println(
+        conflicts
+        .iter()
+        .map(act_rule => {
+          let { act, sort, rule_i } = act_rule
+          let sentence = self.sort_rules[sort - 1][rule_i].symbols
+            .map(Symbol::name)
+            .join(" ")
+          "\t\t\{act} \{names[sort]}.\{rule_i} = \{sentence}"
+        })
+        .join("\n"),
+      )
+    }
   }
-  // for token_conflicts in conflicts.0.values() {
-  //   for token_conflicts in token_conflicts {
-  //     let (token, conflicts) = token_conflicts
-  //     println(names[token])
-  //     println(
-  //       conflicts
-  //       .iter()
-  //       .map(act_rule => {
-  //         let { act, sort, rule_i } = act_rule
-  //         let sentence = self.sort_rules[sort - 1][rule_i].symbols
-  //           .map(Symbol::name)
-  //           .join(" ")
-  //         "\t\{act} \{names[sort]}.\{rule_i} = \{sentence}"
-  //       })
-  //       .join("\n"),
-  //     )
-  //   }
-  // }
 }
 
 ///|
@@ -329,10 +333,11 @@ fn Laurus::semantics(
 ///|
 fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   let (name_indices, grammar) = self.named_grammar()
-  let maker = @lr1.LR1Maker::new(grammar)
-  maker.construct_states()
   let sort_len = grammar.rules.length()
-  self.conflict_resolve(maker, sort_len, name_indices.keys().to_array())
+  let res = self.resolution(sort_len)
+  let maker = @lr1.LR1Maker::new(grammar, res)
+  maker.construct_states()
+  self.conflict_resolve(maker, res, name_indices.keys().to_array())
   let lr1 = maker.to_lr1()
   let lex_gen = self.lex_gen()
   let generator = @lr1.Generator::new(lex_gen)

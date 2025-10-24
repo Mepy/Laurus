@@ -37,6 +37,7 @@ struct State {
 ///|
 pub(all) struct LR1Maker {
   grammar : Grammar
+  resolution : Resolution
   sort_len : Symbol // sort < sort_len <= token, we reserve sort_len as the first token, the EOF
   empty : FixedArray[Bool]
   supergraph : SuperGraph
@@ -76,12 +77,13 @@ pub(all) struct LR1 {
 } derive(Show)
 
 ///|
-pub fn LR1Maker::new(grammar : Grammar) -> LR1Maker {
+pub fn LR1Maker::new(grammar : Grammar, resolution : Resolution) -> LR1Maker {
   let sort_len = grammar.rules.length()
   let empty = LR1Maker::initialize_empty(grammar, sort_len)
   let (supergraph, first) = LR1Maker::initialize_first(grammar, sort_len, empty)
   let maker = LR1Maker::{
     grammar,
+    resolution,
     sort_len,
     empty,
     supergraph,
@@ -101,6 +103,12 @@ pub fn LR1Maker::new(grammar : Grammar) -> LR1Maker {
 #inline
 fn LR1Maker::is_token(self : Self, sy : Symbol) -> Bool {
   self.sort_len <= sy
+}
+
+///|
+#inline
+fn LR1Maker::is_sort(self : Self, sy : Symbol) -> Bool {
+  sy < self.sort_len
 }
 
 ///|
@@ -220,6 +228,53 @@ fn LR1Maker::first_of(self : Self, sentence : Iter[Symbol]) -> Set[Token] {
 
 ///|
 /// internally mutate state, and return it for convenience
+/// truncate those unreachable items according to priorities
+fn LR1Maker::truncate(self : Self, state : State) -> State {
+  let res = self.resolution
+  let max_rule : Map[Token, Map[Sort, (Priority, Bool)]] = Map::new() // temp[lookahead][sort] = (prio, reduce_first?)
+  let update = fn(
+    lookahead : Token,
+    sort : Sort,
+    prio : Priority,
+    red : Bool,
+  ) -> Unit {
+    max_rule
+    .get_or_init(lookahead, fn() { Map::new() })
+    .update(sort, v => match v {
+      None => Some((prio, red))
+      Some((old_prio, old_red)) =>
+        if prio > old_prio {
+          Some((prio, red))
+        } else {
+          Some((old_prio, old_red))
+        }
+    })
+  }
+  for item in state.items.0 {
+    if item.cur == item.sentence.length() {
+      let prio = res.priority[item.sort][item.rule_i]
+      let red = res.reduce_first[item.sort][item.rule_i]
+      update(item.lookahead, item.sort, prio, red)
+    }
+  }
+  for item in state.items.0 {
+    guard item.cur < item.sentence.length() else { continue }
+    let { lookahead, sort, rule_i, sentence, cur } = item
+    let cur_symbol = sentence[cur]
+    guard cur_symbol == lookahead || self.is_sort(cur_symbol) else { continue } // todo: verify this condition
+    guard max_rule.get(lookahead) is Some(max_rule) else { continue }
+    guard max_rule.get(sort) is Some((max_prio, max_red)) else { continue }
+    let prio = res.priority[sort][rule_i]
+    guard prio < max_prio || (prio == max_prio && max_red) else { continue }
+    // println("at state \{self.state_indices.size()}, lookahead = \{lookahead}, sort = \{sort},  max = \{max_rule} ")
+    // println("eliminate \{item}")
+    state.items.0.remove(item)
+  }
+  state
+}
+
+///|
+/// internally mutate state, and return it for convenience
 fn LR1Maker::enclosure(self : Self, state : State) -> State {
   let worklist = state.items.0.to_array()
   while worklist.length() > 0 {
@@ -253,6 +308,7 @@ fn LR1Maker::enclosure(self : Self, state : State) -> State {
 
 ///|
 fn LR1Maker::add_state(self : Self, new_state : State) -> StateIndex {
+  let new_state = self.truncate(new_state)
   let new_state = self.enclosure(new_state)
   let new_index = self.goto_table.length()
   let mut actual_index = new_index

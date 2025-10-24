@@ -13,7 +13,11 @@ test "simple" {
       [[6]],
     ],
   } // b -> B
-  let maker = LR1Maker::new(grammar)
+  let res = {
+    priority: [[1], [1], [1], [1]],
+    reduce_first: [[true], [true], [true], [true]],
+  }
+  let maker = LR1Maker::new(grammar, res)
   maker.construct_states()
   println("states_len = \{maker.goto_table.length()}")
   println("\{maker.goto_table}")
@@ -28,7 +32,7 @@ test "codegen:simple" {
   // s' -> s 
   // s -> a b
   // a -> A
-  // b -> B | B C B
+  // b -> B | B C B | D b D
   let grammar = {
     rules: [
       [[1]], // s' -> s
@@ -37,7 +41,11 @@ test "codegen:simple" {
       [[7], [7, 8, 7], [9, 3, 9]],
     ],
   } // b -> B | B C B | D b D
-  let maker = LR1Maker::new(grammar)
+  let res = {
+    priority: [[1], [1], [1], [1, 1, 1]],
+    reduce_first: [[true], [true], [true], [true, true, true]],
+  }
+  let maker = LR1Maker::new(grammar, res)
   maker.construct_states()
   let lr1 = maker.to_lr1()
   let sem = {

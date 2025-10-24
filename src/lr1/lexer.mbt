@@ -76,17 +76,8 @@ pub fn Lexer::skip_space(self : Self) -> Lexeme {
       self.lexeme.end = self.cur
       self.lexeme.token = LAURUS_SPACE
       continue match self.next() {
-          '\t'..='\n' => 1
-          ' ' => 1
-          _ => break
-        }
-    }
-    1 => {
-      self.lexeme.end = self.cur
-      self.lexeme.token = LAURUS_SPACE
-      continue match self.next() {
-          '\t'..='\n' => 1
-          ' ' => 1
+          '\t'..='\n' => 0
+          ' ' => 0
           _ => break
         }
     }

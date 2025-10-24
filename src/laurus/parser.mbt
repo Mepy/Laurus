@@ -124,7 +124,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             let node = self.lexer.get(lexeme) |> Node::String
             self.node_stack.push(node)
             lexeme = self.lexer.scan0()
-            116
+            122
           }
           _ => break
         }
@@ -135,12 +135,12 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           Space => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan6()
-            112
+            92
           }
           Start => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan5()
-            113
+            93
           }
           _ => break
         }
@@ -1067,27 +1067,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             lexeme = self.lexer.scan21()
             43
           }
-          EscNo => { // reduce
-            let node = TokenConv::Ignore |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          Esc => { // reduce
-            let node = TokenConv::Ignore |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
           LParen => { // reduce
-            let node = TokenConv::Ignore |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          LBrack => { // reduce
-            let node = TokenConv::Ignore |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          Dot => { // reduce
             let node = TokenConv::Ignore |> Node::TokenConv
             self.node_stack.push(node)
             42
@@ -1101,28 +1081,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           LParen => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan6()
-            47
-          }
-          LBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            48
-          }
-          Dot => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            49
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
-            self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            51
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            52
+            46
           }
           _ => break
         }
@@ -1132,38 +1091,10 @@ pub fn Parser::parse(self : Self) -> Laurus? {
       continue match lexeme.token {
           ColonColon => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan25()
+            lexeme = self.lexer.scan22()
             44
           }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::BuiltIn(x0) |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::BuiltIn(x0) |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
           LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::BuiltIn(x0) |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::BuiltIn(x0) |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::String(x0)
             let node = TokenConv::BuiltIn(x0) |> Node::TokenConv
@@ -1179,7 +1110,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           MethodName => { // shift
             let node = self.lexer.get(lexeme) |> Node::String
             self.node_stack.push(node)
-            lexeme = self.lexer.scan6()
+            lexeme = self.lexer.scan16()
             45
           }
           _ => break
@@ -1188,55 +1119,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     45 => {
       self.enter_state(45)
       continue match lexeme.token {
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x2)
-            // ignore Node [x1 : ColonColon]
-            guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::Interpret(type_name=x0, parse_func_name=x2)
-              |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x2)
-            // ignore Node [x1 : ColonColon]
-            guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::Interpret(type_name=x0, parse_func_name=x2)
-              |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
           LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x2)
-            // ignore Node [x1 : ColonColon]
-            guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::Interpret(type_name=x0, parse_func_name=x2)
-              |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x2)
-            // ignore Node [x1 : ColonColon]
-            guard self.node_stack.unsafe_pop() is Node::String(x0)
-            let node = TokenConv::Interpret(type_name=x0, parse_func_name=x2)
-              |> Node::TokenConv
-            self.node_stack.push(node)
-            42
-          }
-          Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -1254,126 +1137,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     46 => {
       self.enter_state(46)
       continue match lexeme.token {
-          Or => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan6()
-            106
-          }
-          Star => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            108
-          }
-          Plus => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            109
-          }
-          Ques => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            110
-          }
           LParen => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan6()
-            47
+            49
           }
           LBrack => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            48
+            lexeme = self.lexer.scan25()
+            50
           }
           Dot => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            49
+            lexeme = self.lexer.scan24()
+            51
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            51
+            lexeme = self.lexer.scan24()
+            52
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            52
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x4)
-            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
-            // ignore Node [x2 : Eq]
-            guard self.node_stack.unsafe_pop() is Node::String(x1)
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x4) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x4)
-            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
-            // ignore Node [x2 : Eq]
-            guard self.node_stack.unsafe_pop() is Node::String(x1)
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x4) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x4)
-            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
-            // ignore Node [x2 : Eq]
-            guard self.node_stack.unsafe_pop() is Node::String(x1)
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x4) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x4)
-            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
-            // ignore Node [x2 : Eq]
-            guard self.node_stack.unsafe_pop() is Node::String(x1)
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x4) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x4)
-            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
-            // ignore Node [x2 : Eq]
-            guard self.node_stack.unsafe_pop() is Node::String(x1)
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::add_token(x0, x1, x3, x4) |> Node::Laurus
-            self.node_stack.push(node)
-            1
+            lexeme = self.lexer.scan23()
+            53
           }
           _ => break
         }
@@ -1381,31 +1169,56 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     47 => {
       self.enter_state(47)
       continue match lexeme.token {
+          RParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan0()
+            91
+          }
+          Or => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            83
+          }
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            85
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            86
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            87
+          }
           LParen => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan6()
-            81
+            49
           }
           LBrack => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            82
+            lexeme = self.lexer.scan25()
+            50
           }
           Dot => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            83
+            lexeme = self.lexer.scan24()
+            51
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            85
+            lexeme = self.lexer.scan24()
+            52
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            86
+            lexeme = self.lexer.scan23()
+            53
           }
           _ => break
         }
@@ -1413,26 +1226,265 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     48 => {
       self.enter_state(48)
       continue match lexeme.token {
-          Caret => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan28()
-            58
-          }
-          RBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            59
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          RParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            62
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            63
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           _ => break
         }
@@ -1440,341 +1492,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     49 => {
       self.enter_state(49)
       continue match lexeme.token {
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            49
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            50
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            51
           }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan24()
+            52
           }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            53
           }
           _ => break
         }
@@ -1782,341 +1524,26 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     50 => {
       self.enter_state(50)
       continue match lexeme.token {
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Caret => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan27()
+            59
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          RBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            60
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan26()
+            63
           }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            64
           }
           _ => break
         }
@@ -2124,465 +1551,263 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     51 => {
       self.enter_state(51)
       continue match lexeme.token {
-          CommentHead => { // reduce
+          RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -2592,22 +1817,355 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     52 => {
       self.enter_state(52)
       continue match lexeme.token {
-          EscOrigin => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          RParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            53
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
-          EscSpace => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            54
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
-          EscU => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan29()
-            55
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
           _ => break
         }
@@ -2615,495 +2173,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     53 => {
       self.enter_state(53)
       continue match lexeme.token {
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+          EscOrigin => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+            lexeme = self.lexer.scan24()
+            54
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+          EscSpace => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+            lexeme = self.lexer.scan24()
+            55
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+          EscU => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan28()
+            56
           }
           _ => break
         }
@@ -3111,7 +2196,7 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     54 => {
       self.enter_state(54)
       continue match lexeme.token {
-          CommentHead => { // reduce
+          RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x1)
@@ -3120,29 +2205,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3155,29 +2242,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3190,29 +2279,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3225,29 +2316,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3260,29 +2353,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3295,29 +2390,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3330,29 +2427,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3365,29 +2464,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3400,29 +2501,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3435,169 +2538,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -3607,11 +2572,375 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     55 => {
       self.enter_state(55)
       continue match lexeme.token {
-          EscUnicode => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
+          RParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            56
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
           _ => break
         }
@@ -3619,523 +2948,11 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     56 => {
       self.enter_state(56)
       continue match lexeme.token {
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
+          EscUnicode => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+            lexeme = self.lexer.scan24()
+            57
           }
           _ => break
         }
@@ -4143,21 +2960,395 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     57 => {
       self.enter_state(57)
       continue match lexeme.token {
-          RBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            79
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          RParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            62
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            63
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
           _ => break
         }
@@ -4165,16 +3356,21 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     58 => {
       self.enter_state(58)
       continue match lexeme.token {
+          RBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            80
+          }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            62
+            lexeme = self.lexer.scan26()
+            63
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            63
+            lexeme = self.lexer.scan23()
+            64
           }
           _ => break
         }
@@ -4182,7 +3378,24 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     59 => {
       self.enter_state(59)
       continue match lexeme.token {
-          CommentHead => { // reduce
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan26()
+            63
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            64
+          }
+          _ => break
+        }
+    }
+    60 => {
+      self.enter_state(60)
+      continue match lexeme.token {
+          RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : RBrack]
@@ -4191,20 +3404,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4217,20 +3432,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4243,20 +3460,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4269,20 +3488,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4295,20 +3516,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4321,20 +3544,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4347,20 +3572,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4373,20 +3600,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4399,20 +3628,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4425,172 +3656,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          _ => break
-        }
-    }
-    60 => {
-      self.enter_state(60)
-      continue match lexeme.token {
-          RBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Range(x0)
-            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 57
-              58 => 76
-              82 => 91
-              92 => 94
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Range(x0)
-            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 57
-              58 => 76
-              82 => 91
-              92 => 94
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Range(x0)
-            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 57
-              58 => 76
-              82 => 91
-              92 => 94
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -4600,62 +3681,45 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     61 => {
       self.enter_state(61)
       continue match lexeme.token {
-          Dash => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan28()
-            68
-          }
-          Esc => { // reduce
+          RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range::single(x0) |> Node::Range
+            guard self.node_stack.unsafe_pop() is Node::Range(x0)
+            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              48 => 60
-              57 => 78
-              58 => 60
-              76 => 78
-              82 => 60
-              91 => 78
-              92 => 60
-              94 => 78
+              50 => 58
+              59 => 77
+              98 => 106
+              107 => 109
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range::single(x0) |> Node::Range
+            guard self.node_stack.unsafe_pop() is Node::Range(x0)
+            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              48 => 60
-              57 => 78
-              58 => 60
-              76 => 78
-              82 => 60
-              91 => 78
-              92 => 60
-              94 => 78
+              50 => 58
+              59 => 77
+              98 => 106
+              107 => 109
               _ => break
             }
           }
-          RBrack => { // reduce
+          Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range::single(x0) |> Node::Range
+            guard self.node_stack.unsafe_pop() is Node::Range(x0)
+            let node = Array::singleton(x0) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              48 => 60
-              57 => 78
-              58 => 60
-              76 => 78
-              82 => 60
-              91 => 78
-              92 => 60
-              94 => 78
+              50 => 58
+              59 => 77
+              98 => 106
+              107 => 109
               _ => break
             }
           }
@@ -4665,135 +3729,62 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     62 => {
       self.enter_state(62)
       continue match lexeme.token {
-          Dash => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+          Dash => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan27()
+            69
           }
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            let node = Range::single(x0) |> Node::Range
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              50 => 61
+              58 => 79
+              59 => 61
+              77 => 79
+              98 => 61
+              106 => 79
+              107 => 61
+              109 => 79
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            let node = Range::single(x0) |> Node::Range
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              50 => 61
+              58 => 79
+              59 => 61
+              77 => 79
+              98 => 61
+              106 => 79
+              107 => 61
+              109 => 79
               _ => break
             }
           }
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            let node = Range::single(x0) |> Node::Range
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              50 => 61
+              58 => 79
+              59 => 61
+              77 => 79
+              98 => 61
+              106 => 79
+              107 => 61
+              109 => 79
               _ => break
             }
           }
@@ -4803,22 +3794,145 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     63 => {
       self.enter_state(63)
       continue match lexeme.token {
-          EscOrigin => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          Dash => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            64
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
-          EscSpace => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            65
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
-          EscU => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan29()
-            66
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          RBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
           _ => break
         }
@@ -4826,145 +3940,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     64 => {
       self.enter_state(64)
       continue match lexeme.token {
-          Dash => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+          EscOrigin => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+            lexeme = self.lexer.scan26()
+            65
           }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+          EscSpace => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+            lexeme = self.lexer.scan26()
+            66
           }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          RBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+          EscU => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan28()
+            67
           }
           _ => break
         }
@@ -4981,29 +3972,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5016,29 +4009,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5051,29 +4046,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5086,29 +4083,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5118,17 +4117,171 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     66 => {
       self.enter_state(66)
       continue match lexeme.token {
-          EscUnicode => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
+          Dash => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            67
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          RBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
           _ => break
         }
     }
     67 => {
       self.enter_state(67)
+      continue match lexeme.token {
+          EscUnicode => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan26()
+            68
+          }
+          _ => break
+        }
+    }
+    68 => {
+      self.enter_state(68)
       continue match lexeme.token {
           Dash => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5141,29 +4294,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5178,29 +4333,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5215,29 +4372,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5252,48 +4411,33 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
-          }
-          _ => break
-        }
-    }
-    68 => {
-      self.enter_state(68)
-      continue match lexeme.token {
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
-            self.node_stack.push(node)
-            lexeme = self.lexer.scan30()
-            70
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            71
           }
           _ => break
         }
@@ -5301,71 +4445,16 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     69 => {
       self.enter_state(69)
       continue match lexeme.token {
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : Dash]
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range(x0, x2) |> Node::Range
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 60
-              57 => 78
-              58 => 60
-              76 => 78
-              82 => 60
-              91 => 78
-              92 => 60
-              94 => 78
-              _ => break
-            }
+            lexeme = self.lexer.scan29()
+            71
           }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : Dash]
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range(x0, x2) |> Node::Range
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 60
-              57 => 78
-              58 => 60
-              76 => 78
-              82 => 60
-              91 => 78
-              92 => 60
-              94 => 78
-              _ => break
-            }
-          }
-          RBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : Dash]
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = Range(x0, x2) |> Node::Range
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 60
-              57 => 78
-              58 => 60
-              76 => 78
-              82 => 60
-              91 => 78
-              92 => 60
-              94 => 78
-              _ => break
-            }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            72
           }
           _ => break
         }
@@ -5373,102 +4462,69 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     70 => {
       self.enter_state(70)
       continue match lexeme.token {
-          RBrack => { // reduce
+          Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : Dash]
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            let node = Range(x0, x2) |> Node::Range
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              50 => 61
+              58 => 79
+              59 => 61
+              77 => 79
+              98 => 61
+              106 => 79
+              107 => 61
+              109 => 79
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : Dash]
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            let node = Range(x0, x2) |> Node::Range
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              50 => 61
+              58 => 79
+              59 => 61
+              77 => 79
+              98 => 61
+              106 => 79
+              107 => 61
+              109 => 79
               _ => break
             }
           }
-          Esc => { // reduce
+          RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : Dash]
             guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            let node = Range(x0, x2) |> Node::Range
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              50 => 61
+              58 => 79
+              59 => 61
+              77 => 79
+              98 => 61
+              106 => 79
+              107 => 61
+              109 => 79
               _ => break
             }
           }
@@ -5478,22 +4534,110 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     71 => {
       self.enter_state(71)
       continue match lexeme.token {
-          EscOrigin => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          RBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan30()
-            72
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
-          EscSpace => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan30()
-            73
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
-          EscU => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan29()
-            74
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
           _ => break
         }
@@ -5501,110 +4645,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     72 => {
       self.enter_state(72)
       continue match lexeme.token {
-          RBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+          EscOrigin => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+            lexeme = self.lexer.scan29()
+            73
           }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+          EscSpace => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+            lexeme = self.lexer.scan29()
+            74
           }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+          EscU => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan28()
+            75
           }
           _ => break
         }
@@ -5621,29 +4677,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5656,29 +4714,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5691,29 +4751,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5723,17 +4785,134 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     74 => {
       self.enter_state(74)
       continue match lexeme.token {
-          EscUnicode => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
+          RBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan30()
-            75
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
           }
           _ => break
         }
     }
     75 => {
       self.enter_state(75)
+      continue match lexeme.token {
+          EscUnicode => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan29()
+            76
+          }
+          _ => break
+        }
+    }
+    76 => {
+      self.enter_state(76)
       continue match lexeme.token {
           RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
@@ -5746,29 +4925,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5783,29 +4964,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -5820,53 +5003,33 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
-          }
-          _ => break
-        }
-    }
-    76 => {
-      self.enter_state(76)
-      continue match lexeme.token {
-          RBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            77
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
-            self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            62
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            63
           }
           _ => break
         }
@@ -5874,7 +5037,29 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     77 => {
       self.enter_state(77)
       continue match lexeme.token {
-          CommentHead => { // reduce
+          RBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            78
+          }
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan26()
+            63
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            64
+          }
+          _ => break
+        }
+    }
+    78 => {
+      self.enter_state(78)
+      continue match lexeme.token {
+          RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
@@ -5887,20 +5072,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -5917,20 +5104,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -5947,20 +5136,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -5977,20 +5168,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -6007,20 +5200,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -6037,20 +5232,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -6067,20 +5264,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -6097,20 +5296,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -6127,20 +5328,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -6157,194 +5360,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          _ => break
-        }
-    }
-    78 => {
-      self.enter_state(78)
-      continue match lexeme.token {
-          RBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Range(x1)
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
-            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 57
-              58 => 76
-              82 => 91
-              92 => 94
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Range(x1)
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
-            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 57
-              58 => 76
-              82 => 91
-              92 => 94
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Range(x1)
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
-            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              48 => 57
-              58 => 76
-              82 => 91
-              92 => 94
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -6354,395 +5385,51 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     79 => {
       self.enter_state(79)
       continue match lexeme.token {
-          CommentHead => { // reduce
+          RBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Range(x1)
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              50 => 58
+              59 => 77
+              98 => 106
+              107 => 109
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Range(x1)
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              50 => 58
+              59 => 77
+              98 => 106
+              107 => 109
               _ => break
             }
           }
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Range(x1)
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x0)
+            let node = Array::snoc(x0, x1) |> Node::Array_LB_Range_RB_
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              50 => 58
+              59 => 77
+              98 => 106
+              107 => 109
               _ => break
             }
           }
@@ -6752,56 +5439,305 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     80 => {
       self.enter_state(80)
       continue match lexeme.token {
-          RParen => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            105
-          }
-          Or => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan6()
-            99
-          }
-          Star => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            101
-          }
-          Plus => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            102
-          }
-          Ques => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            103
-          }
-          LParen => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan6()
-            81
-          }
-          LBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            82
-          }
-          Dot => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            83
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          RParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            85
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            86
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           _ => break
         }
@@ -6809,31 +5745,56 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     81 => {
       self.enter_state(81)
       continue match lexeme.token {
-          LParen => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan6()
-            81
-          }
-          LBrack => { // shift
+          RParen => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan24()
             82
           }
+          Or => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            83
+          }
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            85
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            86
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            87
+          }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            49
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            50
+          }
           Dot => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            83
+            lexeme = self.lexer.scan24()
+            51
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            85
+            lexeme = self.lexer.scan24()
+            52
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            86
+            lexeme = self.lexer.scan23()
+            53
           }
           _ => break
         }
@@ -6841,26 +5802,305 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     82 => {
       self.enter_state(82)
       continue match lexeme.token {
-          Caret => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan28()
-            92
-          }
-          RBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            93
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          RParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            62
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            63
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           _ => break
         }
@@ -6868,245 +6108,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     83 => {
       self.enter_state(83)
       continue match lexeme.token {
-          RParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            49
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            50
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            51
           }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan24()
+            52
           }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x0 : Dot]
-            let node = RegExp::Any |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            53
           }
           _ => break
         }
@@ -7114,243 +6140,214 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     84 => {
       self.enter_state(84)
       continue match lexeme.token {
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            85
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            86
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            87
+          }
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = RegExp::Single(x0) |> Node::RegExp
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -7362,331 +6359,281 @@ pub fn Parser::parse(self : Self) -> Laurus? {
       continue match lexeme.token {
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x0)
-            let node = x0 |> Node::Char
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -7696,22 +6643,285 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     86 => {
       self.enter_state(86)
       continue match lexeme.token {
-          EscOrigin => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          RParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            87
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
-          EscSpace => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            88
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
-          EscU => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan29()
-            89
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           _ => break
         }
@@ -7722,350 +6932,280 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -8075,355 +7215,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     88 => {
       self.enter_state(88)
       continue match lexeme.token {
-          RParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            49
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            50
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            51
           }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+            lexeme = self.lexer.scan24()
+            52
           }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            53
           }
           _ => break
         }
@@ -8431,11 +7247,81 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     89 => {
       self.enter_state(89)
       continue match lexeme.token {
-          EscUnicode => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
+          Or => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            83
+          }
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            85
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            86
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            87
+          }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            49
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            50
+          }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            51
+          }
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            90
+            lexeme = self.lexer.scan24()
+            52
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            53
+          }
+          RParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           _ => break
         }
@@ -8443,336 +7329,74 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     90 => {
       self.enter_state(90)
       continue match lexeme.token {
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            85
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            86
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            87
+          }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            49
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            50
+          }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            51
+          }
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan24()
+            52
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            53
+          }
           RParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 50
-              46 => 50
-              47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
-              81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -8780,36 +7404,29 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::Char(x2)
-            // ignore Node [x1 : EscU]
-            // ignore Node [x0 : Esc]
-            let node = x2 |> Node::Char
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 50
-              46 => 50
+              46 => 47
               47 => 84
-              48 => 61
-              57 => 61
-              58 => 61
-              68 => 69
-              76 => 61
-              80 => 84
+              49 => 81
               81 => 84
-              82 => 61
-              91 => 61
-              92 => 61
-              94 => 61
-              97 => 84
-              99 => 84
-              100 => 84
-              104 => 84
-              106 => 50
-              107 => 50
-              111 => 50
-              112 => 50
-              115 => 50
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -8819,21 +7436,100 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     91 => {
       self.enter_state(91)
       continue match lexeme.token {
-          RBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            96
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x6 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x5)
+            // ignore Node [x4 : LParen]
+            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
+            // ignore Node [x2 : Eq]
+            guard self.node_stack.unsafe_pop() is Node::String(x1)
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            62
+            1
           }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            63
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x6 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x5)
+            // ignore Node [x4 : LParen]
+            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
+            // ignore Node [x2 : Eq]
+            guard self.node_stack.unsafe_pop() is Node::String(x1)
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x6 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x5)
+            // ignore Node [x4 : LParen]
+            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
+            // ignore Node [x2 : Eq]
+            guard self.node_stack.unsafe_pop() is Node::String(x1)
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x6 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x5)
+            // ignore Node [x4 : LParen]
+            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
+            // ignore Node [x2 : Eq]
+            guard self.node_stack.unsafe_pop() is Node::String(x1)
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x6 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x5)
+            // ignore Node [x4 : LParen]
+            guard self.node_stack.unsafe_pop() is Node::TokenConv(x3)
+            // ignore Node [x2 : Eq]
+            guard self.node_stack.unsafe_pop() is Node::String(x1)
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::add_token(x0, x1, x3, x5) |> Node::Laurus
+            self.node_stack.push(node)
+            1
           }
           _ => break
         }
@@ -8841,16 +7537,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     92 => {
       self.enter_state(92)
       continue match lexeme.token {
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            97
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            98
+          }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            99
+          }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            62
+            lexeme = self.lexer.scan30()
+            100
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            63
+            lexeme = self.lexer.scan23()
+            101
           }
           _ => break
         }
@@ -8858,265 +7569,11 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     93 => {
       self.enter_state(93)
       continue match lexeme.token {
-          RParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
+          SortName => { // shift
+            let node = self.lexer.get(lexeme) |> Node::String
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : RBrack]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Emp |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan0()
+            94
           }
           _ => break
         }
@@ -9124,21 +7581,70 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     94 => {
       self.enter_state(94)
       continue match lexeme.token {
-          RBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            95
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::String(x3)
+            // ignore Node [x2 : Start]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
-            lexeme = self.lexer.scan27()
-            62
+            1
           }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            63
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::String(x3)
+            // ignore Node [x2 : Start]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::String(x3)
+            // ignore Node [x2 : Start]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::String(x3)
+            // ignore Node [x2 : Start]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::String(x3)
+            // ignore Node [x2 : Start]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_start(x0, x3) |> Node::Laurus
+            self.node_stack.push(node)
+            1
           }
           _ => break
         }
@@ -9146,305 +7652,116 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     95 => {
       self.enter_state(95)
       continue match lexeme.token {
-          RParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Or => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            114
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            116
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            117
           }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            118
           }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            97
           }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            98
           }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            99
           }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan30()
+            100
           }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            101
           }
-          Or => { // reduce
+          LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x3 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
-            // ignore Node [x1 : Caret]
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bnot(x2) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
+            // ignore Node [x2 : Space]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            1
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
+            // ignore Node [x2 : Space]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
+            // ignore Node [x2 : Space]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
+            // ignore Node [x2 : Space]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            self.node_stack.push(node)
+            1
+          }
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
+            // ignore Node [x2 : Space]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            self.node_stack.push(node)
+            1
           }
           _ => break
         }
@@ -9452,283 +7769,367 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     96 => {
       self.enter_state(96)
       continue match lexeme.token {
-          RParen => { // reduce
+          CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RBrack]
-            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
-            // ignore Node [x0 : LBrack]
-            let node = RegExp::Bor(x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = RegExp::Single(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -9738,56 +8139,31 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     97 => {
       self.enter_state(97)
       continue match lexeme.token {
-          RParen => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            98
-          }
-          Or => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan6()
-            99
-          }
-          Star => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            101
-          }
-          Plus => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            102
-          }
-          Ques => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            103
-          }
           LParen => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan6()
-            81
+            49
           }
           LBrack => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            82
+            lexeme = self.lexer.scan25()
+            50
           }
           Dot => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            83
+            lexeme = self.lexer.scan24()
+            51
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            85
+            lexeme = self.lexer.scan24()
+            52
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            86
+            lexeme = self.lexer.scan23()
+            53
           }
           _ => break
         }
@@ -9795,285 +8171,26 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     98 => {
       self.enter_state(98)
       continue match lexeme.token {
-          RParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Caret => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan27()
+            107
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          RBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            108
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan26()
+            63
           }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            64
           }
           _ => break
         }
@@ -10081,31 +8198,369 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     99 => {
       self.enter_state(99)
       continue match lexeme.token {
-          LParen => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan6()
-            81
-          }
-          LBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            82
-          }
-          Dot => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            83
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            85
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            86
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x0 : Dot]
+            let node = RegExp::Any |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           _ => break
         }
@@ -10113,159 +8568,493 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     100 => {
       self.enter_state(100)
       continue match lexeme.token {
-          Star => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            101
-          }
-          Plus => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            102
-          }
-          Ques => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            103
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
-            self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            85
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            86
-          }
-          RParen => { // reduce
+          CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
-          LParen => { // reduce
+          Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
-          LBrack => { // reduce
+          Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x0)
+            let node = x0 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -10275,265 +9064,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     101 => {
       self.enter_state(101)
       continue match lexeme.token {
-          RParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+          EscOrigin => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan30()
+            102
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+          EscSpace => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan30()
+            103
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          EscU => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan28()
+            104
           }
           _ => break
         }
@@ -10541,263 +9087,521 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     102 => {
       self.enter_state(102)
       continue match lexeme.token {
-          RParen => { // reduce
+          CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -10807,263 +9611,521 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     103 => {
       self.enter_state(103)
       continue match lexeme.token {
-          RParen => { // reduce
+          CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Ques]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11073,171 +10135,11 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     104 => {
       self.enter_state(104)
       continue match lexeme.token {
-          Star => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            101
-          }
-          Plus => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            102
-          }
-          Ques => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan26()
-            103
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          EscUnicode => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan26()
-            85
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            86
-          }
-          RParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan30()
+            105
           }
           _ => break
         }
@@ -11249,27 +10151,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11277,27 +10190,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11305,27 +10229,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11333,139 +10268,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11473,27 +10307,194 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11501,27 +10502,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11529,27 +10541,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11557,27 +10580,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11585,27 +10619,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11613,27 +10658,38 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x2 : RParen]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            // ignore Node [x0 : LParen]
-            let node = x1 |> Node::RegExp
+            guard self.node_stack.unsafe_pop() is Node::Char(x2)
+            // ignore Node [x1 : EscU]
+            // ignore Node [x0 : Esc]
+            let node = x2 |> Node::Char
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 48
+              47 => 48
+              49 => 48
+              50 => 62
+              58 => 62
+              59 => 62
+              69 => 70
+              77 => 62
+              81 => 48
+              83 => 48
+              88 => 48
+              89 => 48
+              90 => 48
+              92 => 96
+              95 => 96
+              97 => 48
+              98 => 62
+              106 => 62
+              107 => 62
+              109 => 62
+              112 => 48
+              114 => 96
+              119 => 96
+              120 => 96
+              121 => 96
               _ => break
             }
           }
@@ -11643,31 +10699,21 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     106 => {
       self.enter_state(106)
       continue match lexeme.token {
-          LParen => { // shift
+          RBrack => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan6()
-            47
-          }
-          LBrack => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            48
-          }
-          Dot => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            49
+            lexeme = self.lexer.scan30()
+            111
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            51
+            lexeme = self.lexer.scan26()
+            63
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            52
+            lexeme = self.lexer.scan23()
+            64
           }
           _ => break
         }
@@ -11675,265 +10721,16 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     107 => {
       self.enter_state(107)
       continue match lexeme.token {
-          Star => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            108
-          }
-          Plus => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            109
-          }
-          Ques => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            110
-          }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            51
+            lexeme = self.lexer.scan26()
+            63
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            52
-          }
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Seq(x0, x1) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan23()
+            64
           }
           _ => break
         }
@@ -11944,364 +10741,392 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Ques => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Plus => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Star => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           EscNo => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Esc => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           LParen => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           LBrack => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Dot => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Or => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           Percent => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           TokenName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           SortName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
+            // ignore Node [x1 : RBrack]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Emp |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12311,369 +11136,21 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     109 => {
       self.enter_state(109)
       continue match lexeme.token {
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          RBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            110
           }
-          Ques => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+            lexeme = self.lexer.scan26()
+            63
           }
-          Plus => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Star => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          EscNo => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Esc => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            // ignore Node [x1 : Plus]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            64
           }
           _ => break
         }
@@ -12684,26 +11161,2548 @@ pub fn Parser::parse(self : Self) -> Laurus? {
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x3 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x2)
+            // ignore Node [x1 : Caret]
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bnot(x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          _ => break
+        }
+    }
+    111 => {
+      self.enter_state(111)
+      continue match lexeme.token {
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RBrack]
+            guard self.node_stack.unsafe_pop() is Node::Array_LB_Range_RB_(x1)
+            // ignore Node [x0 : LBrack]
+            let node = RegExp::Bor(x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          _ => break
+        }
+    }
+    112 => {
+      self.enter_state(112)
+      continue match lexeme.token {
+          RParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            113
+          }
+          Or => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            83
+          }
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            85
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            86
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            87
+          }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            49
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            50
+          }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan24()
+            51
+          }
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan24()
+            52
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            53
+          }
+          _ => break
+        }
+    }
+    113 => {
+      self.enter_state(113)
+      continue match lexeme.token {
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x2 : RParen]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            // ignore Node [x0 : LParen]
+            let node = x1 |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          _ => break
+        }
+    }
+    114 => {
+      self.enter_state(114)
+      continue match lexeme.token {
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            97
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            98
+          }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            99
+          }
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan30()
+            100
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            101
+          }
+          _ => break
+        }
+    }
+    115 => {
+      self.enter_state(115)
+      continue match lexeme.token {
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            116
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            117
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            118
+          }
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x1)
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Seq(x0, x1) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          _ => break
+        }
+    }
+    116 => {
+      self.enter_state(116)
+      continue match lexeme.token {
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Star]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Star(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          _ => break
+        }
+    }
+    117 => {
+      self.enter_state(117)
+      continue match lexeme.token {
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Ques => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Plus => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Star => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          EscNo => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Esc => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LParen => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LBrack => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Dot => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            // ignore Node [x1 : Plus]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Plus(x0) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          _ => break
+        }
+    }
+    118 => {
+      self.enter_state(118)
+      continue match lexeme.token {
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
             // ignore Node [x1 : Ques]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
             let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12716,20 +13715,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12742,20 +13743,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12768,20 +13771,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12794,20 +13799,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12820,20 +13827,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12846,20 +13855,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12872,20 +13883,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12898,20 +13911,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12924,20 +13939,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12950,20 +13967,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -12976,20 +13995,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -13002,20 +14023,22 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
@@ -13028,544 +14051,491 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
               _ => break
             }
           }
           _ => break
         }
     }
-    111 => {
-      self.enter_state(111)
-      continue match lexeme.token {
-          Star => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            108
-          }
-          Plus => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            109
-          }
-          Ques => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            110
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
-            self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            51
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            52
-          }
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LParen => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LBrack => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Dot => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Or => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
-            // ignore Node [x1 : Or]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Union(x0, x2) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              42 => 46
-              46 => 107
-              47 => 80
-              80 => 100
-              81 => 97
-              97 => 100
-              99 => 104
-              100 => 100
-              104 => 100
-              106 => 111
-              107 => 107
-              111 => 107
-              112 => 115
-              115 => 107
-              _ => break
-            }
-          }
-          _ => break
-        }
-    }
-    112 => {
-      self.enter_state(112)
+    119 => {
+      self.enter_state(119)
       continue match lexeme.token {
           LParen => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan6()
-            47
+            97
           }
           LBrack => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            48
+            lexeme = self.lexer.scan25()
+            98
           }
           Dot => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            49
+            lexeme = self.lexer.scan30()
+            99
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            51
+            lexeme = self.lexer.scan30()
+            100
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            52
+            lexeme = self.lexer.scan23()
+            101
           }
           _ => break
         }
     }
-    113 => {
-      self.enter_state(113)
-      continue match lexeme.token {
-          SortName => { // shift
-            let node = self.lexer.get(lexeme) |> Node::String
-            self.node_stack.push(node)
-            lexeme = self.lexer.scan0()
-            114
-          }
-          _ => break
-        }
-    }
-    114 => {
-      self.enter_state(114)
-      continue match lexeme.token {
-          LAURUS_EOF => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x3)
-            // ignore Node [x2 : Start]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          SortName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x3)
-            // ignore Node [x2 : Start]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          TokenName => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x3)
-            // ignore Node [x2 : Start]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          Percent => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x3)
-            // ignore Node [x2 : Start]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          CommentHead => { // reduce
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::String(x3)
-            // ignore Node [x2 : Start]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_start(x0, x3) |> Node::Laurus
-            self.node_stack.push(node)
-            1
-          }
-          _ => break
-        }
-    }
-    115 => {
-      self.enter_state(115)
+    120 => {
+      self.enter_state(120)
       continue match lexeme.token {
           Or => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan6()
-            106
+            114
           }
           Star => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            108
+            lexeme = self.lexer.scan30()
+            116
           }
           Plus => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            109
+            lexeme = self.lexer.scan30()
+            117
           }
           Ques => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            110
+            lexeme = self.lexer.scan30()
+            118
           }
           LParen => { // shift
             // ignore the old lexeme
             lexeme = self.lexer.scan6()
-            47
+            97
           }
           LBrack => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan24()
-            48
+            lexeme = self.lexer.scan25()
+            98
           }
           Dot => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan23()
-            49
+            lexeme = self.lexer.scan30()
+            99
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            lexeme = self.lexer.scan23()
-            51
+            lexeme = self.lexer.scan30()
+            100
           }
           Esc => { // shift
             // ignore the old lexeme
-            lexeme = self.lexer.scan22()
-            52
+            lexeme = self.lexer.scan23()
+            101
           }
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
-            // ignore Node [x2 : Space]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            1
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           SortName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
-            // ignore Node [x2 : Space]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            1
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           TokenName => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
-            // ignore Node [x2 : Space]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            1
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           Percent => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
-            // ignore Node [x2 : Space]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            1
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           CommentHead => { // reduce
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
             self.state_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x3)
-            // ignore Node [x2 : Space]
-            // ignore Node [x1 : Percent]
-            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
-            let node = Laurus::set_space(x0, x3) |> Node::Laurus
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
             self.node_stack.push(node)
-            1
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
           }
           _ => break
         }
     }
-    116 => {
-      self.enter_state(116)
+    121 => {
+      self.enter_state(121)
+      continue match lexeme.token {
+          Star => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            116
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            117
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            118
+          }
+          LParen => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan6()
+            97
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan25()
+            98
+          }
+          Dot => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan30()
+            99
+          }
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            lexeme = self.lexer.scan30()
+            100
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            lexeme = self.lexer.scan23()
+            101
+          }
+          CommentHead => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Or => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          Percent => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          TokenName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          SortName => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          LAURUS_EOF => { // reduce
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x2)
+            // ignore Node [x1 : Or]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Union(x0, x2) |> Node::RegExp
+            self.node_stack.push(node)
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 => 84
+              49 => 81
+              81 => 84
+              83 => 90
+              88 => 89
+              89 => 84
+              90 => 84
+              92 => 95
+              95 => 115
+              97 => 112
+              112 => 84
+              114 => 121
+              119 => 120
+              120 => 115
+              121 => 115
+              _ => break
+            }
+          }
+          _ => break
+        }
+    }
+    122 => {
+      self.enter_state(122)
       continue match lexeme.token {
           LAURUS_EOF => { // reduce
             self.state_stack.unsafe_pop() |> ignore

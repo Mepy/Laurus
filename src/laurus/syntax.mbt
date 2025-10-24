@@ -18,16 +18,16 @@ enum TokenConv {
 
 ///|
 enum RegExp {
-  Bor(Array[Range])
-  Bnot(Array[Range])
-  Emp
-  Any
   Union(RegExp, RegExp)
   Seq(RegExp, RegExp)
   Star(RegExp)
   Plus(RegExp)
   Ques(RegExp)
   Single(Char)
+  Bor(Array[Range])
+  Bnot(Array[Range])
+  Emp
+  Any
 } derive(Show, Eq)
 
 ///|
