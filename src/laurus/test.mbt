@@ -342,6 +342,8 @@ test "parse::laurus" {
   let laurus_source = @fs.read_file_to_string("./src/laurus/laurus.laurus")
   parser.init(laurus_source)
   guard parser.parse() is Some(laurus) else {  }
+  let span = parser.span_stack[0].children[0]
+  println("\{span.beg} \{span.end} \{span.children.length()}")
   let par_gen = laurus.par_gen()
   par_gen.save("./src/laurus")
 }

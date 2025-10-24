@@ -20,9 +20,32 @@ pub fn Generator::new(lex_gen : @dfa.Generator) -> Self {
 fn Generator::init(self : Self) -> Unit {
   let parser =
     #|///|
+    #|pub struct Span {  
+    #|  beg : Location
+    #|  end : Location
+    #|  children : FixedArray[Span]
+    #|} derive(Show)
+    #|
+    #|///|
+    #|#inline
+    #|fn Span::leaf(beg : Location, end : Location) -> Span {
+    #|  {beg, end, children : FixedArray::default() }
+    #|}
+    #|
+    #|///|
+    #|fn Span::tree(children : FixedArray[Span]) -> Span {
+    #|  let len = children.length()
+    #|  guard len != 0 else { Span::leaf(Location::default(), Location::default()) }
+    #|  let beg = children[0].beg
+    #|  let end = children[len - 1].end
+    #|  { beg, end, children }
+    #|}
+    #|
+    #|///|
     #|struct Parser {
     #|  lexer : Lexer
     #|  state_stack : Array[Int]
+    #|  span_stack : Array[Span]
     #|  node_stack : Array[Node]
     #|} derive(Show)
     #|
@@ -31,6 +54,7 @@ fn Generator::init(self : Self) -> Unit {
     #|  {
     #|    lexer: Lexer::new(src~),
     #|    state_stack: Array::new(),
+    #|    span_stack: Array::new(),
     #|    node_stack: Array::new(),
     #|  }
     #|}
@@ -40,6 +64,13 @@ fn Generator::init(self : Self) -> Unit {
     #|  self.lexer.init(src, cur~)
     #|  self.state_stack.clear()
     #|  self.node_stack.clear()
+    #|}
+    #|
+    #|///|
+    #|#inline
+    #|fn Parser::shift_span(self : Self, lexeme : Lexeme) -> Unit {
+    #|  // no need to clone lexeme.beg/end because it is to be consumed.
+    #|  self.span_stack.push(Span::leaf(lexeme.beg, lexeme.end))
     #|}
     #|
     #|///|
@@ -231,6 +262,7 @@ pub fn Generator::codegen_parse(
         $|          \{token_name} => { // shift
         #|
       let shift_footer =
+        $|            self.shift_span(lexeme)
         $|            lexeme = self.lexer.scan\{dfa_j}()
         $|            \{state_j}
         #|          }
@@ -268,17 +300,21 @@ pub fn Generator::codegen_parse(
       let tokens_name = tokens.map(token => sem.names[token]).join(" | ")
       let reduce_header =
         $|          \{tokens_name} => { // reduce
+        $|            let span = self.span_stack[self.span_stack.length()-\{rule_size}:].iter() |> FixedArray::from_iter |> Span::tree
         $|
       let reduce_footer =
         #|          }
         #|
       self.builder.write_string(reduce_header)
-      // pop state_stack
+      // pop state_stack, span_stack
       for i in 0..<rule_size {
-        self.builder.write_string(
-          "            self.state_stack.unsafe_pop() |> ignore\n",
-        )
+        let pop_stack =
+          #|            self.state_stack.unsafe_pop() |> ignore
+          #|            self.span_stack.unsafe_pop() |> ignore
+          #|
+        self.builder.write_string(pop_stack)
       }
+      self.builder.write_string("            self.span_stack.push(span)\n")
 
       // pop node_stack
       for i = rule_size - 1; i >= 0; i = i - 1 {
