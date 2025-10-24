@@ -15,7 +15,11 @@ pub fn Parser::new(src? : String = "") -> Self {
 }
 
 ///|
-pub fn Parser::init(self : Self, src : String, cur? : Int = 0) -> Unit {
+pub fn Parser::init(
+  self : Self,
+  src : String,
+  cur? : Location = Location::default(),
+) -> Unit {
   self.lexer.init(src, cur~)
   self.state_stack.clear()
   self.node_stack.clear()

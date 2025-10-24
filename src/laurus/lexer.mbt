@@ -43,37 +43,59 @@ pub enum TOKEN {
 } derive(Show)
 
 ///|
-pub struct Lexeme {
-  mut token : TOKEN
-  mut beg : Int
-  mut end : Int
+pub struct Location {
+  mut row : Int
+  mut col : Int
+  mut off : Int
 } derive(Show)
 
 ///|
-fn Lexeme::new(beg? : Int = 0) -> Self {
-  { token: LAURUS_EOF, beg, end: 0 }
+impl Default for Location with default() {
+  Location::{ row: 0, col: 0, off: 0 }
+}
+
+///|
+fn Location::clone(self : Self) -> Self {
+  let { row, col, off } = self
+  { row, col, off }
+}
+
+///|
+pub struct Lexeme {
+  mut token : TOKEN
+  mut beg : Location
+  mut end : Location
+} derive(Show)
+
+///|
+fn Lexeme::new(beg? : Location = Location::default()) -> Self {
+  { token: LAURUS_EOF, beg, end: Location::default() }
 }
 
 ///|
 fn Lexeme::init(self : Self) -> Unit {
   self.token = LAURUS_EOF
-  self.beg = 0
+  self.beg = Location::default()
 }
 
 ///|
 struct Lexer {
   mut src : String
-  mut cur : Int
+  mut cur : Location
   mut lexeme : Lexeme
 } derive(Show)
 
 ///|
 pub fn Lexer::new(src? : String = "") -> Self {
-  { src, cur: 0, lexeme: Lexeme::new() }
+  { src, cur: Location::default(), lexeme: Lexeme::new() }
 }
 
 ///|
-pub fn Lexer::init(self : Self, src : String, cur? : Int = 0) -> Unit {
+pub fn Lexer::init(
+  self : Self,
+  src : String,
+  cur? : Location = Location::default(),
+) -> Unit {
   self.src = src
   self.cur = cur
   self.lexeme.init()
@@ -83,21 +105,29 @@ pub fn Lexer::init(self : Self, src : String, cur? : Int = 0) -> Unit {
 pub fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
   let beg = lexeme.beg
   let end = lexeme.end
-  self.src.unsafe_substring(start=beg, end~)
+  self.src.unsafe_substring(start=beg.off, end=end.off)
 }
 
 ///|
 fn Lexer::next(self : Self) -> Int {
-  guard self.cur < self.src.length() else { -1 }
-  let c = self.src[self.cur]
-  match c {
+  let cur_off = self.cur.off
+  guard cur_off < self.src.length() else { -1 }
+  match self.src[cur_off] {
     0xD800..=0xDBFF as lead => {
-      let tail = self.src[self.cur + 1]
-      self.cur += 2
+      let tail = self.src[cur_off + 1]
+      self.cur.off += 2
+      self.cur.col += 1
       (((lead & 0x3FF) << 10) | (tail & 0x3FF)) + 0x10000
     }
+    0xA as c => {
+      self.cur.off += 1
+      self.cur.row += 1
+      self.cur.col = 0
+      c
+    }
     _ as c => {
-      self.cur += 1
+      self.cur.off += 1
+      self.cur.col += 1
       c
     }
   }
@@ -107,7 +137,7 @@ fn Lexer::next(self : Self) -> Int {
 pub fn Lexer::skip_space(self : Self) -> Lexeme {
   loop 0 {
     0 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LAURUS_SPACE
       continue match self.next() {
           '\t'..='\n' => 0
@@ -118,10 +148,10 @@ pub fn Lexer::skip_space(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan0(self : Self) -> Lexeme {
@@ -129,7 +159,7 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
   self.skip_space() |> ignore
   loop 0 {
     0 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LAURUS_EOF
       continue match self.next() {
           '%' => 1
@@ -140,7 +170,7 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
         }
     }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Percent
       break
     }
@@ -150,7 +180,7 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
           _ => break
         }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = TokenName
       continue match self.next() {
           '0'..='9' => 3
@@ -161,7 +191,7 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
         }
     }
     4 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = SortName
       continue match self.next() {
           '0'..='9' => 4
@@ -172,17 +202,17 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
         }
     }
     5 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = CommentHead
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan1(self : Self) -> Lexeme {
@@ -196,22 +226,22 @@ pub fn Lexer::scan1(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Colon
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrace
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan2(self : Self) -> Lexeme {
@@ -224,17 +254,17 @@ pub fn Lexer::scan2(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Eq
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan3(self : Self) -> Lexeme {
@@ -273,7 +303,7 @@ pub fn Lexer::scan3(self : Self) -> Lexeme {
           _ => break
         }
     6 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Start
       break
     }
@@ -288,17 +318,17 @@ pub fn Lexer::scan3(self : Self) -> Lexeme {
           _ => break
         }
     9 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Space
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan4(self : Self) -> Lexeme {
@@ -306,7 +336,7 @@ pub fn Lexer::scan4(self : Self) -> Lexeme {
   self.skip_space() |> ignore
   loop 0 {
     0 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = CommentBody
       continue match self.next() {
           '\u{0}'..='\t' => 1
@@ -315,7 +345,7 @@ pub fn Lexer::scan4(self : Self) -> Lexeme {
         }
     }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = CommentBody
       continue match self.next() {
           '\u{0}'..='\t' => 1
@@ -326,10 +356,10 @@ pub fn Lexer::scan4(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan5(self : Self) -> Lexeme {
@@ -342,7 +372,7 @@ pub fn Lexer::scan5(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = SortName
       continue match self.next() {
           '0'..='9' => 1
@@ -355,10 +385,10 @@ pub fn Lexer::scan5(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan6(self : Self) -> Lexeme {
@@ -379,37 +409,37 @@ pub fn Lexer::scan6(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscNo
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LParen
       break
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Dot
       break
     }
     4 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrack
       break
     }
     5 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Esc
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan7(self : Self) -> Lexeme {
@@ -423,12 +453,12 @@ pub fn Lexer::scan7(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LParen
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = TypeName
       continue match self.next() {
           '0'..='9' => 2
@@ -441,10 +471,10 @@ pub fn Lexer::scan7(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan8(self : Self) -> Lexeme {
@@ -457,7 +487,7 @@ pub fn Lexer::scan8(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = TypeName
       continue match self.next() {
           '0'..='9' => 1
@@ -470,10 +500,10 @@ pub fn Lexer::scan8(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan9(self : Self) -> Lexeme {
@@ -488,27 +518,27 @@ pub fn Lexer::scan9(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Lt
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Or
       break
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = RBrace
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan10(self : Self) -> Lexeme {
@@ -522,22 +552,22 @@ pub fn Lexer::scan10(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrack
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrace
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan11(self : Self) -> Lexeme {
@@ -551,22 +581,22 @@ pub fn Lexer::scan11(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrack
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = RBrack
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan12(self : Self) -> Lexeme {
@@ -579,17 +609,17 @@ pub fn Lexer::scan12(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrace
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan13(self : Self) -> Lexeme {
@@ -602,17 +632,17 @@ pub fn Lexer::scan13(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = RBrack
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan14(self : Self) -> Lexeme {
@@ -628,7 +658,7 @@ pub fn Lexer::scan14(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LParen
       break
     }
@@ -640,7 +670,7 @@ pub fn Lexer::scan14(self : Self) -> Lexeme {
           _ => break
         }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = ConstructorName
       continue match self.next() {
           '0'..='9' => 3
@@ -651,7 +681,7 @@ pub fn Lexer::scan14(self : Self) -> Lexeme {
         }
     }
     4 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = MethodName
       continue match self.next() {
           '0'..='9' => 4
@@ -693,7 +723,7 @@ pub fn Lexer::scan14(self : Self) -> Lexeme {
           _ => break
         }
     11 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Shift
       break
     }
@@ -728,7 +758,7 @@ pub fn Lexer::scan14(self : Self) -> Lexeme {
           _ => break
         }
     18 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Reduce
       break
     }
@@ -745,10 +775,10 @@ pub fn Lexer::scan14(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan15(self : Self) -> Lexeme {
@@ -763,12 +793,12 @@ pub fn Lexer::scan15(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LParen
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = ConstructorName
       continue match self.next() {
           '0'..='9' => 2
@@ -779,7 +809,7 @@ pub fn Lexer::scan15(self : Self) -> Lexeme {
         }
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = MethodName
       continue match self.next() {
           '0'..='9' => 3
@@ -792,10 +822,10 @@ pub fn Lexer::scan15(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan16(self : Self) -> Lexeme {
@@ -808,17 +838,17 @@ pub fn Lexer::scan16(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LParen
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan17(self : Self) -> Lexeme {
@@ -834,12 +864,12 @@ pub fn Lexer::scan17(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = RParen
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Symbol
       continue match self.next() {
           '0'..='9' => 2
@@ -850,17 +880,17 @@ pub fn Lexer::scan17(self : Self) -> Lexeme {
         }
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrack
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan18(self : Self) -> Lexeme {
@@ -873,7 +903,7 @@ pub fn Lexer::scan18(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = FieldName
       continue match self.next() {
           '0'..='9' => 1
@@ -886,10 +916,10 @@ pub fn Lexer::scan18(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan19(self : Self) -> Lexeme {
@@ -903,22 +933,22 @@ pub fn Lexer::scan19(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Colon
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Tilde
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan20(self : Self) -> Lexeme {
@@ -932,7 +962,7 @@ pub fn Lexer::scan20(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Symbol
       continue match self.next() {
           '0'..='9' => 1
@@ -945,10 +975,10 @@ pub fn Lexer::scan20(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan21(self : Self) -> Lexeme {
@@ -962,7 +992,7 @@ pub fn Lexer::scan21(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LParen
       break
     }
@@ -972,17 +1002,17 @@ pub fn Lexer::scan21(self : Self) -> Lexeme {
           _ => break
         }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = ColonColon
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan22(self : Self) -> Lexeme {
@@ -995,7 +1025,7 @@ pub fn Lexer::scan22(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = MethodName
       continue match self.next() {
           '0'..='9' => 1
@@ -1008,10 +1038,10 @@ pub fn Lexer::scan22(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan23(self : Self) -> Lexeme {
@@ -1031,27 +1061,27 @@ pub fn Lexer::scan23(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscOrigin
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscSpace
       break
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscU
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan24(self : Self) -> Lexeme {
@@ -1077,62 +1107,62 @@ pub fn Lexer::scan24(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscNo
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LParen
       break
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = RParen
       break
     }
     4 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Star
       break
     }
     5 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Plus
       break
     }
     6 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Dot
       break
     }
     7 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Ques
       break
     }
     8 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrack
       break
     }
     9 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Esc
       break
     }
     10 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Or
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan25(self : Self) -> Lexeme {
@@ -1152,32 +1182,32 @@ pub fn Lexer::scan25(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscNo
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Esc
       break
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = RBrack
       break
     }
     4 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Caret
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan26(self : Self) -> Lexeme {
@@ -1197,32 +1227,32 @@ pub fn Lexer::scan26(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscNo
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Dash
       break
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Esc
       break
     }
     4 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = RBrack
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan27(self : Self) -> Lexeme {
@@ -1240,22 +1270,22 @@ pub fn Lexer::scan27(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscNo
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Esc
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan28(self : Self) -> Lexeme {
@@ -1272,7 +1302,7 @@ pub fn Lexer::scan28(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscUnicode
       continue match self.next() {
           '0' => 1
@@ -1286,10 +1316,10 @@ pub fn Lexer::scan28(self : Self) -> Lexeme {
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan29(self : Self) -> Lexeme {
@@ -1308,27 +1338,27 @@ pub fn Lexer::scan29(self : Self) -> Lexeme {
           _ => break
         }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscNo
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Esc
       break
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = RBrack
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
-} ///|
+}
 
 ///|
 pub fn Lexer::scan30(self : Self) -> Lexeme {
@@ -1336,7 +1366,7 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
   self.skip_space() |> ignore
   loop 0 {
     0 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LAURUS_EOF
       continue match self.next() {
           '\u{0}'..='$' => 1
@@ -1362,32 +1392,32 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
         }
     }
     1 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = EscNo
       break
     }
     2 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Percent
       break
     }
     3 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LParen
       break
     }
     4 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Star
       break
     }
     5 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Plus
       break
     }
     6 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Dot
       break
     }
@@ -1397,12 +1427,12 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
           _ => break
         }
     8 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Ques
       break
     }
     9 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = TokenName
       continue match self.next() {
           '0'..='9' => 15
@@ -1413,17 +1443,17 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
         }
     }
     10 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = LBrack
       break
     }
     11 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Esc
       break
     }
     12 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = SortName
       continue match self.next() {
           '0'..='9' => 14
@@ -1434,12 +1464,12 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
         }
     }
     13 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = Or
       break
     }
     14 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = SortName
       continue match self.next() {
           '0'..='9' => 14
@@ -1450,7 +1480,7 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
         }
     }
     15 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = TokenName
       continue match self.next() {
           '0'..='9' => 15
@@ -1461,14 +1491,14 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
         }
     }
     16 => {
-      self.lexeme.end = self.cur
+      self.lexeme.end = self.cur.clone()
       self.lexeme.token = CommentHead
       break
     }
     _ => break
   }
   let lexeme = self.lexeme
-  self.cur = lexeme.end
-  self.lexeme = Lexeme::new(beg=lexeme.end)
+  self.cur = lexeme.end.clone()
+  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
   lexeme
 }
