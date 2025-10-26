@@ -266,7 +266,7 @@ fn LR1Maker::truncate(self : Self, state : State) -> State {
     guard max_rule.get(sort) is Some((max_prio, max_red)) else { continue }
     let prio = res.priority[sort][rule_i]
     guard prio < max_prio || (prio == max_prio && max_red) else { continue }
-    // println("at state \{self.state_indices.size()}, lookahead = \{lookahead}, sort = \{sort},  max = \{max_rule} ")
+    // println("at state \{self.state_indices.length()}, lookahead = \{lookahead}, sort = \{sort},  max = \{max_rule} ")
     // println("eliminate \{item}")
     state.items.0.remove(item)
   }
@@ -420,7 +420,7 @@ pub fn LR1Maker::construct_states(self : Self) -> Unit {
     }
   }
   let states : Array[Set[Item]] = Array::make(
-    self.state_indices.size(),
+    self.state_indices.length(),
     Set::new(capacity=0),
   )
   for state_index in self.state_indices {
@@ -445,7 +445,7 @@ pub fn LR1Maker::to_lr1(self : Self) -> LR1 {
   let dfa_tokens : Array[Array[Token]] = Array::new()
   fn add_dfa(tokens : Set[Token]) -> Index {
     let tokens = @dfa.TokenSet(tokens)
-    let len = dfa_indices.size()
+    let len = dfa_indices.length()
     match dfa_indices.get(tokens) {
       Some(index) => return index
       None => ()

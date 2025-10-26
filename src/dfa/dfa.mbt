@@ -137,7 +137,7 @@ fn DFAMaker::subset_construction(self : Self) -> Unit {
         dfa_nstate.insert(l, r, next)
       }
     }
-    let token : Token? = match tokens.size() {
+    let token : Token? = match tokens.length() {
       0 => None
       1 => Some(tokens.to_array()[0])
       _ => {

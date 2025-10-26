@@ -127,7 +127,7 @@ pub fn LR1Maker::conflicts(self : Self) -> Conflicts {
         acts.length() > 1
       })
       |> Map::from_iter()
-    if token_conflicts.size() != 0 {
+    if token_conflicts.length() != 0 {
       conflicts[state_i] = token_conflicts
     }
   }
@@ -175,7 +175,7 @@ pub fn LR1Maker::shallow_resolve(
           }
         })
       }
-      guard sort_act_rules.size() == 1 else {
+      guard sort_act_rules.length() == 1 else {
         // different sorts
         let new_conflict = Array::new()
         let new_shift : Array[(Sort, RuleIndex)] = Array::new()
@@ -223,7 +223,7 @@ pub fn LR1Maker::shallow_resolve(
       self.shift_table[state_i].remove(token)
       self.reduce_table[state_i][token] = [(sort, rules[0])]
     }
-    if conflicts.size() == 0 {
+    if conflicts.length() == 0 {
       conf.0.remove(state_i)
     }
   }
@@ -278,7 +278,7 @@ pub fn LR1Maker::deep_resolve(
     fn add_rule(rule : (Sort, RuleIndex)) -> Index {
       match rule_indices.get(rule) {
         None => {
-          let index = rule_indices.size()
+          let index = rule_indices.length()
           rule_indices[rule] = index
           index
         }
@@ -314,7 +314,7 @@ pub fn LR1Maker::deep_resolve(
         }
       }
     }
-    let n = rule_indices.size()
+    let n = rule_indices.length()
     let adj_matrix = FixedArray::makei(n, _ => FixedArray::make(n, false))
     for edge in edges {
       let (i, j) = edge
@@ -379,7 +379,7 @@ pub fn LR1Maker::deep_resolve(
         }
       }
     }
-    if conflicts.size() == 0 {
+    if conflicts.length() == 0 {
       conf.0.remove(state_i)
     }
   }

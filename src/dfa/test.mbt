@@ -26,7 +26,7 @@ test "pa|pb" {
 
 ///|
 fn Generator::test_helper(named_regexps : Map[String, RegExp]) -> Generator {
-  let len = named_regexps.size()
+  let len = named_regexps.length()
   let names = Array::new(capacity=len + 2)
   let nfas = Array::new(capacity=len + 2)
   names.push(LAURUS_RESERVED_EOF)

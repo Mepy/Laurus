@@ -46,12 +46,12 @@ fn Laurus::named_grammar(
   let start = if self.start != "" { self.start } else { self.sort_names[0] }
   name_indices["%start"] = 0
   for name in self.sort_names {
-    name_indices[name] = name_indices.size()
+    name_indices[name] = name_indices.length()
   }
-  name_indices[@dfa.LAURUS_RESERVED_EOF] = name_indices.size()
-  name_indices[@dfa.LAURUS_RESERVED_SPACE] = name_indices.size()
+  name_indices[@dfa.LAURUS_RESERVED_EOF] = name_indices.length()
+  name_indices[@dfa.LAURUS_RESERVED_SPACE] = name_indices.length()
   for name in self.token_names {
-    name_indices[name] = name_indices.size()
+    name_indices[name] = name_indices.length()
   }
   let rules : Array[Array[@lr1.Sentence]] = Array::new(capacity=sort_len)
   rules.push([[name_indices[start]]]) // %start -> start
@@ -109,9 +109,9 @@ fn Laurus::conflict_resolve(
 ) -> Unit {
   let conflicts = maker.conflicts()
   maker.shallow_resolve(conflicts, res)
-  guard conflicts.0.size() != 0 else {  }
+  guard conflicts.0.length() != 0 else {  }
   maker.deep_resolve(conflicts, res) // todo : check the logic, or it is always ok to do shift!!!
-  guard conflicts.0.size() != 0 else {  }
+  guard conflicts.0.length() != 0 else {  }
   for state_token_conflicts in conflicts.0 {
     let (state_i, token_conflicts) = state_token_conflicts
     println("state \{state_i}")
@@ -142,7 +142,7 @@ fn Laurus::semantics(
 ) -> @lr1.Semantics {
   let names = name_indices.keys().to_array()
   let sort_len = grammar.rules.length()
-  let len = name_indices.size()
+  let len = name_indices.length()
   let generic_types = Array::new(capacity=len)
   let type_namespaces = Array::new(capacity=len)
   let type_names = Array::new(capacity=len)

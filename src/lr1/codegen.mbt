@@ -484,7 +484,7 @@ pub fn Generator::codegen_parse(
 
       // codegen goto
       let goto_map = lr1.goto_table[sort]
-      match goto_map.size() {
+      match goto_map.length() {
         0 => // S' -> S
           self.builder.write_string("            break\n")
         1 => {
