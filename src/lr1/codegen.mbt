@@ -207,17 +207,15 @@ pub fn Generator::codegen_parse(
 ) -> Unit {
   let parse_header =
     #|///|
-    $|pub fn Parser::parse(self : Self) -> \{sem.type_names[0].unwrap()}? {
+    $|pub fn Parser::parse(self : Self) -> \{sem.type_names[0].unwrap()} raise LexerError {
     #|  let mut lexeme = self.lexer.scan0()
     #|  loop 0 {
     #|
   let parse_footer =
     #|    _ => break
     #|  }
-    #|  match self.node_stack[0] {
-    $|    \{sem.type_constr_names[0].unwrap()}(node) => Some(node)
-    $|    _ => None
-    #|  }
+    $|	guard self.node_stack[0] is \{sem.type_constr_names[0].unwrap()}(node)
+    #|  node
     #|}
     #|
   self.builder.write_string(parse_header)

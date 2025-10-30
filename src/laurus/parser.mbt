@@ -83,7 +83,7 @@ enum Node {
 } derive(Show)
 
 ///|
-pub fn Parser::parse(self : Self) -> Laurus? {
+pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
   let mut lexeme = self.lexer.scan0()
   loop 0 {
     0 => {
@@ -3998,8 +3998,6 @@ pub fn Parser::parse(self : Self) -> Laurus? {
     }
     _ => break
   }
-  match self.node_stack[0] {
-    Laurus(node) => Some(node)
-    _ => None
-  }
+  guard self.node_stack[0] is Laurus(node)
+  node
 }

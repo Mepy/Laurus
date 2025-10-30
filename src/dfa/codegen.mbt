@@ -20,9 +20,15 @@ fn Generator::init(self : Self) -> Unit {
   let token_type_header =
     #|///|
     #|pub enum TOKEN {
+    #|	LAURUS_ERROR
     #|
   let token_type_footer =
     #|} derive(Show)
+    #|
+    #|///|
+    #|suberror LexerError {
+    #|	ExpectTokens (Location, Location, Array[TOKEN])
+    #|}
     #|
   self.builder.write_string(token_type_header)
   for name in self.names {
@@ -42,7 +48,7 @@ fn Generator::init(self : Self) -> Unit {
     #|
     #|///|
     #|impl Default for Location with default(){
-    #|  Location::{row:0, col:0, off:0}
+    #|  Location::{row:1, col:0, off:0}
     #|}
     #|
     #|///|
@@ -60,12 +66,12 @@ fn Generator::init(self : Self) -> Unit {
     #|
     #|///|
     #|fn Lexeme::new(beg? : Location = Location::default()) -> Self {
-    $|  { token: \{self.names[0]}, beg, end: Location::default() }
+    $|  { token: LAURUS_ERROR, beg, end: Location::default() }
     #|}
     #|
     #|///|
     #|fn Lexeme::init(self : Self) -> Unit {
-    $|  self.token = \{self.names[0]}
+    $|  self.token = LAURUS_ERROR
     #|  self.beg = Location::default()
     #|}
     #|
@@ -90,6 +96,7 @@ fn Generator::init(self : Self) -> Unit {
     #|}
     #|
     #|///|
+    #|#inline
     #|pub fn Lexer::cur_loc(self : Self) -> Location {
     #|	self.cur.clone()
     #|}
@@ -131,10 +138,18 @@ fn Generator::init(self : Self) -> Unit {
 }
 
 ///|
-fn Generator::codegen_dfa(self : Self, dfa : DFA, scan_header : String) -> Unit {
+fn Generator::codegen_dfa(
+  self : Self,
+  dfa : DFA,
+  scan_header : String,
+  token_names : String,
+) -> Unit {
   let scan_footer =
     #|    _ => break
     #|  }
+    #|	if self.lexeme.token is LAURUS_ERROR {
+    $|		raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [\{token_names}])
+    #|	}
     #|  let lexeme = self.lexeme
     #|  self.cur = lexeme.end.clone()
     #|  self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -208,12 +223,12 @@ pub fn Generator::codegen_scan(
   }
   let scan_header =
     #|///|
-    $|pub fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme {
+    $|pub fn Lexer::scan\{self.dfa_count}(self : Self) -> Lexeme raise LexerError {
     $|  // [\{token_names}]
     $|  self.skip_space() |> ignore
     #|  loop 0 {
     #|
-  self.codegen_dfa(dfa, scan_header)
+  self.codegen_dfa(dfa, scan_header, token_names)
   self.dfa_count += 1
 }
 
@@ -225,10 +240,10 @@ pub fn Generator::codegen_skip_space(self : Self) -> Unit {
   let dfa = maker.to_dfa()
   let scan_header =
     #|///|
-    $|pub fn Lexer::skip_space(self : Self) -> Lexeme {
+    $|pub fn Lexer::skip_space(self : Self) -> Lexeme raise LexerError {
     #|  loop 0 {
     #|
-  self.codegen_dfa(dfa, scan_header)
+  self.codegen_dfa(dfa, scan_header, LAURUS_RESERVED_SPACE)
 }
 
 ///|

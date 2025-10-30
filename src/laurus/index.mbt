@@ -13,13 +13,20 @@ pub fn generate(path : String) -> Unit {
   try {
     let source = @fs.read_file_to_string(path.to_string())
     parser.init(source)
-    guard parser.parse() is Some(laurus) else {  }
+    let laurus = parser.parse()
     let par_gen = laurus.par_gen()
     // println(laurus)
     path.pop() |> ignore
     // println(path.to_string())
     par_gen.save(path.to_string())
   } catch {
-    _ => println("unknown error")
+    @fs.IOError(io_err) => println("IO Error : \{io_err}")
+    ExpectTokens(beg, end, tokens) => {
+      let error_msg =
+        $|LaurusParseError of file \{path}
+        $|at \{beg}-\{end}, expect tokens : \{tokens}
+      println(error_msg)
+    }
+    e => println("unknown error : \{e}")
   }
 }

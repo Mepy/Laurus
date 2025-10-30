@@ -1,5 +1,6 @@
 ///|
 pub enum TOKEN {
+  LAURUS_ERROR
   LAURUS_EOF
   LAURUS_SPACE
   Symbol
@@ -43,6 +44,11 @@ pub enum TOKEN {
 } derive(Show)
 
 ///|
+suberror LexerError {
+  ExpectTokens(Location, Location, Array[TOKEN])
+}
+
+///|
 pub struct Location {
   mut row : Int
   mut col : Int
@@ -51,7 +57,7 @@ pub struct Location {
 
 ///|
 impl Default for Location with default() {
-  Location::{ row: 0, col: 0, off: 0 }
+  Location::{ row: 1, col: 0, off: 0 }
 }
 
 ///|
@@ -69,12 +75,12 @@ pub struct Lexeme {
 
 ///|
 fn Lexeme::new(beg? : Location = Location::default()) -> Self {
-  { token: LAURUS_EOF, beg, end: Location::default() }
+  { token: LAURUS_ERROR, beg, end: Location::default() }
 }
 
 ///|
 fn Lexeme::init(self : Self) -> Unit {
-  self.token = LAURUS_EOF
+  self.token = LAURUS_ERROR
   self.beg = Location::default()
 }
 
@@ -102,6 +108,7 @@ pub fn Lexer::init(
 }
 
 ///|
+#inline
 pub fn Lexer::cur_loc(self : Self) -> Location {
   self.cur.clone()
 }
@@ -139,7 +146,7 @@ fn Lexer::next(self : Self) -> Int {
 }
 
 ///|
-pub fn Lexer::skip_space(self : Self) -> Lexeme {
+pub fn Lexer::skip_space(self : Self) -> Lexeme raise LexerError {
   loop 0 {
     0 => {
       self.lexeme.end = self.cur.clone()
@@ -152,6 +159,9 @@ pub fn Lexer::skip_space(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [LAURUS_SPACE])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -159,7 +169,7 @@ pub fn Lexer::skip_space(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan0(self : Self) -> Lexeme {
+pub fn Lexer::scan0(self : Self) -> Lexeme raise LexerError {
   // [LAURUS_EOF, TokenName, SortName, Percent, CommentHead]
   self.skip_space() |> ignore
   loop 0 {
@@ -213,6 +223,15 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      LAURUS_EOF,
+      TokenName,
+      SortName,
+      Percent,
+      CommentHead,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -220,7 +239,7 @@ pub fn Lexer::scan0(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan1(self : Self) -> Lexeme {
+pub fn Lexer::scan1(self : Self) -> Lexeme raise LexerError {
   // [Colon, LBrace]
   self.skip_space() |> ignore
   loop 0 {
@@ -242,6 +261,12 @@ pub fn Lexer::scan1(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      Colon,
+      LBrace,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -249,7 +274,7 @@ pub fn Lexer::scan1(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan2(self : Self) -> Lexeme {
+pub fn Lexer::scan2(self : Self) -> Lexeme raise LexerError {
   // [Eq]
   self.skip_space() |> ignore
   loop 0 {
@@ -265,6 +290,9 @@ pub fn Lexer::scan2(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [Eq])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -272,7 +300,7 @@ pub fn Lexer::scan2(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan3(self : Self) -> Lexeme {
+pub fn Lexer::scan3(self : Self) -> Lexeme raise LexerError {
   // [Space, Start]
   self.skip_space() |> ignore
   loop 0 {
@@ -329,6 +357,9 @@ pub fn Lexer::scan3(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [Space, Start])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -336,7 +367,7 @@ pub fn Lexer::scan3(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan4(self : Self) -> Lexeme {
+pub fn Lexer::scan4(self : Self) -> Lexeme raise LexerError {
   // [CommentBody]
   self.skip_space() |> ignore
   loop 0 {
@@ -360,6 +391,9 @@ pub fn Lexer::scan4(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [CommentBody])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -367,7 +401,7 @@ pub fn Lexer::scan4(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan5(self : Self) -> Lexeme {
+pub fn Lexer::scan5(self : Self) -> Lexeme raise LexerError {
   // [SortName]
   self.skip_space() |> ignore
   loop 0 {
@@ -389,6 +423,9 @@ pub fn Lexer::scan5(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [SortName])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -396,7 +433,7 @@ pub fn Lexer::scan5(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan6(self : Self) -> Lexeme {
+pub fn Lexer::scan6(self : Self) -> Lexeme raise LexerError {
   // [Dot, LParen, LBrack, Esc, EscNo]
   self.skip_space() |> ignore
   loop 0 {
@@ -440,6 +477,15 @@ pub fn Lexer::scan6(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      Dot,
+      LParen,
+      LBrack,
+      Esc,
+      EscNo,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -447,7 +493,7 @@ pub fn Lexer::scan6(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan7(self : Self) -> Lexeme {
+pub fn Lexer::scan7(self : Self) -> Lexeme raise LexerError {
   // [TypeName, LParen]
   self.skip_space() |> ignore
   loop 0 {
@@ -475,6 +521,12 @@ pub fn Lexer::scan7(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      TypeName,
+      LParen,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -482,7 +534,7 @@ pub fn Lexer::scan7(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan8(self : Self) -> Lexeme {
+pub fn Lexer::scan8(self : Self) -> Lexeme raise LexerError {
   // [TypeName]
   self.skip_space() |> ignore
   loop 0 {
@@ -504,6 +556,9 @@ pub fn Lexer::scan8(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [TypeName])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -511,7 +566,7 @@ pub fn Lexer::scan8(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan9(self : Self) -> Lexeme {
+pub fn Lexer::scan9(self : Self) -> Lexeme raise LexerError {
   // [Or, Lt, RBrace]
   self.skip_space() |> ignore
   loop 0 {
@@ -539,6 +594,13 @@ pub fn Lexer::scan9(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      Or,
+      Lt,
+      RBrace,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -546,7 +608,7 @@ pub fn Lexer::scan9(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan10(self : Self) -> Lexeme {
+pub fn Lexer::scan10(self : Self) -> Lexeme raise LexerError {
   // [LBrack, LBrace]
   self.skip_space() |> ignore
   loop 0 {
@@ -568,6 +630,12 @@ pub fn Lexer::scan10(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      LBrack,
+      LBrace,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -575,7 +643,7 @@ pub fn Lexer::scan10(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan11(self : Self) -> Lexeme {
+pub fn Lexer::scan11(self : Self) -> Lexeme raise LexerError {
   // [LBrack, RBrack]
   self.skip_space() |> ignore
   loop 0 {
@@ -597,6 +665,12 @@ pub fn Lexer::scan11(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      LBrack,
+      RBrack,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -604,7 +678,7 @@ pub fn Lexer::scan11(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan12(self : Self) -> Lexeme {
+pub fn Lexer::scan12(self : Self) -> Lexeme raise LexerError {
   // [LBrace]
   self.skip_space() |> ignore
   loop 0 {
@@ -620,6 +694,9 @@ pub fn Lexer::scan12(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [LBrace])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -627,7 +704,7 @@ pub fn Lexer::scan12(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan13(self : Self) -> Lexeme {
+pub fn Lexer::scan13(self : Self) -> Lexeme raise LexerError {
   // [RBrack]
   self.skip_space() |> ignore
   loop 0 {
@@ -643,6 +720,9 @@ pub fn Lexer::scan13(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [RBrack])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -650,7 +730,7 @@ pub fn Lexer::scan13(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan14(self : Self) -> Lexeme {
+pub fn Lexer::scan14(self : Self) -> Lexeme raise LexerError {
   // [MethodName, ConstructorName, Shift, Reduce, LParen]
   self.skip_space() |> ignore
   loop 0 {
@@ -779,6 +859,15 @@ pub fn Lexer::scan14(self : Self) -> Lexeme {
         }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      MethodName,
+      ConstructorName,
+      Shift,
+      Reduce,
+      LParen,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -786,7 +875,7 @@ pub fn Lexer::scan14(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan15(self : Self) -> Lexeme {
+pub fn Lexer::scan15(self : Self) -> Lexeme raise LexerError {
   // [MethodName, ConstructorName, LParen]
   self.skip_space() |> ignore
   loop 0 {
@@ -826,6 +915,13 @@ pub fn Lexer::scan15(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      MethodName,
+      ConstructorName,
+      LParen,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -833,7 +929,7 @@ pub fn Lexer::scan15(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan16(self : Self) -> Lexeme {
+pub fn Lexer::scan16(self : Self) -> Lexeme raise LexerError {
   // [LParen]
   self.skip_space() |> ignore
   loop 0 {
@@ -849,6 +945,9 @@ pub fn Lexer::scan16(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [LParen])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -856,7 +955,7 @@ pub fn Lexer::scan16(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan17(self : Self) -> Lexeme {
+pub fn Lexer::scan17(self : Self) -> Lexeme raise LexerError {
   // [Symbol, RParen, LBrack]
   self.skip_space() |> ignore
   loop 0 {
@@ -891,6 +990,13 @@ pub fn Lexer::scan17(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      Symbol,
+      RParen,
+      LBrack,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -898,7 +1004,7 @@ pub fn Lexer::scan17(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan18(self : Self) -> Lexeme {
+pub fn Lexer::scan18(self : Self) -> Lexeme raise LexerError {
   // [FieldName]
   self.skip_space() |> ignore
   loop 0 {
@@ -920,6 +1026,9 @@ pub fn Lexer::scan18(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [FieldName])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -927,7 +1036,7 @@ pub fn Lexer::scan18(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan19(self : Self) -> Lexeme {
+pub fn Lexer::scan19(self : Self) -> Lexeme raise LexerError {
   // [Colon, Tilde]
   self.skip_space() |> ignore
   loop 0 {
@@ -949,6 +1058,9 @@ pub fn Lexer::scan19(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [Colon, Tilde])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -956,7 +1068,7 @@ pub fn Lexer::scan19(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan20(self : Self) -> Lexeme {
+pub fn Lexer::scan20(self : Self) -> Lexeme raise LexerError {
   // [Symbol]
   self.skip_space() |> ignore
   loop 0 {
@@ -979,6 +1091,9 @@ pub fn Lexer::scan20(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [Symbol])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -986,7 +1101,7 @@ pub fn Lexer::scan20(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan21(self : Self) -> Lexeme {
+pub fn Lexer::scan21(self : Self) -> Lexeme raise LexerError {
   // [ColonColon, LParen]
   self.skip_space() |> ignore
   loop 0 {
@@ -1013,6 +1128,12 @@ pub fn Lexer::scan21(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      ColonColon,
+      LParen,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1020,7 +1141,7 @@ pub fn Lexer::scan21(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan22(self : Self) -> Lexeme {
+pub fn Lexer::scan22(self : Self) -> Lexeme raise LexerError {
   // [MethodName]
   self.skip_space() |> ignore
   loop 0 {
@@ -1042,6 +1163,9 @@ pub fn Lexer::scan22(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [MethodName])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1049,7 +1173,7 @@ pub fn Lexer::scan22(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan23(self : Self) -> Lexeme {
+pub fn Lexer::scan23(self : Self) -> Lexeme raise LexerError {
   // [EscU, EscOrigin, EscSpace]
   self.skip_space() |> ignore
   loop 0 {
@@ -1082,6 +1206,13 @@ pub fn Lexer::scan23(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      EscU,
+      EscOrigin,
+      EscSpace,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1089,7 +1220,7 @@ pub fn Lexer::scan23(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan24(self : Self) -> Lexeme {
+pub fn Lexer::scan24(self : Self) -> Lexeme raise LexerError {
   // [Dot, Star, Plus, Ques, Or, LParen, RParen, LBrack, Esc, EscNo]
   self.skip_space() |> ignore
   loop 0 {
@@ -1163,6 +1294,20 @@ pub fn Lexer::scan24(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      Dot,
+      Star,
+      Plus,
+      Ques,
+      Or,
+      LParen,
+      RParen,
+      LBrack,
+      Esc,
+      EscNo,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1170,7 +1315,7 @@ pub fn Lexer::scan24(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan25(self : Self) -> Lexeme {
+pub fn Lexer::scan25(self : Self) -> Lexeme raise LexerError {
   // [Caret, RBrack, Esc, EscNo]
   self.skip_space() |> ignore
   loop 0 {
@@ -1208,6 +1353,14 @@ pub fn Lexer::scan25(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      Caret,
+      RBrack,
+      Esc,
+      EscNo,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1215,7 +1368,7 @@ pub fn Lexer::scan25(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan26(self : Self) -> Lexeme {
+pub fn Lexer::scan26(self : Self) -> Lexeme raise LexerError {
   // [Dash, RBrack, Esc, EscNo]
   self.skip_space() |> ignore
   loop 0 {
@@ -1253,6 +1406,14 @@ pub fn Lexer::scan26(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      Dash,
+      RBrack,
+      Esc,
+      EscNo,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1260,7 +1421,7 @@ pub fn Lexer::scan26(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan27(self : Self) -> Lexeme {
+pub fn Lexer::scan27(self : Self) -> Lexeme raise LexerError {
   // [Esc, EscNo]
   self.skip_space() |> ignore
   loop 0 {
@@ -1286,6 +1447,9 @@ pub fn Lexer::scan27(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [Esc, EscNo])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1293,7 +1457,7 @@ pub fn Lexer::scan27(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan28(self : Self) -> Lexeme {
+pub fn Lexer::scan28(self : Self) -> Lexeme raise LexerError {
   // [EscUnicode]
   self.skip_space() |> ignore
   loop 0 {
@@ -1320,6 +1484,9 @@ pub fn Lexer::scan28(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [EscUnicode])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1327,7 +1494,7 @@ pub fn Lexer::scan28(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan29(self : Self) -> Lexeme {
+pub fn Lexer::scan29(self : Self) -> Lexeme raise LexerError {
   // [RBrack, Esc, EscNo]
   self.skip_space() |> ignore
   loop 0 {
@@ -1359,6 +1526,13 @@ pub fn Lexer::scan29(self : Self) -> Lexeme {
     }
     _ => break
   }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      RBrack,
+      Esc,
+      EscNo,
+    ])
+  }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()
   self.lexeme = Lexeme::new(beg=lexeme.end.clone())
@@ -1366,7 +1540,7 @@ pub fn Lexer::scan29(self : Self) -> Lexeme {
 }
 
 ///|
-pub fn Lexer::scan30(self : Self) -> Lexeme {
+pub fn Lexer::scan30(self : Self) -> Lexeme raise LexerError {
   // [LAURUS_EOF, TokenName, SortName, Percent, Dot, Star, Plus, Ques, Or, LParen, LBrack, Esc, EscNo, CommentHead]
   self.skip_space() |> ignore
   loop 0 {
@@ -1501,6 +1675,24 @@ pub fn Lexer::scan30(self : Self) -> Lexeme {
       break
     }
     _ => break
+  }
+  if self.lexeme.token is LAURUS_ERROR {
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      LAURUS_EOF,
+      TokenName,
+      SortName,
+      Percent,
+      Dot,
+      Star,
+      Plus,
+      Ques,
+      Or,
+      LParen,
+      LBrack,
+      Esc,
+      EscNo,
+      CommentHead,
+    ])
   }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()

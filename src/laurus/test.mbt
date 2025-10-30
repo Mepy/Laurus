@@ -341,11 +341,22 @@ test "parse::laurus" {
   let parser = Parser::new()
   let laurus_source = @fs.read_file_to_string("./src/laurus/laurus.laurus")
   parser.init(laurus_source)
-  guard parser.parse() is Some(laurus) else {  }
-  let span = parser.span_stack[0].children[0]
-  println("\{span.beg} \{span.end} \{span.children.length()}")
-  let par_gen = laurus.par_gen()
-  par_gen.save("./src/laurus")
+  try parser.parse() catch {
+    ExpectTokens(beg, end, tokens) =>
+      println("At (\{beg}, \{end}), expect tokens : \{tokens}")
+  } noraise {
+    laurus => {
+      // let span = parser.span_stack[0].children[0]
+      // println("\{span.beg} \{span.end} \{span.children.length()}")
+      guard parser.lexer.cur.off == parser.lexer.src.length() else {
+        println(
+          "Remaining input at \{parser.lexer.cur} < \{parser.lexer.src.length()}",
+        )
+      }
+      let par_gen = laurus.par_gen()
+      par_gen.save("./src/laurus")
+    }
+  }
 }
 
 ///|
