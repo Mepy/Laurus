@@ -14,7 +14,7 @@ fn Span::leaf(beg : Location, end : Location) -> Span {
 ///|
 fn Span::tree(children : FixedArray[Span]) -> Span {
   let len = children.length()
-  guard len != 0 else { Span::leaf(Location::default(), Location::default()) }
+  // guard len != 0
   let beg = children[0].beg
   let end = children[len - 1].end
   { beg, end, children }
@@ -90,9 +90,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
       self.enter_state(0)
       continue match lexeme.token {
           LAURUS_EOF | SortName | TokenName | Percent | CommentHead => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 0:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
+            let loc = self.lexer.cur_loc()
+            let span = Span::leaf(loc, loc)
             self.span_stack.push(span)
             let node = Laurus::new() |> Node::Laurus
             self.node_stack.push(node)
@@ -198,9 +197,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             7
           }
           LBrace => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 0:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
+            let loc = self.lexer.cur_loc()
+            let span = Span::leaf(loc, loc)
             self.span_stack.push(span)
             let node = SortType::Ignore |> Node::SortType
             self.node_stack.push(node)
@@ -406,9 +404,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
       self.enter_state(16)
       continue match lexeme.token {
           RBrace | Or | Lt => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 0:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
+            let loc = self.lexer.cur_loc()
+            let span = Span::leaf(loc, loc)
             self.span_stack.push(span)
             let node = Array::empty() |> Node::Array_LB_Rule_RB_
             self.node_stack.push(node)
@@ -511,9 +508,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             25
           }
           ConstructorName | MethodName | LParen => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 0:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
+            let loc = self.lexer.cur_loc()
+            let span = Span::leaf(loc, loc)
             self.span_stack.push(span)
             let node = ShiftReduce::Reduce |> Node::ShiftReduce
             self.node_stack.push(node)
@@ -576,9 +572,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             28
           }
           LParen => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 0:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
+            let loc = self.lexer.cur_loc()
+            let span = Span::leaf(loc, loc)
             self.span_stack.push(span)
             let node = Action::Wrapper |> Node::Action
             self.node_stack.push(node)
@@ -675,9 +670,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
       self.enter_state(29)
       continue match lexeme.token {
           RParen | Symbol | LBrack => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 0:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
+            let loc = self.lexer.cur_loc()
+            let span = Span::leaf(loc, loc)
             self.span_stack.push(span)
             let node = Array::empty() |> Node::Array_LB_Symbol_RB_
             self.node_stack.push(node)
@@ -925,9 +919,8 @@ pub fn Parser::parse(self : Self) -> Laurus? {
             43
           }
           LParen => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 0:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
+            let loc = self.lexer.cur_loc()
+            let span = Span::leaf(loc, loc)
             self.span_stack.push(span)
             let node = TokenConv::Ignore |> Node::TokenConv
             self.node_stack.push(node)

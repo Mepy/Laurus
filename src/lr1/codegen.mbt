@@ -35,7 +35,7 @@ fn Generator::init(self : Self) -> Unit {
     #|///|
     #|fn Span::tree(children : FixedArray[Span]) -> Span {
     #|  let len = children.length()
-    #|  guard len != 0 else { Span::leaf(Location::default(), Location::default()) }
+    #|  // guard len != 0
     #|  let beg = children[0].beg
     #|  let end = children[len - 1].end
     #|  { beg, end, children }
@@ -300,12 +300,23 @@ pub fn Generator::codegen_parse(
       let tokens_name = tokens.map(token => sem.names[token]).join(" | ")
       let reduce_header =
         $|          \{tokens_name} => { // reduce
-        $|            let span = self.span_stack[self.span_stack.length()-\{rule_size}:].iter() |> FixedArray::from_iter |> Span::tree
         $|
       let reduce_footer =
         #|          }
         #|
       self.builder.write_string(reduce_header)
+      if rule_size == 0 {
+        let span_code =
+          $|            let loc = self.lexer.cur_loc()
+          $|						let span = Span::leaf(loc, loc)
+          $|
+        self.builder.write_string(span_code)
+      } else {
+        let span_code =
+          $|            let span = self.span_stack[self.span_stack.length()-\{rule_size}:].iter() |> FixedArray::from_iter |> Span::tree
+          $|
+        self.builder.write_string(span_code)
+      }
       // pop state_stack, span_stack
       for i in 0..<rule_size {
         let pop_stack =

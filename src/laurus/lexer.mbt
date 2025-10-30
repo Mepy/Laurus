@@ -102,6 +102,11 @@ pub fn Lexer::init(
 }
 
 ///|
+pub fn Lexer::cur_loc(self : Self) -> Location {
+  self.cur.clone()
+}
+
+///|
 pub fn Lexer::get(self : Self, lexeme : Lexeme) -> String {
   let beg = lexeme.beg
   let end = lexeme.end
