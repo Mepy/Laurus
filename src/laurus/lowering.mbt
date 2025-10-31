@@ -170,6 +170,13 @@ fn Laurus::semantics(
   type_constr_names.push(None) // SPACE
   for token_conv in self.token_convs {
     let type_name = token_conv.type_name()
+    generic_types.push(
+      if type_name is Some(type_name) {
+        Some(Generics::Atom(type_name))
+      } else {
+        None
+      },
+    )
     type_namespaces.push(type_name)
     type_names.push(type_name)
     type_constr_names.push(type_name)

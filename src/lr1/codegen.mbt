@@ -88,7 +88,7 @@ pub fn Generator::codegen_syntax_type(self : Self, sem : Semantics) -> Unit {
     let (type_name, { field_type_names }) = named_tuple_type
     let type_header =
       #|///|
-      $|struct \{type_name} (
+      $|pub(all) struct \{type_name} (
     let type_footer =
       #|) derive(Show)
       #|
@@ -102,7 +102,7 @@ pub fn Generator::codegen_syntax_type(self : Self, sem : Semantics) -> Unit {
     let (type_name, { field_and_type_names }) = named_struct_type
     let type_header =
       #|///|
-      $|struct \{type_name} {
+      $|pub(all) struct \{type_name} {
       $|
     let type_footer =
       #|} derive(Show)
@@ -118,7 +118,7 @@ pub fn Generator::codegen_syntax_type(self : Self, sem : Semantics) -> Unit {
     let (type_name, { branches }) = named_enum_type
     let type_header =
       #|///|
-      $|enum \{type_name} {
+      $|pub(all) enum \{type_name} {
       $|
     let type_footer =
       #|} derive(Show)

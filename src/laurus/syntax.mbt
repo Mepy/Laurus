@@ -1,8 +1,8 @@
 ///|
-struct Range(Char, Char) derive(Show)
+pub(all) struct Range(Char, Char) derive(Show)
 
 ///|
-struct Rule {
+pub(all) struct Rule {
   priority : Priority
   shift_reduce : ShiftReduce
   action : Action
@@ -10,14 +10,14 @@ struct Rule {
 } derive(Show)
 
 ///|
-enum TokenConv {
+pub(all) enum TokenConv {
   Ignore
   BuiltIn(String)
   Interpret(type_name~ : String, parse_func_name~ : String)
 } derive(Show)
 
 ///|
-enum RegExp {
+pub(all) enum RegExp {
   Union(RegExp, RegExp)
   Seq(RegExp, RegExp)
   Star(RegExp)
@@ -31,39 +31,39 @@ enum RegExp {
 } derive(Show)
 
 ///|
-enum SortType {
+pub(all) enum SortType {
   Ignore
   Atom(String)
   Gen(String, Generics)
 } derive(Show)
 
 ///|
-enum Generics {
+pub(all) enum Generics {
   Atom(String)
   Gen(String, Generics)
 } derive(Show)
 
 ///|
-enum Priority {
+pub(all) enum Priority {
   Equal
   Higher
 } derive(Show)
 
 ///|
-enum ShiftReduce {
+pub(all) enum ShiftReduce {
   Reduce
   Shift
 } derive(Show)
 
 ///|
-enum Action {
+pub(all) enum Action {
   Wrapper
   Constructor(String)
   Method(String)
 } derive(Show)
 
 ///|
-enum Symbol {
+pub(all) enum Symbol {
   Unnamed(String)
   Named(field_name~ : String, String)
   NamedAbbrev(field_name~ : String)
