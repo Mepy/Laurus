@@ -1,6 +1,6 @@
 {
   "name": "Mepy/Laurus",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "deps": {
     "moonbitlang/x": "0.4.34",
     "Kaida-Amethyst/path": "0.1.1"

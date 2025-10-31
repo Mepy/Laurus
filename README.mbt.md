@@ -10,9 +10,10 @@ It contains a [file](https://github.com/Mepy/arith.laurus/blob/main/src/arith.la
 
 
 ## Features
-Please refer to the example [arith](./src/tests/arith/).
+Please refer to [examples](./src/tests/arith/).
 - **Implicit priorities** of grammar rules for LR(1) conflicts resolution
 - **Syntax types** auto generation
+- **Unicode** supported, see the example [unicode](./src/tests/unicode/).
 
 
 ## Status
