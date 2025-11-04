@@ -23,7 +23,7 @@ typealias Int as Sort
 pub typealias Int as Symbol
 
 ///|
-pub typealias Array[Symbol] as Sentence
+pub type Sentence = Array[Symbol]
 
 ///|
 struct Graph {

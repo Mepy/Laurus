@@ -1,0 +1,28 @@
+%start expr0
+%space ([\s\t\n]*)
+
+Var = String([_a-zA-Z][_a-zA-Z0-9]*)
+Lit = Int::from_str([0-9]|[1-9][0-9]*)
+LParen = (\()
+RParen = (\))
+
+Ques = (\?)
+Colon = (:)
+
+Assign = (=)
+
+
+
+expr0 : Expr {
+< @right Assign(Var Assign expr1)
+| (expr1)
+}
+expr1 : Expr {
+< @right Triple(expr2 Ques expr2 Colon expr2)
+| (expr2)
+}
+expr2 : Expr {
+< Lit(Lit)
+| Var(Var)
+| (LParen expr0 RParen)
+}
