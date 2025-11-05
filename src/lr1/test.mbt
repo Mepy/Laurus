@@ -143,7 +143,7 @@ test "codegen:simple" {
   generator.codegen_syntax_type(sem)
   generator.codegen_node_type(sem)
   generator.codegen_interpret(sem)
-  generator.codegen_parse(lr1, sem)
+  generator.codegen_parse(lr1, sem, false)
   generator.save("./src/lr1")
 }
 

@@ -10,6 +10,7 @@ pub enum TOKEN {
   MethodName
   ConstructorName
   FieldName
+  Debug
   Space
   Start
   Shift
@@ -301,64 +302,94 @@ pub fn Lexer::scan2(self : Self) -> Lexeme raise LexerError {
 
 ///|
 pub fn Lexer::scan3(self : Self) -> Lexeme raise LexerError {
-  // [Space, Start]
+  // [Debug, Space, Start]
   self.skip_space() |> ignore
   loop 0 {
     0 =>
       continue match self.next() {
-          's' => 1
+          'd' => 1
+          's' => 2
           _ => break
         }
     1 =>
       continue match self.next() {
-          'p' => 2
-          't' => 3
+          'e' => 11
           _ => break
         }
     2 =>
       continue match self.next() {
-          'a' => 7
+          'p' => 3
+          't' => 4
           _ => break
         }
     3 =>
       continue match self.next() {
-          'a' => 4
+          'a' => 8
           _ => break
         }
     4 =>
       continue match self.next() {
-          'r' => 5
+          'a' => 5
           _ => break
         }
     5 =>
       continue match self.next() {
-          't' => 6
+          'r' => 6
           _ => break
         }
-    6 => {
+    6 =>
+      continue match self.next() {
+          't' => 7
+          _ => break
+        }
+    7 => {
       self.lexeme.end = self.cur.clone()
       self.lexeme.token = Start
       break
     }
-    7 =>
-      continue match self.next() {
-          'c' => 8
-          _ => break
-        }
     8 =>
       continue match self.next() {
-          'e' => 9
+          'c' => 9
           _ => break
         }
-    9 => {
+    9 =>
+      continue match self.next() {
+          'e' => 10
+          _ => break
+        }
+    10 => {
       self.lexeme.end = self.cur.clone()
       self.lexeme.token = Space
+      break
+    }
+    11 =>
+      continue match self.next() {
+          'b' => 12
+          _ => break
+        }
+    12 =>
+      continue match self.next() {
+          'u' => 13
+          _ => break
+        }
+    13 =>
+      continue match self.next() {
+          'g' => 14
+          _ => break
+        }
+    14 => {
+      self.lexeme.end = self.cur.clone()
+      self.lexeme.token = Debug
       break
     }
     _ => break
   }
   if self.lexeme.token is LAURUS_ERROR {
-    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [Space, Start])
+    raise ExpectTokens(self.lexeme.beg.clone(), self.cur.clone(), [
+      Debug,
+      Space,
+      Start,
+    ])
   }
   let lexeme = self.lexeme
   self.cur = lexeme.end.clone()

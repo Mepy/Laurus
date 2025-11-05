@@ -5,6 +5,7 @@
 ///|
 struct Laurus {
   comments : Array[String]
+  mut is_debug : Bool
   mut space : RegExp
   mut start : String
   token_names : Array[String]
@@ -352,7 +353,7 @@ fn Laurus::par_gen(self : Laurus) -> @lr1.Generator {
   generator.codegen_syntax_type(sem)
   generator.codegen_node_type(sem)
   generator.codegen_interpret(sem)
-  generator.codegen_parse(lr1, sem)
+  generator.codegen_parse(lr1, sem, self.is_debug)
   generator
 }
 

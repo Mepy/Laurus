@@ -6,7 +6,7 @@ MethodName = String([a-z][a-zA-Z0-9_]*)
 ConstructorName = String([A-Z][a-zA-Z0-9_]*)
 FieldName = String([a-z][a-zA-Z0-9_]*)
 
-
+Debug = (debug)
 Space = (space)
 Start = (start)
 Shift = (@(shift|right))
@@ -56,6 +56,7 @@ CommentBody = String([^\n]*)
 laurus : Laurus {
 | new()
 | add_comment(laurus CommentHead CommentBody)
+| set_debug(laurus Percent Debug)
 | set_space(laurus Percent Space reg_exp)
 | set_start(laurus Percent Start SortName)
 | add_token(laurus [token_name : TokenName] Eq [token_conv~] LParen [reg_exp~] RParen)

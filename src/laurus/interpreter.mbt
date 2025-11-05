@@ -2,6 +2,7 @@
 fn Laurus::new() -> Laurus {
   {
     comments: Array::new(),
+    is_debug: false,
     space: Emp,
     start: "",
     token_names: Array::new(),
@@ -16,6 +17,12 @@ fn Laurus::new() -> Laurus {
 ///|
 fn Laurus::add_comment(self : Laurus, comment : String) -> Laurus {
   self.comments.push(comment)
+  self
+}
+
+///|
+fn Laurus::set_debug(self : Laurus) -> Laurus {
+  self.is_debug = true
   self
 }
 

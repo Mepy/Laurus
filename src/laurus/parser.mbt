@@ -152,7 +152,7 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             self.shift_span(lexeme)
             lexeme = self.lexer.scan0()
-            122
+            123
           }
           _ => break
         }
@@ -160,17 +160,23 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     3 => {
       self.enter_state(3)
       continue match lexeme.token {
+          Debug => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan0()
+            92
+          }
           Space => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan6()
-            92
+            93
           }
           Start => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan5()
-            93
+            94
           }
           _ => break
         }
@@ -1132,15 +1138,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -1240,15 +1246,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -1279,10 +1285,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1342,10 +1348,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1379,10 +1385,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1432,10 +1438,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1514,15 +1520,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -1546,8 +1552,8 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             match former {
               50 => 58
               59 => 77
-              98 => 106
-              107 => 109
+              99 => 107
+              108 => 110
               _ => break
             }
           }
@@ -1575,8 +1581,8 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              50 | 59 | 98 | 107 => 61
-              58 | 77 | 106 | 109 => 79
+              50 | 59 | 99 | 108 => 61
+              58 | 77 | 107 | 110 => 79
               _ => break
             }
           }
@@ -1598,10 +1604,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1652,10 +1658,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1680,10 +1686,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1724,10 +1730,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1774,8 +1780,8 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              50 | 59 | 98 | 107 => 61
-              58 | 77 | 106 | 109 => 79
+              50 | 59 | 99 | 108 => 61
+              58 | 77 | 107 | 110 => 79
               _ => break
             }
           }
@@ -1797,10 +1803,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1851,10 +1857,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1879,10 +1885,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1923,10 +1929,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -1992,15 +1998,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2027,8 +2033,8 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             match former {
               50 => 58
               59 => 77
-              98 => 106
-              107 => 109
+              99 => 107
+              108 => 110
               _ => break
             }
           }
@@ -2066,15 +2072,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2179,15 +2185,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2268,15 +2274,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2311,15 +2317,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2354,15 +2360,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2397,15 +2403,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2526,15 +2532,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2612,15 +2618,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -2666,36 +2672,23 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     92 => {
       self.enter_state(92)
       continue match lexeme.token {
-          LParen => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan6()
-            97
-          }
-          LBrack => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan25()
-            98
-          }
-          Dot => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            99
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          LAURUS_EOF | SortName | TokenName | Percent | CommentHead => { // reduce
+            let span = self.span_stack[self.span_stack.length() - 3:].iter()
+              |> FixedArray::from_iter
+              |> Span::tree
+            self.state_stack.unsafe_pop() |> ignore
+            self.span_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.span_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.span_stack.unsafe_pop() |> ignore
+            self.span_stack.push(span)
+            // ignore Node [x2 : Debug]
+            // ignore Node [x1 : Percent]
+            guard self.node_stack.unsafe_pop() is Node::Laurus(x0)
+            let node = Laurus::set_debug(x0) |> Node::Laurus
             self.node_stack.push(node)
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            100
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan23()
-            101
+            1
           }
           _ => break
         }
@@ -2703,18 +2696,55 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     93 => {
       self.enter_state(93)
       continue match lexeme.token {
-          SortName => { // shift
-            let node = self.lexer.get(lexeme) |> Node::String
+          LParen => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan6()
+            98
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan25()
+            99
+          }
+          Dot => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            100
+          }
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
             self.shift_span(lexeme)
-            lexeme = self.lexer.scan0()
-            94
+            lexeme = self.lexer.scan30()
+            101
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan23()
+            102
           }
           _ => break
         }
     }
     94 => {
       self.enter_state(94)
+      continue match lexeme.token {
+          SortName => { // shift
+            let node = self.lexer.get(lexeme) |> Node::String
+            self.node_stack.push(node)
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan0()
+            95
+          }
+          _ => break
+        }
+    }
+    95 => {
+      self.enter_state(95)
       continue match lexeme.token {
           LAURUS_EOF | SortName | TokenName | Percent | CommentHead => { // reduce
             let span = self.span_stack[self.span_stack.length() - 4:].iter()
@@ -2740,63 +2770,63 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
           _ => break
         }
     }
-    95 => {
-      self.enter_state(95)
+    96 => {
+      self.enter_state(96)
       continue match lexeme.token {
           Or => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan6()
-            114
+            115
           }
           Star => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            116
+            117
           }
           Plus => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            117
+            118
           }
           Ques => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            118
+            119
           }
           LParen => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan6()
-            97
+            98
           }
           LBrack => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan25()
-            98
+            99
           }
           Dot => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            99
+            100
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            100
+            101
           }
           Esc => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan23()
-            101
+            102
           }
           LAURUS_EOF | SortName | TokenName | Percent | CommentHead => { // reduce
             let span = self.span_stack[self.span_stack.length() - 4:].iter()
@@ -2822,8 +2852,8 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
           _ => break
         }
     }
-    96 => {
-      self.enter_state(96)
+    97 => {
+      self.enter_state(97)
       continue match lexeme.token {
           CommentHead
           | Ques
@@ -2851,23 +2881,23 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
           _ => break
         }
     }
-    97 => {
-      self.enter_state(97)
+    98 => {
+      self.enter_state(98)
       continue match lexeme.token {
           LParen => { // shift
             // ignore the old lexeme
@@ -2903,20 +2933,20 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
           _ => break
         }
     }
-    98 => {
-      self.enter_state(98)
+    99 => {
+      self.enter_state(99)
       continue match lexeme.token {
           Caret => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan27()
-            107
+            108
           }
           RBrack => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            108
+            109
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
@@ -2934,8 +2964,8 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
           _ => break
         }
     }
-    99 => {
-      self.enter_state(99)
+    100 => {
+      self.enter_state(100)
       continue match lexeme.token {
           CommentHead
           | Ques
@@ -2963,23 +2993,23 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
           _ => break
         }
     }
-    100 => {
-      self.enter_state(100)
+    101 => {
+      self.enter_state(101)
       continue match lexeme.token {
           CommentHead
           | Ques
@@ -3006,38 +3036,12 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
-          }
-          _ => break
-        }
-    }
-    101 => {
-      self.enter_state(101)
-      continue match lexeme.token {
-          EscOrigin => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
-            self.node_stack.push(node)
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            102
-          }
-          EscSpace => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
-            self.node_stack.push(node)
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            103
-          }
-          EscU => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan28()
-            104
           }
           _ => break
         }
@@ -3045,40 +3049,25 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     102 => {
       self.enter_state(102)
       continue match lexeme.token {
-          CommentHead
-          | Ques
-          | Plus
-          | Star
-          | Dot
-          | LBrack
-          | LParen
-          | Esc
-          | EscNo
-          | Or
-          | Percent
-          | TokenName
-          | SortName
-          | LAURUS_EOF => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 2:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
-            self.state_stack.unsafe_pop() |> ignore
-            self.span_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.span_stack.unsafe_pop() |> ignore
-            self.span_stack.push(span)
-            guard self.node_stack.unsafe_pop() is Node::Char(x1)
-            // ignore Node [x0 : Esc]
-            let node = x1 |> Node::Char
+          EscOrigin => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
-              69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
-              _ => break
-            }
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            103
+          }
+          EscSpace => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_space |> Node::Char
+            self.node_stack.push(node)
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            104
+          }
+          EscU => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan28()
+            105
           }
           _ => break
         }
@@ -3114,10 +3103,10 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
           }
@@ -3127,18 +3116,59 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     104 => {
       self.enter_state(104)
       continue match lexeme.token {
-          EscUnicode => { // shift
-            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
+          CommentHead
+          | Ques
+          | Plus
+          | Star
+          | Dot
+          | LBrack
+          | LParen
+          | Esc
+          | EscNo
+          | Or
+          | Percent
+          | TokenName
+          | SortName
+          | LAURUS_EOF => { // reduce
+            let span = self.span_stack[self.span_stack.length() - 2:].iter()
+              |> FixedArray::from_iter
+              |> Span::tree
+            self.state_stack.unsafe_pop() |> ignore
+            self.span_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.span_stack.unsafe_pop() |> ignore
+            self.span_stack.push(span)
+            guard self.node_stack.unsafe_pop() is Node::Char(x1)
+            // ignore Node [x0 : Esc]
+            let node = x1 |> Node::Char
             self.node_stack.push(node)
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            105
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
+              69 => 70
+              93 | 96 | 115 | 120 | 121 | 122 => 97
+              _ => break
+            }
           }
           _ => break
         }
     }
     105 => {
       self.enter_state(105)
+      continue match lexeme.token {
+          EscUnicode => { // shift
+            let node = self.lexer.get(lexeme) |> Char::esc_unicode |> Node::Char
+            self.node_stack.push(node)
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            106
+          }
+          _ => break
+        }
+    }
+    106 => {
+      self.enter_state(106)
       continue match lexeme.token {
           CommentHead
           | Ques
@@ -3171,37 +3201,12 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
-              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 97 | 112 => 48
-              50 | 58 | 59 | 77 | 98 | 106 | 107 | 109 => 62
+              46 | 47 | 49 | 81 | 83 | 88 | 89 | 90 | 98 | 113 => 48
+              50 | 58 | 59 | 77 | 99 | 107 | 108 | 110 => 62
               69 => 70
-              92 | 95 | 114 | 119 | 120 | 121 => 96
+              93 | 96 | 115 | 120 | 121 | 122 => 97
               _ => break
             }
-          }
-          _ => break
-        }
-    }
-    106 => {
-      self.enter_state(106)
-      continue match lexeme.token {
-          RBrack => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            111
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
-            self.node_stack.push(node)
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan26()
-            63
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan23()
-            64
           }
           _ => break
         }
@@ -3209,6 +3214,12 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     107 => {
       self.enter_state(107)
       continue match lexeme.token {
+          RBrack => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            112
+          }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
@@ -3227,6 +3238,25 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     }
     108 => {
       self.enter_state(108)
+      continue match lexeme.token {
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan26()
+            63
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan23()
+            64
+          }
+          _ => break
+        }
+    }
+    109 => {
+      self.enter_state(109)
       continue match lexeme.token {
           CommentHead
           | Ques
@@ -3257,29 +3287,29 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
           _ => break
         }
     }
-    109 => {
-      self.enter_state(109)
+    110 => {
+      self.enter_state(110)
       continue match lexeme.token {
           RBrack => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            110
+            111
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
@@ -3297,8 +3327,8 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
           _ => break
         }
     }
-    110 => {
-      self.enter_state(110)
+    111 => {
+      self.enter_state(111)
       continue match lexeme.token {
           CommentHead
           | Ques
@@ -3335,23 +3365,23 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
           _ => break
         }
     }
-    111 => {
-      self.enter_state(111)
+    112 => {
+      self.enter_state(112)
       continue match lexeme.token {
           CommentHead
           | Ques
@@ -3385,29 +3415,29 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
           _ => break
         }
     }
-    112 => {
-      self.enter_state(112)
+    113 => {
+      self.enter_state(113)
       continue match lexeme.token {
           RParen => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            113
+            114
           }
           Or => { // shift
             // ignore the old lexeme
@@ -3467,8 +3497,8 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
           _ => break
         }
     }
-    113 => {
-      self.enter_state(113)
+    114 => {
+      self.enter_state(114)
       continue match lexeme.token {
           CommentHead
           | Ques
@@ -3502,54 +3532,17 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
-          }
-          _ => break
-        }
-    }
-    114 => {
-      self.enter_state(114)
-      continue match lexeme.token {
-          LParen => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan6()
-            97
-          }
-          LBrack => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan25()
-            98
-          }
-          Dot => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            99
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
-            self.node_stack.push(node)
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            100
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan23()
-            101
           }
           _ => break
         }
@@ -3557,23 +3550,60 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     115 => {
       self.enter_state(115)
       continue match lexeme.token {
-          Star => { // shift
+          LParen => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan6()
+            98
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan25()
+            99
+          }
+          Dot => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            116
+            100
           }
-          Plus => { // shift
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            101
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan23()
+            102
+          }
+          _ => break
+        }
+    }
+    116 => {
+      self.enter_state(116)
+      continue match lexeme.token {
+          Star => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
             117
           }
-          Ques => { // shift
+          Plus => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
             118
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            119
           }
           CommentHead
           | EscNo
@@ -3601,62 +3631,15 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
-              _ => break
-            }
-          }
-          _ => break
-        }
-    }
-    116 => {
-      self.enter_state(116)
-      continue match lexeme.token {
-          CommentHead
-          | Ques
-          | Plus
-          | Star
-          | EscNo
-          | Esc
-          | LParen
-          | LBrack
-          | Dot
-          | Or
-          | Percent
-          | TokenName
-          | SortName
-          | LAURUS_EOF => { // reduce
-            let span = self.span_stack[self.span_stack.length() - 2:].iter()
-              |> FixedArray::from_iter
-              |> Span::tree
-            self.state_stack.unsafe_pop() |> ignore
-            self.span_stack.unsafe_pop() |> ignore
-            self.state_stack.unsafe_pop() |> ignore
-            self.span_stack.unsafe_pop() |> ignore
-            self.span_stack.push(span)
-            // ignore Node [x1 : Star]
-            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Star(x0) |> Node::RegExp
-            self.node_stack.push(node)
-            let former = self.state_stack[self.state_stack.length() - 1]
-            match former {
-              46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
-              49 => 81
-              83 => 90
-              88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -3688,22 +3671,22 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.state_stack.unsafe_pop() |> ignore
             self.span_stack.unsafe_pop() |> ignore
             self.span_stack.push(span)
-            // ignore Node [x1 : Plus]
+            // ignore Node [x1 : Star]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Plus(x0) |> Node::RegExp
+            let node = RegExp::Star(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -3735,22 +3718,22 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             self.state_stack.unsafe_pop() |> ignore
             self.span_stack.unsafe_pop() |> ignore
             self.span_stack.push(span)
-            // ignore Node [x1 : Ques]
+            // ignore Node [x1 : Plus]
             guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
-            let node = RegExp::Ques(x0) |> Node::RegExp
+            let node = RegExp::Plus(x0) |> Node::RegExp
             self.node_stack.push(node)
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
@@ -3760,36 +3743,46 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     119 => {
       self.enter_state(119)
       continue match lexeme.token {
-          LParen => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan6()
-            97
-          }
-          LBrack => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan25()
-            98
-          }
-          Dot => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            99
-          }
-          EscNo => { // shift
-            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+          CommentHead
+          | Ques
+          | Plus
+          | Star
+          | EscNo
+          | Esc
+          | LParen
+          | LBrack
+          | Dot
+          | Or
+          | Percent
+          | TokenName
+          | SortName
+          | LAURUS_EOF => { // reduce
+            let span = self.span_stack[self.span_stack.length() - 2:].iter()
+              |> FixedArray::from_iter
+              |> Span::tree
+            self.state_stack.unsafe_pop() |> ignore
+            self.span_stack.unsafe_pop() |> ignore
+            self.state_stack.unsafe_pop() |> ignore
+            self.span_stack.unsafe_pop() |> ignore
+            self.span_stack.push(span)
+            // ignore Node [x1 : Ques]
+            guard self.node_stack.unsafe_pop() is Node::RegExp(x0)
+            let node = RegExp::Ques(x0) |> Node::RegExp
             self.node_stack.push(node)
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            100
-          }
-          Esc => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan23()
-            101
+            let former = self.state_stack[self.state_stack.length() - 1]
+            match former {
+              46 => 47
+              47 | 81 | 89 | 90 | 113 => 84
+              49 => 81
+              83 => 90
+              88 => 89
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
+              _ => break
+            }
           }
           _ => break
         }
@@ -3797,60 +3790,97 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
     120 => {
       self.enter_state(120)
       continue match lexeme.token {
-          Or => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan6()
-            114
-          }
-          Star => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            116
-          }
-          Plus => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            117
-          }
-          Ques => { // shift
-            // ignore the old lexeme
-            self.shift_span(lexeme)
-            lexeme = self.lexer.scan30()
-            118
-          }
           LParen => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan6()
-            97
+            98
           }
           LBrack => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan25()
-            98
+            99
           }
           Dot => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            99
+            100
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            100
+            101
           }
           Esc => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan23()
+            102
+          }
+          _ => break
+        }
+    }
+    121 => {
+      self.enter_state(121)
+      continue match lexeme.token {
+          Or => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan6()
+            115
+          }
+          Star => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            117
+          }
+          Plus => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            118
+          }
+          Ques => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            119
+          }
+          LParen => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan6()
+            98
+          }
+          LBrack => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan25()
+            99
+          }
+          Dot => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
+            100
+          }
+          EscNo => { // shift
+            let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
+            self.node_stack.push(node)
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan30()
             101
+          }
+          Esc => { // shift
+            // ignore the old lexeme
+            self.shift_span(lexeme)
+            lexeme = self.lexer.scan23()
+            102
           }
           LAURUS_EOF | SortName | TokenName | Percent | CommentHead => { // reduce
             let span = self.span_stack[self.span_stack.length() - 3:].iter()
@@ -3871,72 +3901,72 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
           _ => break
         }
     }
-    121 => {
-      self.enter_state(121)
+    122 => {
+      self.enter_state(122)
       continue match lexeme.token {
           Star => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            116
+            117
           }
           Plus => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            117
+            118
           }
           Ques => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            118
+            119
           }
           LParen => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan6()
-            97
+            98
           }
           LBrack => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan25()
-            98
+            99
           }
           Dot => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            99
+            100
           }
           EscNo => { // shift
             let node = self.lexer.get(lexeme) |> Char::get0 |> Node::Char
             self.node_stack.push(node)
             self.shift_span(lexeme)
             lexeme = self.lexer.scan30()
-            100
+            101
           }
           Esc => { // shift
             // ignore the old lexeme
             self.shift_span(lexeme)
             lexeme = self.lexer.scan23()
-            101
+            102
           }
           CommentHead | Or | Percent | TokenName | SortName | LAURUS_EOF => { // reduce
             let span = self.span_stack[self.span_stack.length() - 3:].iter()
@@ -3957,23 +3987,23 @@ pub fn Parser::parse(self : Self) -> Laurus raise LexerError {
             let former = self.state_stack[self.state_stack.length() - 1]
             match former {
               46 => 47
-              47 | 81 | 89 | 90 | 112 => 84
+              47 | 81 | 89 | 90 | 113 => 84
               49 => 81
               83 => 90
               88 => 89
-              92 => 95
-              95 | 120 | 121 => 115
-              97 => 112
-              114 => 121
-              119 => 120
+              93 => 96
+              96 | 121 | 122 => 116
+              98 => 113
+              115 => 122
+              120 => 121
               _ => break
             }
           }
           _ => break
         }
     }
-    122 => {
-      self.enter_state(122)
+    123 => {
+      self.enter_state(123)
       continue match lexeme.token {
           LAURUS_EOF | SortName | TokenName | Percent | CommentHead => { // reduce
             let span = self.span_stack[self.span_stack.length() - 3:].iter()

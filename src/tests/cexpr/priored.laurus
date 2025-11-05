@@ -1,3 +1,4 @@
+%debug
 %start expr
 %space ([\s\t\n]*)
 
