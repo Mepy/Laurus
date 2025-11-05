@@ -223,19 +223,19 @@ pub fn Generator::codegen_parse(
   for state_i in 0..<state_len {
     self.builder.write_string("    \{state_i} => {\n")
     self.builder.write_string("      self.enter_state(\{state_i})\n")
-    // // codegen LR1 items
-    // for item in lr1.states[state_i] {
-    //   self.builder.write_string("      // \{sem.names[item.sort]} ->") // indent
-    //   let sentence_len = item.sentence.length()
-    //   for i in 0..<item.cur {
-    //     self.builder.write_string(" \{sem.names[item.sentence[i]]}")
-    //   }
-    //   self.builder.write_string(" ●")
-    //   for i in item.cur..<sentence_len {
-    //     self.builder.write_string(" \{sem.names[item.sentence[i]]}")
-    //   }
-    //   self.builder.write_string(" | \{sem.names[item.lookahead]}\n")
-    // }
+    // codegen LR1 items
+    for item in lr1.states[state_i] {
+      self.builder.write_string("      // \{sem.names[item.sort]} ->") // indent
+      let sentence_len = item.sentence.length()
+      for i in 0..<item.cur {
+        self.builder.write_string(" \{sem.names[item.sentence[i]]}")
+      }
+      self.builder.write_string(" ●")
+      for i in item.cur..<sentence_len {
+        self.builder.write_string(" \{sem.names[item.sentence[i]]}")
+      }
+      self.builder.write_string(" | \{sem.names[item.lookahead]}\n")
+    }
     self.builder.write_string("      continue match lexeme.token {\n")
     let shift_map = lr1.shift_table[state_i]
     let reduce_map = lr1.reduce_table[state_i]

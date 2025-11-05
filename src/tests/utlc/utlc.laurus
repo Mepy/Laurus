@@ -1,0 +1,16 @@
+
+Var = String([_a-zA-Z][_a-zA-Z0-9]*)
+Lam = (\\|λ)
+Arr = (\->|→)
+LParen = (\()
+RParen = (\))
+
+%space ([\s\t\n]*)
+%start term
+
+term : Term {
+| Var(Var)
+< Abs(Lam Var Arr term)
+< App(term term)
+< (LParen term RParen)
+}
